@@ -1,7 +1,15 @@
-Hello World 🙃
-:)
+Prologin 2021
+=============
 
-Credits:
- - Nicolas
- - "ilu_vatar_"
- - Reyland
+This is the final game (2021 edition) of the French national computing contest
+Prologin. Candidates are asked to create an AI in 36 hours for this specific
+game. The final ranking will be determined at the end with a tournament where
+each AIs compete against each other.
+
+# How to use it?
+prologin2021 is meant to be used with [stechec2](
+https://github.com/prologin/stechec2), our custom made AI match maker.
+
+# License
+Free use of this software is granted under the terms of the GNU General Public
+License version 2+ (GPLv2+). For details see the `COPYING` file.

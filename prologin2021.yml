@@ -1,0 +1,254 @@
+# SPDX-License-Identifier: GPL-2.0-or-later
+# Copyright (c) 2021 Association Prologin <association@prologin.org>
+
+name: prologin2021
+rules_type: turnbased
+
+constant:
+  -
+    cst_name: LARGEUR_RIVIERE
+    cst_val: 25
+    cst_comment: Taille de la rivière (largeur).
+  -
+    cst_name: LONGUEUR_RIVIERE
+    cst_val: 25
+    cst_comment: Taille de la rivière (longueur).
+  -
+    cst_name: NB_TOURS
+    cst_val: 100
+    cst_comment: Nombre de tours à jouer avant la fin de la partie.
+  -
+    cst_name: NB_PANDAS
+    cst_val: 2
+    cst_comment: Nombre de pandas par joueur.
+  -
+    cst_name: NB_TOURS_PERTE_BEBE
+    cst_val: 3
+    cst_comment: Nombre de tours nécessaires pour faire tomber un bébé panda.
+  -
+    cst_name: VALEUR_MAX_DOMINO
+    cst_val: 6
+    cst_comment: Valeur max d'un domino (les valeurs sont comprises entre 1 et cette constante inclus).
+  -
+    cst_name: NB_POINTS_CAPTURE_BEBE
+    cst_val: 10
+    cst_comment: Nombre de points obtenus à la capture d'un bébé pandas.
+
+enum:
+  -
+    enum_name: type_case
+    enum_summary: Types de cases
+    enum_field:
+      - [libre, "Case libre"]
+      - [obstacle, "Obstacle"]
+      - [pont, "Pont"]
+      - [bebe, "Bébé panda"]
+  -
+    enum_name: direction  # à finir
+    enum_summary: Directions cardinales
+    enum_field:
+      - [nord, "Direction : nord"]
+      - [nord-est, "Direction : nord-est"]
+      #- [nord-ouest, "Direction : nord-ouest"]
+      - [sud, "Direction : sud"]
+      - [sud-est, "Direction : sud-est"]
+      #- [sud-ouest, "Direction : sud-ouest"]
+  -
+    enum_name: erreur  # TODO: erreurs -> à voir
+    enum_summary: Erreurs possibles
+    enum_field:
+      - [ok, "L'action s'est effectuée avec succès."]
+      - [position_invalide, "La position spécifiée n'est pas sur la banquise."]
+      - [obstacle, "La position spécifiée est un obstacle."]
+      - [mauvais_nombre, "La hauteur de la position spécifiée ne correspond
+                          pas."]
+      - [deplacement_hors_limites, "Ce déplacement fait sortir un panda des
+                                    limites de la banquise."]
+      - [direction_invalide, "La direction spécifiée n'existe pas."]
+      - [id_panda_invalide, "panda spécifié n'existe pas."]
+      - [rien_a_pousser, "Aucun panda à pousser dans la direction indiquée."]
+      - [drapeau_invalide, "Le drapeau spécifié n'existe pas."]
+  -
+    enum_name: type_action
+    enum_summary: Types d'actions
+    enum_field:  # TODO: à voir ?
+      - [action_deplacer, "Action ``deplacer``."]
+      - [action_poser, "Action ``poser``."]
+
+struct:
+  -
+    str_name: position
+    str_summary: Position du panda.
+    str_tuple: yes
+    str_field:
+      - [x, int, "Coordonnée : x"]
+      - ["y", int, "Coordonnée : y"]
+  -
+    str_name: info_panda
+    str_summary: Panda et son joueur
+    str_tuple: no
+    str_field:
+      - [pos, position, "Position du panda"]
+      - [id_joueur, int, "Identifiant du joueur qui contrôle le panda"]
+      - [num_bebes, int, "Nombre de bébés qui sont portés par le panda parent"]
+  -
+    str_name: info_bebe
+    str_summary: Bébé panda à ramener.
+    str_tuple: no
+    str_field:
+      - [pos, position, "Position du bébé panda"]
+      - [points_capture, int, "Nombre de points obtenus pour la capture de ce panda"]
+  -
+    str_name: info_tour
+    str_summary: Information sur un tour particulier.
+    str_tuple: no
+    str_field:
+      - [id_joueur, int, "Identifiant du joueur qui joue"]
+      - [id_panda, int, "Identifiant du panda qui joue"]
+      - [id_tour, int, "Identifiant unique du tour (compteur)"]
+  -
+    str_name: action_hist
+    str_summary: Action représentée dans l'historique.
+    str_tuple: no
+    str_field:
+      - [type_action, type_action, "Type de l'action"]
+      - [id_panda, int, "Numéro du panda concerné par l'action"]
+      - [dir, direction, "Direction visée par le panda durant le déplacement"]
+      - [type_pont, int, "Type du pont posé (typiquement de 1 à 6 inclus)"]
+
+function:
+
+# Actions
+
+  -
+    fct_name: deplacer
+    fct_summary: Déplace le panda ``id_panda`` sur le pont choisi.
+    fct_ret_type: erreur
+    fct_action: yes
+    fct_arg:
+      - [id_panda, int, "Numéro du panda"]
+      - [dir, direction, "Direction visée"]
+  -
+    fct_name: poser
+    fct_summary: "Pose un pont dans la direction choisie à partir du panda
+                  ``id_panda``".
+    fct_ret_type: erreur
+    fct_action: yes
+    fct_arg:
+      - [id_panda, int, "Numéro du panda"]
+      - [dir, direction, "Direction visée"]
+      - [pont_debut, int, "Début du pont placé"]
+      - [pont_fin, int, "Fin du pont"]
+
+# Fonctions de requête de l'état du jeu
+  -
+    fct_name: chemin
+    fct_summary: Renvoie le plus court chemin entre deux positions de la
+                 banquise sous la forme d'une suite de direction à emprunter. Ce
+                 chemin ne prend pas en compte les ponts et leurs valeurs,
+                 uniquement des déplacements.
+                 Si la position est invalide ou que le chemin n'existe pas, le
+                 chemin renvoyé est vide.
+    fct_ret_type: direction array
+    fct_arg:
+      - [pos1, position, "Position de départ"]
+      - [pos2, position, "Position d'arrivée"]
+  -
+    fct_name: type_case
+    fct_summary: Renvoie le type d'une case donnée.
+    fct_ret_type: case_type
+    fct_arg:
+      - [pos, position, "Case choisie"]
+  -
+    fct_name: panda_sur_case
+    fct_summary: Renvoie le numéro du joueur à qui appartient panda sur la
+                 case indiquée.
+                 Renvoie -1 s'il n'y a pas de panda ou si la position est invalide.
+    fct_ret_type: int
+    fct_arg:
+      - [pos, position, "Case choisie"]
+  -
+    fct_name: bebe_panda_sur_case
+    fct_summary: Indique si un bébé panda se trouve sur une case donnée.
+                 Renvoie vrai s'il y a un bébé panda sur la case.
+                 Renvoie faux autremement, ou si la position est invalide.
+    fct_ret_type: bool
+    fct_arg:
+      - [pos, position, "Case choisie"]
+  -
+    fct_name: position_panda
+    fct_summary: Indique la position du panda sur la banquise désigné par le
+                 numéro ``id_panda`` appartenant au joueur ``id_joueur``.
+                 Si la description du panda est incorrecte, la position (-1,  # TODO: cette position est-elle encore invalide pour nous ?
+                 -1) est renvoyée.
+    fct_ret_type: position
+    fct_arg:
+      - [id_joueur, int, "Numéro du joueur"]
+      - [id_panda, int, "Numéro du panda"]
+  -
+    fct_name: get_panda_info
+    fct_summary: Renvoie la description d'un panda en fonction d'une position
+                 donnée.
+                 Si le panda n'est pas présent sur la carte, ou si la position
+                 est invalide, tous les membres de la structure ``info_panda``
+                 renvoyée sont initialisés à -1.
+    fct_ret_type: info_panda
+    fct_arg:
+      - [pos, position, "Case choisie"]
+  -
+    fct_name: liste_pandas
+    fct_summary: Renvoie la liste de tous les pandas présents durant la partie.
+    fct_ret_type: info_panda array
+    fct_arg: []
+
+# Historique (actions de l'adversaire durant le tour précédent)
+
+  -
+    fct_name: historique
+    fct_summary: Renvoie la liste des actions effectuées par l’adversaire
+                 durant son tour, dans l'ordre chronologique. Les actions de
+                 débug n'apparaissent pas dans cette liste.
+    fct_ret_type: action_hist array
+    fct_arg: []
+
+# Autres
+
+  -
+    fct_name: score
+    fct_summary: Renvoie le score du joueur ``id_joueur``.
+                 Renvoie -1 si le joueur est invalide.
+    fct_ret_type: int
+    fct_arg:
+      - [id_joueur, int, "Numéro du joueur"]
+  -
+    fct_name: moi
+    fct_summary: Renvoie votre numéro de joueur.
+    fct_ret_type: int
+    fct_arg: []
+  -
+    fct_name: adversaire
+    fct_summary: Renvoie le numéro de joueur de votre adversaire.
+    fct_ret_type: int
+    fct_arg: []
+  -
+    fct_name: get_tour_info
+    fct_summary: Retourne le tour actuel.
+    fct_ret_type: info_tour
+    fct_arg: []
+
+user_function:
+  -
+    fct_name: partie_init
+    fct_summary: Fonction appelée au début de la partie.
+    fct_ret_type: void
+    fct_arg: []
+  -
+    fct_name: jouer_tour
+    fct_summary: Fonction appelée à chaque tour.
+    fct_ret_type: void
+    fct_arg: []
+  -
+    fct_name: partie_fin
+    fct_summary: Fonction appelée à la fin de la partie.
+    fct_ret_type: void
+    fct_arg: []
