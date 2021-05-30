@@ -43,18 +43,20 @@ enum:
       - [obstacle, "Obstacle"]
       - [pont, "Pont"]
       - [bebe, "Bébé panda"]
+  # Le layout choisi est "even-q", voir
+  # https://www.redblobgames.com/grids/hexagons/#coordinates
   -
-    enum_name: direction  # à finir
+    enum_name: direction
     enum_summary: Directions cardinales
     enum_field:
       - [nord, "Direction : nord"]
       - [nord-est, "Direction : nord-est"]
-      #- [nord-ouest, "Direction : nord-ouest"]
+      - [nord-ouest, "Direction : nord-ouest"]
       - [sud, "Direction : sud"]
       - [sud-est, "Direction : sud-est"]
-      #- [sud-ouest, "Direction : sud-ouest"]
+      - [sud-ouest, "Direction : sud-ouest"]
   -
-    enum_name: erreur  # TODO: erreurs -> à voir
+    enum_name: erreur # TODO: erreurs -> à voir
     enum_summary: Erreurs possibles
     enum_field:
       - [ok, "L'action s'est effectuée avec succès."]
@@ -179,7 +181,7 @@ function:
     fct_name: position_panda
     fct_summary: Indique la position du panda sur la banquise désigné par le
                  numéro ``id_panda`` appartenant au joueur ``id_joueur``.
-                 Si la description du panda est incorrecte, la position (-1,  # TODO: cette position est-elle encore invalide pour nous ?
+                 Si la description du panda est incorrecte, la position (-1,
                  -1) est renvoyée.
     fct_ret_type: position
     fct_arg:
