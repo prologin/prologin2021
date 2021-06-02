@@ -86,7 +86,7 @@ struct:
       - [x, int, "Coordonnée : x"]
       - ["y", int, "Coordonnée : y"]
   -
-    str_name: info_panda
+    str_name: panda_info
     str_summary: Panda et son joueur
     str_tuple: no
     str_field:
@@ -94,14 +94,14 @@ struct:
       - [id_joueur, int, "Identifiant du joueur qui contrôle le panda"]
       - [num_bebes, int, "Nombre de bébés qui sont portés par le panda parent"]
   -
-    str_name: info_bebe
+    str_name: bebe_info
     str_summary: Bébé panda à ramener.
     str_tuple: no
     str_field:
       - [pos, position, "Position du bébé panda"]
       - [points_capture, int, "Nombre de points obtenus pour la capture de ce panda"]
   -
-    str_name: info_tour
+    str_name: tour_info
     str_summary: Information sur un tour particulier.
     str_tuple: no
     str_field:
@@ -188,19 +188,19 @@ function:
       - [id_joueur, int, "Numéro du joueur"]
       - [id_panda, int, "Numéro du panda"]
   -
-    fct_name: get_panda_info
+    fct_name: info_panda
     fct_summary: Renvoie la description d'un panda en fonction d'une position
                  donnée.
                  Si le panda n'est pas présent sur la carte, ou si la position
-                 est invalide, tous les membres de la structure ``info_panda``
+                 est invalide, tous les membres de la structure ``panda_info``
                  renvoyée sont initialisés à -1.
-    fct_ret_type: info_panda
+    fct_ret_type: panda_info
     fct_arg:
       - [pos, position, "Case choisie"]
   -
     fct_name: liste_pandas
     fct_summary: Renvoie la liste de tous les pandas présents durant la partie.
-    fct_ret_type: info_panda array
+    fct_ret_type: panda_info array
     fct_arg: []
 
 # Historique (actions de l'adversaire durant le tour précédent)
@@ -233,9 +233,9 @@ function:
     fct_ret_type: int
     fct_arg: []
   -
-    fct_name: get_tour_info
+    fct_name: info_tour
     fct_summary: Retourne le tour actuel.
-    fct_ret_type: info_tour
+    fct_ret_type: tour_info
     fct_arg: []
 
 user_function:
