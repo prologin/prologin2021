@@ -36,7 +36,7 @@ constant:
 
 enum:
   -
-    enum_name: type_case
+    enum_name: case_type
     enum_summary: Types de cases
     enum_field:
       - [libre, "Case libre"]
@@ -85,6 +85,16 @@ struct:
     str_field:
       - [x, int, "Coordonnée : x"]
       - ["y", int, "Coordonnée : y"]
+  -
+    str_name: pont_type
+    str_summary: Case type pont, contient la case de début et de fin.
+                 La case de début a une valeur se décrémentant, celle de fin s'incrémente.
+    str_tuple: no
+    str_field:
+      - [debut_pos, position, "Position de la case de début"]
+      - [fin_pos, position, "Position de la case de fin"]
+      - [debut_val, int, "Valeur de la case de début"]
+      - [fin_val, int, "Valeur de la case de début"]
   -
     str_name: panda_info
     str_summary: Panda et son joueur
@@ -187,6 +197,16 @@ function:
     fct_arg:
       - [id_joueur, int, "Numéro du joueur"]
       - [id_panda, int, "Numéro du panda"]
+  -
+    fct_name: info_pont
+    fct_summary: Renvoie les informations relatives au pont situé à cette position.
+                 Le pont est constitué de deux cases.
+                 Si aucun pont n'est placé à cette position ou si la position
+                 est invalide, les membres debut_val et fin_val de la structure ``pont_type``
+                 renvoyée sont initialisés à -1.
+    fct_ret_type: pont_type
+    fct_arg:
+      - [pos, position, "Case choisie"]
   -
     fct_name: info_panda
     fct_summary: Renvoie la description d'un panda en fonction d'une position
