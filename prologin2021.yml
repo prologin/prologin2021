@@ -60,14 +60,16 @@ enum:
     enum_summary: Erreurs possibles
     enum_field:
       - [ok, "L'action s'est effectuée avec succès."]
-      - [position_invalide, "La position spécifiée n'est pas sur la banquise."]
+      - [position_invalide, "La position spécifiée n'est pas sur la rivière."]
       - [obstacle, "La position spécifiée est un obstacle."]
       - [mauvais_nombre, "La hauteur de la position spécifiée ne correspond
                           pas."]
       - [deplacement_hors_limites, "Ce déplacement fait sortir un panda des
-                                    limites de la banquise."]
+                                    limites de la rivière."]
       - [direction_invalide, "La direction spécifiée n'existe pas."]
-      - [id_panda_invalide, "panda spécifié n'existe pas."]
+      - [mouvement_invalide, "Le panda ne peut pas se déplacer dans cette direction."]
+      - [pose_invalide, "Le pont ne peut pas être placé a cette position et dans cette direction."]
+      - [id_panda_invalide, "Le panda spécifié n'existe pas."]
       - [rien_a_pousser, "Aucun panda à pousser dans la direction indiquée."]
       - [drapeau_invalide, "Le drapeau spécifié n'existe pas."]
   -
