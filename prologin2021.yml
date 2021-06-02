@@ -26,9 +26,9 @@ constant:
     cst_val: 3
     cst_comment: Nombre de tours nécessaires pour faire tomber un bébé panda.
   -
-    cst_name: VALEUR_MAX_DOMINO
+    cst_name: VALEUR_MAX_PONT
     cst_val: 6
-    cst_comment: Valeur max d'un domino (les valeurs sont comprises entre 1 et cette constante inclus).
+    cst_comment: Valeur max d'un pont (les valeurs sont comprises entre 1 et cette constante inclus).
   -
     cst_name: NB_POINTS_CAPTURE_BEBE
     cst_val: 10
@@ -75,7 +75,7 @@ enum:
   -
     enum_name: type_action
     enum_summary: Types d'actions
-    enum_field:  # TODO: à voir ?
+    enum_field:  # TODO: à voir ? (action pousser)
       - [action_deplacer, "Action ``deplacer``."]
       - [action_poser, "Action ``poser``."]
 
@@ -155,10 +155,11 @@ function:
       - [pont_fin, int, "Fin du pont"]
 
 # Fonctions de requête de l'état du jeu
+  # TODO : Useful ?
   -
     fct_name: chemin
     fct_summary: Renvoie le plus court chemin entre deux positions de la
-                 banquise sous la forme d'une suite de direction à emprunter. Ce
+                 rivière sous la forme d'une suite de direction à emprunter. Ce
                  chemin ne prend pas en compte les ponts et leurs valeurs,
                  uniquement des déplacements.
                  Si la position est invalide ou que le chemin n'existe pas, le
@@ -185,13 +186,13 @@ function:
     fct_name: bebe_panda_sur_case
     fct_summary: Indique si un bébé panda se trouve sur une case donnée.
                  Renvoie vrai s'il y a un bébé panda sur la case.
-                 Renvoie faux autremement, ou si la position est invalide.
+                 Renvoie faux autrement, ou si la position est invalide.
     fct_ret_type: bool
     fct_arg:
       - [pos, position, "Case choisie"]
   -
     fct_name: position_panda
-    fct_summary: Indique la position du panda sur la banquise désigné par le
+    fct_summary: Indique la position du panda sur la rivière désigné par le
                  numéro ``id_panda`` appartenant au joueur ``id_joueur``.
                  Si la description du panda est incorrecte, la position (-1,
                  -1) est renvoyée.
