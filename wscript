@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-2.0-or-later
-# Copyright (c) 2021 Association Prologin <association@prologin.org>
+# Copyright (c) 2012-2021 Association Prologin <association@prologin.org>
 
 import glob
 import os.path
@@ -20,17 +20,12 @@ def build(bld):
     bld.shlib(
         source='''
             src/action_deplacer.cc
-            src/action_glisser.cc
-            src/action_pousser.cc
-            src/action_debug_afficher_drapeau.cc
+            src/action_poser.cc
             src/api.cc
             src/entry.cc
             src/game_state.cc
             src/interface.cc
-            src/map.cc
-            src/player_info.cc
             src/rules.cc
-            src/dumper.cc
         ''',
         defines=['MODULE_COLOR=ANSI_COL_BROWN', 'MODULE_NAME="rules"'],
         target='prologin2021',

@@ -50,18 +50,18 @@ enum:
     enum_summary: Directions cardinales
     enum_field:
       - [nord, "Direction : nord"]
-      - [nord-est, "Direction : nord-est"]
-      - [nord-ouest, "Direction : nord-ouest"]
+      - [nord_est, "Direction : nord-est"]
+      - [nord_ouest, "Direction : nord-ouest"]
       - [sud, "Direction : sud"]
-      - [sud-est, "Direction : sud-est"]
-      - [sud-ouest, "Direction : sud-ouest"]
+      - [sud_est, "Direction : sud-est"]
+      - [sud_ouest, "Direction : sud-ouest"]
   -
     enum_name: erreur # TODO: erreurs -> à voir
     enum_summary: Erreurs possibles
     enum_field:
       - [ok, "L'action s'est effectuée avec succès."]
       - [position_invalide, "La position spécifiée n'est pas sur la rivière."]
-      - [obstacle, "La position spécifiée est un obstacle."]
+      - [position_obstacle, "La position spécifiée est un obstacle."]
       - [mauvais_nombre, "La hauteur de la position spécifiée ne correspond
                           pas."]
       - [deplacement_hors_limites, "Ce déplacement fait sortir un panda des
@@ -73,7 +73,7 @@ enum:
       - [rien_a_pousser, "Aucun panda à pousser dans la direction indiquée."]
       - [drapeau_invalide, "Le drapeau spécifié n'existe pas."]
   -
-    enum_name: type_action
+    enum_name: action_type
     enum_summary: Types d'actions
     enum_field:  # TODO: à voir ? (action pousser)
       - [action_deplacer, "Action ``deplacer``."]
@@ -102,7 +102,7 @@ struct:
     str_summary: Panda et son joueur
     str_tuple: no
     str_field:
-      - [pos, position, "Position du panda"]
+      - [panda_pos, position, "Position du panda"]
       - [id_joueur, int, "Identifiant du joueur qui contrôle le panda"]
       - [num_bebes, int, "Nombre de bébés qui sont portés par le panda parent"]
   -
@@ -110,23 +110,23 @@ struct:
     str_summary: Bébé panda à ramener.
     str_tuple: no
     str_field:
-      - [pos, position, "Position du bébé panda"]
+      - [bebe_pos, position, "Position du bébé panda"]
       - [points_capture, int, "Nombre de points obtenus pour la capture de ce panda"]
   -
     str_name: tour_info
     str_summary: Information sur un tour particulier.
     str_tuple: no
     str_field:
-      - [id_joueur, int, "Identifiant du joueur qui joue"]
-      - [id_panda, int, "Identifiant du panda qui joue"]
+      - [id_joueur_joue, int, "Identifiant du joueur qui joue"]
+      - [id_panda_joue, int, "Identifiant du panda qui joue"]
       - [id_tour, int, "Identifiant unique du tour (compteur)"]
   -
     str_name: action_hist
     str_summary: Action représentée dans l'historique.
     str_tuple: no
     str_field:
-      - [type_action, type_action, "Type de l'action"]
-      - [id_panda, int, "Numéro du panda concerné par l'action"]
+      - [type_action, action_type, "Type de l'action"]
+      - [id_panda, int, "Identifiant du panda concerné par l'action"]
       - [dir, direction, "Direction visée par le panda durant le déplacement"]
       - [type_pont, int, "Type du pont posé (typiquement de 1 à 6 inclus)"]
 
@@ -145,7 +145,7 @@ function:
   -
     fct_name: poser
     fct_summary: "Pose un pont dans la direction choisie à partir du panda
-                  ``id_panda``".
+                  ``id_panda``."
     fct_ret_type: erreur
     fct_action: yes
     fct_arg:
