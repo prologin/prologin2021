@@ -31,8 +31,10 @@ tiles += [
 
 # Players
 tiles += [
-    (0, 2, 'panda'),
-    (0, 3, 'panda_bebe'),
+    (0, 2, 'panda1'),
+    (0, 3, 'panda1_bebe'),
+    (0, 4, 'panda2'),
+    (0, 5, 'panda2_bebe'),
 ]
 
 # Bridges
