@@ -23,7 +23,7 @@ extern "C" {
 void rules_config(rules::Config* cfg)
 {
     cfg->name = "prologin2021";
-    cfg->player_count = ;
+    cfg->player_count = 2;
 }
 
 void rules_init(const rules::Options& opt)

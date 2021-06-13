@@ -11,7 +11,7 @@ Api* api;
 
 Api::Api(std::unique_ptr<GameState> game_state,
          std::shared_ptr<rules::Player> player)
-    : rules::Api<GameState, error>(std::move(game_state), player)
+    : rules::Api<GameState, erreur>(std::move(game_state), player)
 {
     api = this;
 }
@@ -81,53 +81,63 @@ tour_info Api::info_tour()
     // TODO
     abort();
 }
+
+std::ostream& operator<<(std::ostream& os, case_type v);
 void Api::afficher_case_type(case_type v)
 {
-    // TODO
-    abort();
+    std::cerr << v << std::endl;
 }
+
+std::ostream& operator<<(std::ostream& os, direction v);
 void Api::afficher_direction(direction v)
 {
-    // TODO
-    abort();
+    std::cerr << v << std::endl;
 }
+
+std::ostream& operator<<(std::ostream& os, erreur v);
 void Api::afficher_erreur(erreur v)
 {
-    // TODO
-    abort();
+    std::cerr << v << std::endl;
 }
+
+std::ostream& operator<<(std::ostream& os, action_type v);
 void Api::afficher_action_type(action_type v)
 {
-    // TODO
-    abort();
+    std::cerr << v << std::endl;
 }
+
+std::ostream& operator<<(std::ostream& os, position v);
 void Api::afficher_position(position v)
 {
-    // TODO
-    abort();
+    std::cerr << v << std::endl;
 }
+
+std::ostream& operator<<(std::ostream& os, pont_type v);
 void Api::afficher_pont_type(pont_type v)
 {
-    // TODO
-    abort();
+    std::cerr << v << std::endl;
 }
+
+std::ostream& operator<<(std::ostream& os, panda_info v);
 void Api::afficher_panda_info(panda_info v)
 {
-    // TODO
-    abort();
+    std::cerr << v << std::endl;
 }
+
+std::ostream& operator<<(std::ostream& os, bebe_info v);
 void Api::afficher_bebe_info(bebe_info v)
 {
-    // TODO
-    abort();
+    std::cerr << v << std::endl;
 }
+
+std::ostream& operator<<(std::ostream& os, tour_info v);
 void Api::afficher_tour_info(tour_info v)
 {
-    // TODO
-    abort();
+    std::cerr << v << std::endl;
 }
+
+std::ostream& operator<<(std::ostream& os, action_hist v);
 void Api::afficher_action_hist(action_hist v)
 {
-    // TODO
-    abort();
+    std::cerr << v << std::endl;
 }

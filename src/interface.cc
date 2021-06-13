@@ -101,56 +101,6 @@ extern "C" tour_info api_info_tour()
     return api->info_tour();
 }
 
-extern "C" void api_afficher_case_type(case_type v)
-{
-    api->afficher_case_type(v);
-}
-
-extern "C" void api_afficher_direction(direction v)
-{
-    api->afficher_direction(v);
-}
-
-extern "C" void api_afficher_erreur(erreur v)
-{
-    api->afficher_erreur(v);
-}
-
-extern "C" void api_afficher_action_type(action_type v)
-{
-    api->afficher_action_type(v);
-}
-
-extern "C" void api_afficher_position(position v)
-{
-    api->afficher_position(v);
-}
-
-extern "C" void api_afficher_pont_type(pont_type v)
-{
-    api->afficher_pont_type(v);
-}
-
-extern "C" void api_afficher_panda_info(panda_info v)
-{
-    api->afficher_panda_info(v);
-}
-
-extern "C" void api_afficher_bebe_info(bebe_info v)
-{
-    api->afficher_bebe_info(v);
-}
-
-extern "C" void api_afficher_tour_info(tour_info v)
-{
-    api->afficher_tour_info(v);
-}
-
-extern "C" void api_afficher_action_hist(action_hist v)
-{
-    api->afficher_action_hist(v);
-}
-
 std::ostream& operator<<(std::ostream& os, case_type v)
 {
     switch (v)
