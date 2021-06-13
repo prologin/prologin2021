@@ -19,9 +19,26 @@ function initGraphics() {
     document.body.appendChild(app.view);
 }
 
+// Called in initGraphics, loads all textures
 function loadTextures() {
     for (let tile in TILES) {
         textures[TILES[tile]] =
             PIXI.Texture.from(`static/images/${TILES[tile]}.png`);
     }
+}
+
+// Creates a new tile sprite
+function newTile(id, x=0, y=0) {
+    if (!(id in textures)) {
+        throw `Texture "${id}" not found`;
+    }
+
+    let sprite = new PIXI.Sprite(textures[id]);
+
+    sprite.position.x = x;
+    sprite.position.y = y;
+    sprite.height = TILE_SIZE;
+    sprite.width = TILE_SIZE;
+
+    return sprite;
 }
