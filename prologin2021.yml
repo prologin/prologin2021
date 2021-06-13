@@ -6,13 +6,13 @@ rules_type: turnbased
 
 constant:
   -
-    cst_name: LARGEUR_RIVIERE
+    cst_name: RIVIERE_MAX_X
     cst_val: 25
-    cst_comment: Taille de la rivière (largeur).
+    cst_comment: Taille de la rivière (largeur, exclusif).
   -
-    cst_name: LONGUEUR_RIVIERE
+    cst_name: RIVIERE_MAX_Y
     cst_val: 25
-    cst_comment: Taille de la rivière (longueur).
+    cst_comment: Taille de la rivière (longueur, exclusif).
   -
     cst_name: NB_TOURS
     cst_val: 100
@@ -225,6 +225,13 @@ function:
     fct_summary: Renvoie la liste de tous les pandas présents durant la partie.
     fct_ret_type: panda_info array
     fct_arg: []
+  -
+    fct_name: positions_adjacentes
+    fct_summary: Renvoie la liste de toutes les positions adjacentes à la position
+                 donnée.
+    fct_ret_type: position array
+    fct_arg:
+      - [pos, position, "Case choisie"]
 
 # Historique (actions de l'adversaire durant le tour précédent)
 

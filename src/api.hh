@@ -71,6 +71,10 @@ public:
     /// Renvoie la liste de tous les pandas présents durant la partie.
     std::vector<panda_info> liste_pandas();
 
+    /// Renvoie la liste de toutes les positions adjacentes à la position
+    /// donnée.
+    std::vector<position> positions_adjacentes(position pos);
+
     /// Renvoie la liste des actions effectuées par l’adversaire durant son
     /// tour, dans l'ordre chronologique. Les actions de débug n'apparaissent
     /// pas dans cette liste.
