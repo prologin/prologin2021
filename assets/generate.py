@@ -13,8 +13,8 @@ tile_size = 128
 
 directions = [
     's',
-    'sw',
-    'nw',
+    'so',
+    'no',
     'n',
     'ne',
     'se',
@@ -26,13 +26,13 @@ tiles = []
 
 # Environment
 tiles += [
-    (0, 1, 'water'),
+    (0, 1, 'eau'),
 ]
 
 # Players
 tiles += [
     (0, 2, 'panda'),
-    (0, 3, 'panda_baby'),
+    (0, 3, 'panda_bebe'),
 ]
 
 # Bridges
@@ -40,7 +40,7 @@ bridges_i = 2
 bridges_j = 0
 for val in range(6):
     for direction in range(len(directions)):
-        name = f'bridge_{val + 1}_{directions[direction]}'
+        name = f'pont_{val + 1}_{directions[direction]}'
         tiles.append((bridges_i + val, bridges_j + direction, name))
 
 # Process image
