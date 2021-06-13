@@ -8,7 +8,9 @@ let app = null;
 let textures = {};
 
 // Inits canvas, textures...
-function initGraphics() {
+// - onClick : If not null, function(x: int, y: int) called when the
+// mouse is pressed
+function initGraphics(onClick = null) {
     // Load application
     app = new PIXI.Application({
         width : VIEW_WIDTH,
@@ -19,6 +21,13 @@ function initGraphics() {
 
     // Load resources
     loadTextures();
+
+    // Set up events
+    if (onClick !== null) {
+        app.view.addEventListener(
+            "click",
+            function(event) { onClick(event.offsetX, event.offsetY); });
+    }
 
     // Update UI (display canvas)
     document.body.appendChild(app.view);
@@ -58,4 +67,15 @@ function getCoords(i, j) {
     let yOffset = j % 2 == 0 ? TILE_SIZE / 2 : 0;
 
     return [ j * TILE_SIZE * 3 / 4, yOffset + i * TILE_SIZE ];
+}
+
+// Get 2d indices of a tile from its coordinates
+// - Returns [i, j] (may be negative / invalid if click outside of grid)
+// * Use let [i, j] = getCoords(...);
+function getPos(x, y) {
+    let j = Math.floor(x / (TILE_SIZE * 3 / 4));
+    let yOffset = j % 2 == 0 ? TILE_SIZE / 2 : 0;
+    let i = Math.floor((y - yOffset) / TILE_SIZE);
+
+    return [i, j];
 }
