@@ -10,7 +10,12 @@ let textures = {};
 // Inits canvas, textures...
 function initGraphics() {
     // Load application
-    app = new PIXI.Application({width : VIEW_WIDTH, height : VIEW_HEIGHT});
+    app = new PIXI.Application({
+        width : VIEW_WIDTH,
+        height : VIEW_HEIGHT,
+        antialias : true,
+        backgroundColor : BG_COLOR,
+    });
 
     // Load resources
     loadTextures();
@@ -29,7 +34,7 @@ function loadTextures() {
 
 // Creates a new tile sprite
 // * Use getCoords for the coordinates
-function newTile(id, x=0, y=0) {
+function newTile(id, x = 0, y = 0) {
     if (!(id in textures)) {
         throw `Texture "${id}" not found`;
     }
@@ -45,6 +50,10 @@ function newTile(id, x=0, y=0) {
 }
 
 // Get coordinates of a tile from its 2d indices
+// - i : Vertical index (0 = top)
+// - j : Horizontal index (0 = left)
+// Returns [x, y]
+// * Use let [x, y] = getCoords(...);
 function getCoords(i, j) {
     let yOffset = j % 2 == 0 ? TILE_SIZE / 2 : 0;
 

@@ -16,9 +16,15 @@ for (let i = 0; i < 5; ++i) {
     }
 }
 
-// To verify coordinates are working
-let [x, y] = getCoords(0, 1);
+function addTile(id, i, j) {
+    let [x, y] = getCoords(i, j);
+    let sprite = newTile(id, x, y);
+    app.stage.addChild(sprite);
+}
 
-let sprite = newTile('panda1', x, y);
+addTile('pont_1_s', 0, 1);
+addTile('pont_2_n', 1, 1);
+addTile('pont_3_so', 1, 2);
+addTile('pont_4_ne', 2, 1);
 
-app.stage.addChild(sprite);
+addTile('panda1', 0, 1);
