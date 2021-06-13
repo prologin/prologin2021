@@ -8,11 +8,17 @@ initGraphics();
 for (let i = 0; i < 5; ++i) {
     // j is the horizontal index
     for (let j = 0; j < 6; ++j) {
-        let yOffset = j % 2 == 0 ? TILE_SIZE / 2 : 0;
+        let [x, y] = getCoords(i, j);
 
-        let sprite =
-            newTile('eau', j * TILE_SIZE * 3 / 4, yOffset + i * TILE_SIZE);
+        let sprite = newTile('eau', x, y);
 
         app.stage.addChild(sprite);
     }
 }
+
+// To verify coordinates are working
+let [x, y] = getCoords(0, 1);
+
+let sprite = newTile('panda1', x, y);
+
+app.stage.addChild(sprite);

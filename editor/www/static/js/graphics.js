@@ -28,6 +28,7 @@ function loadTextures() {
 }
 
 // Creates a new tile sprite
+// * Use getCoords for the coordinates
 function newTile(id, x=0, y=0) {
     if (!(id in textures)) {
         throw `Texture "${id}" not found`;
@@ -41,4 +42,11 @@ function newTile(id, x=0, y=0) {
     sprite.width = TILE_SIZE;
 
     return sprite;
+}
+
+// Get coordinates of a tile from its 2d indices
+function getCoords(i, j) {
+    let yOffset = j % 2 == 0 ? TILE_SIZE / 2 : 0;
+
+    return [ j * TILE_SIZE * 3 / 4, yOffset + i * TILE_SIZE ];
 }
