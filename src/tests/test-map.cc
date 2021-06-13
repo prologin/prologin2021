@@ -26,6 +26,32 @@ TEST(MapTest, EmptyInitialization)
     }
 }
 
+TEST(MapTest, ParseMap)
+{
+    std::istringstream ss(
+        "4 3\n"
+        "P0 P1 __ P2\n"
+        "11 B0 __ P3\n"
+        "__ 23 B1 66\n");
+    Map map(ss, 2);
+
+    ASSERT_EQ(map.get({0, 0}), Cell::panda(/* joueur= */ 0, /* num= */ 0));
+    ASSERT_EQ(map.get({1, 0}), Cell::panda(/* joueur= */ 1, /* num= */ 0));
+    ASSERT_EQ(map.get({3, 0}), Cell::panda(/* joueur= */ 0, /* num= */ 1));
+    ASSERT_EQ(map.get({3, 1}), Cell::panda(/* joueur= */ 1, /* num= */ 1));
+
+    ASSERT_EQ(map.get({1, 1}), Cell::bebe(/* joueur= */ 0, /* num= */ 0));
+    ASSERT_EQ(map.get({2, 2}), Cell::bebe(/* joueur= */ 1, /* num= */ 0));
+
+    ASSERT_EQ(map.get({0, 1}), Cell::pont(/* valeur= */ 1, NORD_EST));
+    ASSERT_EQ(map.get({1, 2}), Cell::pont(/* valeur= */ 2, SUD));
+    ASSERT_EQ(map.get({3, 2}), Cell::pont(/* valeur= */ 6, NORD));
+
+    ASSERT_EQ(map.get({2, 0}), Cell::empty());
+    ASSERT_EQ(map.get({2, 1}), Cell::empty());
+    ASSERT_EQ(map.get({0, 2}), Cell::empty());
+}
+
 TEST(MapTest, PositionValidation)
 {
     Map map(10, 10);

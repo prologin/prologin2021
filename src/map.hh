@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <array>
+#include <istream>
 #include <vector>
 
 #include "constant.hh"
@@ -29,13 +29,15 @@ public:
     bool is_empty() const;
     bool is_panda(int* joueur, int* num) const;
     bool is_bebe(int* joueur, int* num) const;
-    bool is_pont(int* valeur, int* direction) const;
+    bool is_pont(int* valeur, direction* direction) const;
 
     static Cell invalid();
     static Cell empty();
     static Cell panda(int joueur, int num);
     static Cell bebe(int joueur, int num);
-    static Cell pont(int valeur, int direction);
+    static Cell pont(int valeur, direction direction);
+
+    bool operator==(Cell other) const;
 
 private:
     Cell(CellKind kind, uint64_t data);
@@ -52,6 +54,7 @@ class Map
 {
 public:
     Map(int width, int height);
+    Map(std::istream& input, int num_players);
 
     int width() const;
     int height() const;

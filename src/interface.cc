@@ -134,23 +134,23 @@ std::ostream& operator<<(std::ostream& os, direction v)
 {
     switch (v)
     {
-    case NORD:
-        os << "NORD";
-        break;
     case NORD_EST:
         os << "NORD_EST";
-        break;
-    case NORD_OUEST:
-        os << "NORD_OUEST";
-        break;
-    case SUD:
-        os << "SUD";
         break;
     case SUD_EST:
         os << "SUD_EST";
         break;
+    case SUD:
+        os << "SUD";
+        break;
     case SUD_OUEST:
         os << "SUD_OUEST";
+        break;
+    case NORD_OUEST:
+        os << "NORD_OUEST";
+        break;
+    case NORD:
+        os << "NORD";
         break;
     }
     return os;

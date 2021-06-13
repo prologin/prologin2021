@@ -37,16 +37,18 @@ enum:
       - [bebe, "Bébé panda"]
   # Le layout choisi est "even-q", voir
   # https://www.redblobgames.com/grids/hexagons/#coordinates
+  # Les directions sont définies dans le sens des aiguilles d'une montre,
+  # telles que nord-est = 0, sud-est = 1, ..., nord = 5
   -
     enum_name: direction
     enum_summary: Directions cardinales
     enum_field:
-      - [nord, "Direction : nord"]
       - [nord_est, "Direction : nord-est"]
-      - [nord_ouest, "Direction : nord-ouest"]
-      - [sud, "Direction : sud"]
       - [sud_est, "Direction : sud-est"]
+      - [sud, "Direction : sud"]
       - [sud_ouest, "Direction : sud-ouest"]
+      - [nord_ouest, "Direction : nord-ouest"]
+      - [nord, "Direction : nord"]
   -
     enum_name: erreur # TODO: erreurs -> à voir
     enum_summary: Erreurs possibles

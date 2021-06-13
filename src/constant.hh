@@ -33,12 +33,12 @@ typedef enum case_type
 /// Directions cardinales
 typedef enum direction
 {
-    NORD, ///< Direction : nord
     NORD_EST, ///< Direction : nord-est
-    NORD_OUEST, ///< Direction : nord-ouest
-    SUD, ///< Direction : sud
     SUD_EST, ///< Direction : sud-est
+    SUD, ///< Direction : sud
     SUD_OUEST, ///< Direction : sud-ouest
+    NORD_OUEST, ///< Direction : nord-ouest
+    NORD, ///< Direction : nord
 } direction;
 
 /// Erreurs possibles
