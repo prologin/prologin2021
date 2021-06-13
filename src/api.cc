@@ -56,10 +56,12 @@ std::vector<panda_info> Api::liste_pandas()
     // TODO
     abort();
 }
+
 std::vector<position> Api::positions_adjacentes(position pos)
 {
     return game_state_->map().get_adjacent_positions(pos);
 }
+
 std::vector<action_hist> Api::historique()
 {
     // TODO

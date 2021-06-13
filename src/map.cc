@@ -89,7 +89,7 @@ bool Map::is_valid(position pos) const
 
 bool Map::is_lower(position pos) const
 {
-    // Even positions are lower.
+    // Even columns are lower.
     return (pos.x & 1) == 0;
 }
 
