@@ -1,23 +1,9 @@
-// TODO : Move to graphics
-// Init app
-let app = new PIXI.Application({width : VIEW_WIDTH, height : VIEW_HEIGHT});
+// Main map editor script
 
-document.body.appendChild(app.view);
+// Init
+initGraphics();
 
-// Load textures
-const TILES = [
-    'panda',
-    'panda_bebe',
-    'eau',
-];
-
-let textures = {};
-
-for (let tile in TILES) {
-    textures[TILES[tile]] = PIXI.Texture.from(`static/images/${TILES[tile]}.png`);
-}
-
-// Draw
-let sprite = new PIXI.Sprite(textures['panda']);
+// --- Test ---
+let sprite = new PIXI.Sprite(textures['panda1']);
 
 app.stage.addChild(sprite);
