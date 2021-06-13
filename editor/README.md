@@ -9,5 +9,6 @@ The map editor is made using Pixi JS
 1. ```sh
 # From prologin2021/editor working directory
 cp -r ../assets/images www/static
-# Open www/index.html in your browser
+python -m http.server
+# Open http://0.0.0.0:8000/ in your browser
 ```
