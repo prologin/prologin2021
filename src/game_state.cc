@@ -4,13 +4,12 @@
 #include "game_state.hh"
 
 GameState::GameState(const rules::Players& players, Map map)
-    : rules::GameState(players)
+    : rules::GameState(players), map_(std::move(map))
 {
-    map_ = std::move(map);
 }
 
 GameState::GameState(const GameState& st)
-    : rules::GameState(st)
+    : rules::GameState(st), map_(st.map_)
 {
     // FIXME
 }

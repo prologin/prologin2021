@@ -51,7 +51,10 @@ private:
 class Map
 {
 public:
-    Map();
+    Map(int width, int height);
+
+    int width() const;
+    int height() const;
 
     // Returns whether the given position is valid.
     bool is_valid(position pos) const;
@@ -68,5 +71,5 @@ public:
     std::vector<position> get_adjacent_positions(position pos) const;
 
 private:
-    std::array<std::array<Cell, RIVIERE_MAX_X>, RIVIERE_MAX_Y> cells_;
+    std::vector<std::vector<Cell>> cells_;
 };

@@ -4,12 +4,6 @@
 #pragma once
 
 
-/// Taille de la rivière (largeur, exclusif).
-#define RIVIERE_MAX_X 25
-
-/// Taille de la rivière (longueur, exclusif).
-#define RIVIERE_MAX_Y 25
-
 /// Nombre de tours à jouer avant la fin de la partie.
 #define NB_TOURS 100
 

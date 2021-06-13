@@ -1,3 +1,5 @@
+#include <cassert>
+
 #include "map.hh"
 
 Cell::Cell() : kind_(CellKind::Invalid), data_(0) {}
@@ -72,19 +74,30 @@ bool Cell::is_bebe(int* joueur, int* num) const
     return kind_ == CellKind::Bebe;
 }
 
-Map::Map()
+Map::Map(int width, int height)
 {
-    for (auto& line : cells_)
-    {
-        line.fill(Cell::empty());
-    }
+    assert(width > 0 && height > 0);
+
+    std::vector<Cell> empty_line(width, Cell::empty());
+
+    cells_.resize(height, empty_line);
+}
+
+int Map::width() const
+{
+    return cells_[0].size();
+}
+
+int Map::height() const
+{
+    return cells_.size();
 }
 
 bool Map::is_valid(position pos) const
 {
     auto [x, y] = pos;
 
-    return x >= 0 && y >= 0 && x < RIVIERE_MAX_Y && y < RIVIERE_MAX_X;
+    return x >= 0 && y >= 0 && x < width() && y < height();
 }
 
 bool Map::is_lower(position pos) const
@@ -95,7 +108,7 @@ bool Map::is_lower(position pos) const
 
 Cell Map::get(position pos) const
 {
-    return cells_[pos.x][pos.y];
+    return cells_[pos.y][pos.x];
 }
 
 bool Map::set(position pos, Cell cell)
@@ -105,7 +118,7 @@ bool Map::set(position pos, Cell cell)
         return false;
     }
 
-    cells_[pos.x][pos.y] = cell;
+    cells_[pos.y][pos.x] = cell;
 
     return true;
 }
@@ -127,7 +140,7 @@ std::vector<position> Map::get_adjacent_positions(position pos) const
     }
 
     // Below?
-    if (pos.y < RIVIERE_MAX_Y - 1)
+    if (pos.y < height() - 1)
     {
         positions.push_back({pos.x, pos.y + 1});
     }
@@ -145,7 +158,7 @@ std::vector<position> Map::get_adjacent_positions(position pos) const
     // Left? Right?
     for (auto x : {pos.x - 1, pos.x + 1})
     {
-        if (x == -1 || x == RIVIERE_MAX_X)
+        if (x == -1 || x == width())
         {
             continue;
         }
@@ -157,7 +170,7 @@ std::vector<position> Map::get_adjacent_positions(position pos) const
         }
 
         // Below?
-        if (below_y < RIVIERE_MAX_Y)
+        if (below_y < height())
         {
             positions.push_back({x, below_y});
         }

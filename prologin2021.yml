@@ -6,14 +6,6 @@ rules_type: turnbased
 
 constant:
   -
-    cst_name: RIVIERE_MAX_X
-    cst_val: 25
-    cst_comment: Taille de la rivière (largeur, exclusif).
-  -
-    cst_name: RIVIERE_MAX_Y
-    cst_val: 25
-    cst_comment: Taille de la rivière (longueur, exclusif).
-  -
     cst_name: NB_TOURS
     cst_val: 100
     cst_comment: Nombre de tours à jouer avant la fin de la partie.

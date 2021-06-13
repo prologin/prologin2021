@@ -12,18 +12,32 @@ bool operator<(position a, position b)
     return std::pair(a.x, a.y) < std::pair(b.x, b.y);
 }
 
+TEST(MapTest, EmptyInitialization)
+{
+    Map map(8, 10);
+
+    ASSERT_EQ(map.width(), 8);
+    ASSERT_EQ(map.height(), 10);
+
+    for (int x = 0; x < map.width(); x++)
+    for (int y = 0; y < map.height(); y++)
+    {
+        ASSERT_TRUE(map.get({x, y}).is_empty());
+    }
+}
+
 TEST(MapTest, PositionValidation)
 {
-    Map map;
+    Map map(10, 10);
 
     ASSERT_TRUE(map.is_valid({0, 0}));
     ASSERT_TRUE(map.is_valid({1, 1}));
-    ASSERT_TRUE(map.is_valid({RIVIERE_MAX_X - 1, RIVIERE_MAX_Y - 1}));
+    ASSERT_TRUE(map.is_valid({map.width() - 1, map.height() - 1}));
 
     // Max values are exclusive.
-    ASSERT_FALSE(map.is_valid({RIVIERE_MAX_X, 0}));
-    ASSERT_FALSE(map.is_valid({0, RIVIERE_MAX_Y}));
-    ASSERT_FALSE(map.is_valid({RIVIERE_MAX_X, RIVIERE_MAX_Y}));
+    ASSERT_FALSE(map.is_valid({map.width(), 0}));
+    ASSERT_FALSE(map.is_valid({0, map.height()}));
+    ASSERT_FALSE(map.is_valid({map.width(), map.height()}));
 
     // Negative values are invalid.
     ASSERT_FALSE(map.is_valid({-1, 0}));
@@ -33,7 +47,7 @@ TEST(MapTest, PositionValidation)
 
 TEST(MapTest, EvenColumnsAreLower)
 {
-    Map map;
+    Map map(10, 10);
 
     ASSERT_TRUE(map.is_lower({0, 0}));
     ASSERT_TRUE(map.is_lower({0, 1}));
@@ -49,7 +63,7 @@ TEST(MapTest, EvenColumnsAreLower)
 
 TEST(MapTest, AdjacentPositions)
 {
-    Map map;
+    Map map(10, 10);
 
     // Use sets, since we don't care about the order.
     const auto to_set = [](std::vector<position> positions) {
