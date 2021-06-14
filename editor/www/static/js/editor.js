@@ -1,7 +1,18 @@
 // Main map editor script
 
+// Map size (in tiles)
+let mapWidth = 6;
+let mapHeight = 5;
+
+// Compute canvas size (in pixels)
+mapWidth = TILE_SIZE * (mapWidth * 3 / 4 + 1 / 4);
+mapHeight = TILE_SIZE * (mapHeight + 1 / 2);
+
 // Init
-initGraphics(onClick);
+initGraphics(
+    width=mapWidth,
+    height=mapHeight,
+    onClick= onClick);
 
 // --- Test ---
 // i is the vertical index
@@ -32,6 +43,8 @@ addTile('pont_3_so', 1, 2);
 addTile('pont_4_ne', 2, 1);
 
 addTile('panda1', 0, 1);
+
+addTile('panda2', 4, 4);
 
 // When the canvas is clicked
 function onClick(x, y) {

@@ -10,11 +10,11 @@ let textures = {};
 // Inits canvas, textures...
 // - onClick : If not null, function(x: int, y: int) called when the
 // mouse is pressed
-function initGraphics(onClick = null) {
+function initGraphics(width = undefined, height = undefined, onClick = null) {
     // Load application
     app = new PIXI.Application({
-        width : VIEW_WIDTH,
-        height : VIEW_HEIGHT,
+        width : width === undefined ? VIEW_WIDTH : width,
+        height : height === undefined ? VIEW_HEIGHT : height,
         antialias : true,
         backgroundColor : BG_COLOR,
     });
@@ -77,5 +77,5 @@ function getPos(x, y) {
     let yOffset = j % 2 == 0 ? TILE_SIZE / 2 : 0;
     let i = Math.floor((y - yOffset) / TILE_SIZE);
 
-    return [i, j];
+    return [ i, j ];
 }
