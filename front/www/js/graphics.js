@@ -37,7 +37,7 @@ function initGraphics(onClick = null) {
 function loadTextures() {
     for (let tile in TILES) {
         textures[TILES[tile]] =
-            PIXI.Texture.from(`static/images/${TILES[tile]}.png`);
+            PIXI.Texture.from(`front/images/${TILES[tile]}.png`);
     }
 }
 

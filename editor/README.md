@@ -5,10 +5,6 @@ The map editor is made using Pixi JS
 - www : Web site interface files
 
 ## Setup
-1. Assets have to be generated
-1. ```sh
-# From prologin2021/editor working directory
-cp -r ../assets/images www/static
-python -m http.server
-# Open http://0.0.0.0:8000/ in your browser
-```
+1. Front end must be set up (see [front/README](../front/README.md))
+1. Execute launch_editor.sh from this folder
+1. The link to the server will be printed, open it in your web browser

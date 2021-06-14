@@ -1,6 +1,9 @@
 # Assets
 All resources used for the front end
 
+## Setup
+Execute the generate.sh script from this working directory
+
 ## Images
 generate.sh is a script that generates all images from the tileset (prologin.png)
 
