@@ -282,3 +282,74 @@ std::vector<position> Map::get_adjacent_positions(position pos) const
 
     return positions;
 }
+
+position Map::get_relative_position(position pos, direction direction) const
+{
+    const int y_diff = is_lower(pos) ? 0 : 1;
+
+    switch (direction)
+    {
+    case NORD_EST:
+        return {pos.x + 1, pos.y - y_diff};
+    case SUD_EST:
+        return {pos.x + 1, pos.y + 1 - y_diff};
+    case SUD:
+        return {pos.x, pos.y + 1};
+    case SUD_OUEST:
+        return {pos.x - 1, pos.y + 1 - y_diff};
+    case NORD_OUEST:
+        return {pos.x - 1, pos.y - y_diff};
+    case NORD:
+        return {pos.x, pos.y - 1};
+    }
+}
+
+int Map::get_relative_direction(position origin, position towards) const
+{
+    if (origin.x == towards.x)
+    {
+        // Same column, so it's either South or North.
+        if (origin.y + 1 == towards.y)
+        {
+            return SUD;
+        }
+
+        if (origin.y - 1 == towards.y)
+        {
+            return NORD;
+        }
+
+        return -1;
+    }
+
+    const int y_diff = is_lower(origin) ? 0 : 1;
+
+    if (origin.x + 1 == towards.x)
+    {
+        // East.
+        if (origin.y - y_diff == towards.y)
+        {
+            return NORD_EST;
+        }
+
+        if (origin.y + 1 - y_diff == towards.y)
+        {
+            return SUD_EST;
+        }
+    }
+    else if (origin.x - 1 == towards.x)
+    {
+        // West.
+        if (origin.y - y_diff == towards.y)
+        {
+            return NORD_OUEST;
+        }
+
+        if (origin.y + 1 - y_diff == towards.y)
+        {
+            return SUD_OUEST;
+        }
+    }
+
+    return -1;
+}

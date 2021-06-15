@@ -73,6 +73,15 @@ public:
     // Returns valid positions around the given position.
     std::vector<position> get_adjacent_positions(position pos) const;
 
+    // Returns the position relative to the given position, and in the given
+    // direction. The returned position may go out of the bounds of the map;
+    // is_valid should be called to ensure it is indeed a valid position.
+    position get_relative_position(position pos, direction direction) const;
+
+    // Returns the direction such that get_relative_position(origin, direction)
+    // == towards. Returns -1 if no such direction exists.
+    int get_relative_direction(position origin, position towards) const;
+
 private:
     std::vector<std::vector<Cell>> cells_;
 };

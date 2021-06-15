@@ -131,3 +131,50 @@ TEST(MapTest, AdjacentPositions)
         to_set(map.get_adjacent_positions({2, 0})),
         std::set<position>({{1, 0}, {1, 1}, {2, 1}, {3, 1}, {3, 0}}));
 }
+
+TEST(MapTest, RelativePosition)
+{
+    Map map(10, 10);
+
+    // Even column.
+    ASSERT_EQ(map.get_relative_position({2, 2}, NORD_EST), (position{3, 2}));
+    ASSERT_EQ(map.get_relative_position({2, 2}, SUD_EST), (position{3, 3}));
+    ASSERT_EQ(map.get_relative_position({2, 2}, SUD), (position{2, 3}));
+    ASSERT_EQ(map.get_relative_position({2, 2}, SUD_OUEST), (position{1, 3}));
+    ASSERT_EQ(map.get_relative_position({2, 2}, NORD_OUEST), (position{1, 2}));
+    ASSERT_EQ(map.get_relative_position({2, 2}, NORD), (position{2, 1}));
+
+    // Odd column.
+    ASSERT_EQ(map.get_relative_position({1, 1}, NORD_EST), (position{2, 0}));
+    ASSERT_EQ(map.get_relative_position({1, 1}, SUD_EST), (position{2, 1}));
+    ASSERT_EQ(map.get_relative_position({1, 1}, SUD), (position{1, 2}));
+    ASSERT_EQ(map.get_relative_position({1, 1}, SUD_OUEST), (position{0, 1}));
+    ASSERT_EQ(map.get_relative_position({1, 1}, NORD_OUEST), (position{0, 0}));
+    ASSERT_EQ(map.get_relative_position({1, 1}, NORD), (position{1, 0}));
+}
+
+TEST(MapTest, RelativeDirection)
+{
+    Map map(10, 10);
+
+    // Even column.
+    ASSERT_EQ(map.get_relative_direction({2, 2}, {3, 2}), NORD_EST);
+    ASSERT_EQ(map.get_relative_direction({2, 2}, {3, 3}), SUD_EST);
+    ASSERT_EQ(map.get_relative_direction({2, 2}, {2, 3}), SUD);
+    ASSERT_EQ(map.get_relative_direction({2, 2}, {1, 3}), SUD_OUEST);
+    ASSERT_EQ(map.get_relative_direction({2, 2}, {1, 2}), NORD_OUEST);
+    ASSERT_EQ(map.get_relative_direction({2, 2}, {2, 1}), NORD);
+
+    // Odd column.
+    ASSERT_EQ(map.get_relative_direction({1, 1}, {2, 0}), NORD_EST);
+    ASSERT_EQ(map.get_relative_direction({1, 1}, {2, 1}), SUD_EST);
+    ASSERT_EQ(map.get_relative_direction({1, 1}, {1, 2}), SUD);
+    ASSERT_EQ(map.get_relative_direction({1, 1}, {0, 1}), SUD_OUEST);
+    ASSERT_EQ(map.get_relative_direction({1, 1}, {0, 0}), NORD_OUEST);
+    ASSERT_EQ(map.get_relative_direction({1, 1}, {1, 0}), NORD);
+
+    // Invalid arguments.
+    ASSERT_EQ(map.get_relative_direction({1, 1}, {1, 1}), -1);
+    ASSERT_EQ(map.get_relative_direction({1, 1}, {1, 3}), -1);
+    ASSERT_EQ(map.get_relative_direction({1, 1}, {2, 2}), -1);
+}
