@@ -1,9 +1,18 @@
 #include <cassert>
+#include <stdexcept>
 
 #include "map.hh"
 
-Cell::Cell() : kind_(CellKind::Invalid), data_(0) {}
-Cell::Cell(CellKind kind, uint64_t data = 0) : kind_(kind), data_(data) {}
+Cell::Cell()
+    : kind_(CellKind::Invalid)
+    , data_(0)
+{
+}
+Cell::Cell(CellKind kind, uint64_t data = 0)
+    : kind_(kind)
+    , data_(data)
+{
+}
 
 // static
 Cell Cell::invalid()
@@ -129,35 +138,35 @@ Map::Map(std::istream& input, int num_players)
             switch (data[0])
             {
             case '_':
-                {
-                    // Empty cell.
-                    assert(data[1] == '_');
+            {
+                // Empty cell.
+                assert(data[1] == '_');
 
-                    line.push_back(Cell::empty());
-                }
-                break;
+                line.push_back(Cell::empty());
+            }
+            break;
 
             case 'P':
-                {
-                    // Panda.
-                    assert(data[1] >= '0' && data[1] <= '9');
+            {
+                // Panda.
+                assert(data[1] >= '0' && data[1] <= '9');
 
-                    const int n = data[1] - '0';
+                const int n = data[1] - '0';
 
-                    line.push_back(Cell::panda(n % num_players, n / num_players));
-                }
-                break;
+                line.push_back(Cell::panda(n % num_players, n / num_players));
+            }
+            break;
 
             case 'B':
-                {
-                    // Baby.
-                    assert(data[1] >= '0' && data[1] <= '9');
+            {
+                // Baby.
+                assert(data[1] >= '0' && data[1] <= '9');
 
-                    const int n = data[1] - '0';
+                const int n = data[1] - '0';
 
-                    line.push_back(Cell::bebe(n % num_players, n / num_players));
-                }
-                break;
+                line.push_back(Cell::bebe(n % num_players, n / num_players));
+            }
+            break;
 
             case '1':
             case '2':
@@ -165,16 +174,16 @@ Map::Map(std::istream& input, int num_players)
             case '4':
             case '5':
             case '6':
-                {
-                    // Bridge.
-                    assert(data[1] >= '1' && data[1] <= '6');
+            {
+                // Bridge.
+                assert(data[1] >= '1' && data[1] <= '6');
 
-                    const int n = data[0] - '0';
-                    const int direction = data[1] - '1';
+                const int n = data[0] - '0';
+                const int direction = data[1] - '1';
 
-                    line.push_back(Cell::pont(n, (enum direction)direction));
-                }
-                break;
+                line.push_back(Cell::pont(n, (enum direction)direction));
+            }
+            break;
 
             default:
                 // Invalid.
@@ -301,6 +310,8 @@ position Map::get_relative_position(position pos, direction direction) const
         return {pos.x - 1, pos.y - y_diff};
     case NORD:
         return {pos.x, pos.y - 1};
+    default:
+        throw std::invalid_argument("The given direction is invalid");
     }
 }
 
