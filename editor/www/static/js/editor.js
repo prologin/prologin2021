@@ -1,3 +1,5 @@
+"use strict";
+
 // Main map editor script
 
 // Map size (in tiles)
@@ -10,9 +12,9 @@ mapHeight = TILE_SIZE * (mapHeight + 1 / 2);
 
 // Init
 initGraphics(
-    width=mapWidth,
-    height=mapHeight,
-    onClick= onClick);
+    mapWidth,
+    mapHeight,
+    onClick);
 
 // --- Test ---
 // i is the vertical index

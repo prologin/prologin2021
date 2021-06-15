@@ -10,11 +10,12 @@ let textures = {};
 // Inits canvas, textures...
 // - onClick : If not null, function(x: int, y: int) called when the
 // mouse is pressed
-function initGraphics(width = undefined, height = undefined, onClick = null) {
+function initGraphics(width = VIEW_WIDTH, height = VIEW_HEIGHT,
+                      onClick = null) {
     // Load application
     app = new PIXI.Application({
-        width : width === undefined ? VIEW_WIDTH : width,
-        height : height === undefined ? VIEW_HEIGHT : height,
+        width : width,
+        height : height,
         antialias : true,
         backgroundColor : BG_COLOR,
     });
