@@ -75,6 +75,15 @@ public:
     /// donnée.
     std::vector<position> positions_adjacentes(position pos);
 
+    /// Renvoie la position relative à la direction donnée par rapport à une
+    /// position d'origine. Si une telle position serait invalide, la position
+    /// {-1, -1} est renvoyée.
+    position position_dans_direction(position pos, direction dir);
+
+    /// Renvoie la direction telle que position_dans_direction(origine, cible)
+    /// == direction. Si aucune telle direction n'existe, -1 est renvoyée.
+    int direction_entre_positions(position origine, position cible);
+
     /// Renvoie la liste des actions effectuées par l’adversaire durant son
     /// tour, dans l'ordre chronologique. Les actions de débug n'apparaissent
     /// pas dans cette liste.
@@ -90,8 +99,11 @@ public:
     /// Renvoie le numéro de joueur de votre adversaire.
     int adversaire();
 
-    /// Retourne le tour actuel.
+    /// Renvoie le tour actuel.
     tour_info info_tour();
+
+    /// Renvoie la carte pour la partie en cours.
+    carte_info info_carte();
 
     /// Affiche le contenu d'une valeur de type case_type
     void afficher_case_type(case_type v);
@@ -119,6 +131,9 @@ public:
 
     /// Affiche le contenu d'une valeur de type tour_info
     void afficher_tour_info(tour_info v);
+
+    /// Affiche le contenu d'une valeur de type carte_info
+    void afficher_carte_info(carte_info v);
 
     /// Affiche le contenu d'une valeur de type action_hist
     void afficher_action_hist(action_hist v);

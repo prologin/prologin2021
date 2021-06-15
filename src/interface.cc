@@ -316,6 +316,22 @@ extern "C" void api_afficher_tour_info(tour_info v)
 {
     std::cerr << v << std::endl;
 }
+std::ostream& operator<<(std::ostream& os, carte_info v)
+{
+    os << "{ ";
+    os << "taille_x"
+       << "=" << v.taille_x;
+    os << ", ";
+    os << "taille_y"
+       << "=" << v.taille_y;
+    os << " }";
+    return os;
+}
+
+extern "C" void api_afficher_carte_info(carte_info v)
+{
+    std::cerr << v << std::endl;
+}
 std::ostream& operator<<(std::ostream& os, action_hist v)
 {
     os << "{ ";

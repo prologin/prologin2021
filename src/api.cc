@@ -62,6 +62,23 @@ std::vector<position> Api::positions_adjacentes(position pos)
     return game_state_->map().get_adjacent_positions(pos);
 }
 
+position Api::position_dans_direction(position pos, direction dir)
+{
+    const position result = game_state_->map().get_relative_position(pos, dir);
+
+    if (!game_state_->map().is_valid(result))
+    {
+        return {-1, -1};
+    }
+
+    return result;
+}
+
+int Api::direction_entre_positions(position origine, position cible)
+{
+    return game_state_->map().get_relative_direction(origine, cible);
+}
+
 std::vector<action_hist> Api::historique()
 {
     // TODO
@@ -86,6 +103,12 @@ tour_info Api::info_tour()
 {
     // TODO
     abort();
+}
+carte_info Api::info_carte()
+{
+    const Map& map = game_state_->map();
+
+    return {map.width(), map.height()};
 }
 
 std::ostream& operator<<(std::ostream& os, case_type v);
@@ -138,6 +161,12 @@ void Api::afficher_bebe_info(bebe_info v)
 
 std::ostream& operator<<(std::ostream& os, tour_info v);
 void Api::afficher_tour_info(tour_info v)
+{
+    std::cerr << v << std::endl;
+}
+
+std::ostream& operator<<(std::ostream& os, carte_info v);
+void Api::afficher_carte_info(carte_info v)
 {
     std::cerr << v << std::endl;
 }

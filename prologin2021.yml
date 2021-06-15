@@ -115,6 +115,13 @@ struct:
       - [id_panda_joue, int, "Identifiant du panda qui joue"]
       - [id_tour, int, "Identifiant unique du tour (compteur)"]
   -
+    str_name: carte_info
+    str_summary: Information sur la carte de la partie en cours.
+    str_tuple: no
+    str_field:
+      - [taille_x, int, "La taille de la carte pour les coordonnées x [0; taille_x["]
+      - [taille_y, int, "La taille de la carte pour les coordonnées y [0; taille_y["]
+  -
     str_name: action_hist
     str_summary: Action représentée dans l'historique.
     str_tuple: no
@@ -226,6 +233,24 @@ function:
     fct_ret_type: position array
     fct_arg:
       - [pos, position, "Case choisie"]
+  -
+    fct_name: position_dans_direction
+    fct_summary: Renvoie la position relative à la direction donnée par rapport
+                 à une position d'origine. Si une telle position serait
+                 invalide, la position {-1, -1} est renvoyée.
+    fct_ret_type: position
+    fct_arg:
+      - [pos, position, "Position d'origine"]
+      - [dir, direction, "Direction"]
+  -
+    fct_name: direction_entre_positions
+    fct_summary: Renvoie la direction telle que
+                 position_dans_direction(origine, cible) == direction. Si
+                 aucune telle direction n'existe, -1 est renvoyée.
+    fct_ret_type: int
+    fct_arg:
+      - [origine, position, "Position d'origine"]
+      - [cible, position, "Position relative à l'origine"]
 
 # Historique (actions de l'adversaire durant le tour précédent)
 
@@ -258,8 +283,13 @@ function:
     fct_arg: []
   -
     fct_name: info_tour
-    fct_summary: Retourne le tour actuel.
+    fct_summary: Renvoie le tour actuel.
     fct_ret_type: tour_info
+    fct_arg: []
+  -
+    fct_name: info_carte
+    fct_summary: Renvoie la carte pour la partie en cours.
+    fct_ret_type: carte_info
     fct_arg: []
 
 user_function:

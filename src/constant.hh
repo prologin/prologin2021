@@ -105,6 +105,13 @@ typedef struct tour_info
     int id_tour; ///< Identifiant unique du tour (compteur)
 } tour_info;
 
+/// Information sur la carte de la partie en cours.
+typedef struct carte_info
+{
+    int taille_x; ///< La taille de la carte pour les coordonnées x [0; taille_x[
+    int taille_y; ///< La taille de la carte pour les coordonnées y [0; taille_y[
+} carte_info;
+
 /// Action représentée dans l'historique.
 typedef struct action_hist
 {
