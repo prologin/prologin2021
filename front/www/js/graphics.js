@@ -8,9 +8,10 @@ let app = null;
 let textures = {};
 
 // Inits canvas, textures...
+// - viewParent : An html element (usually a div) where the view is added
 // - onClick : If not null, function(x: int, y: int) called when the
 // mouse is pressed
-function initGraphics(width = VIEW_WIDTH, height = VIEW_HEIGHT,
+function initGraphics(viewParent, width = VIEW_WIDTH, height = VIEW_HEIGHT,
                       onClick = null) {
     // Load application
     app = new PIXI.Application({
@@ -31,7 +32,7 @@ function initGraphics(width = VIEW_WIDTH, height = VIEW_HEIGHT,
     }
 
     // Update UI (display canvas)
-    document.body.appendChild(app.view);
+    viewParent.appendChild(app.view);
 }
 
 // Called in initGraphics, loads all textures

@@ -5,7 +5,7 @@
 // --- UI ---
 // let uiNew = document.getElementById("new");
 // let uiDump = document.getElementById("dump");
-// let uiDumper = document.getElementById("dumper");
+let uiDumper = document.getElementById("dumper");
 let uiCanvas = document.getElementById("canvas");
 
 function onNewClick() {
@@ -14,6 +14,7 @@ function onNewClick() {
 
 function onDumpClick() {
     console.log("Dump");
+    uiDumper.value = "(map dump here)";
 }
 
 // --- Canvas ---
@@ -27,6 +28,7 @@ mapHeight = TILE_SIZE * (mapHeight + 1 / 2);
 
 // Init
 initGraphics(
+    uiCanvas,
     mapWidth,
     mapHeight,
     onClick);
