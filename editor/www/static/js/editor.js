@@ -8,8 +8,29 @@
 let uiDumper = document.getElementById("dumper");
 let uiCanvas = document.getElementById("canvas");
 
-// TODO : Implement those functions
-function onNewClick() { console.log("New"); }
+// TODO : New game state
+function onNewClick() {
+    let dimension =
+        window.prompt("Taille de la carte (LARGEURxHAUTEUR)", "10x10");
+
+    let dimensionFormat = /([\d]+)x([\d]+)/;
+
+    // [wholeMatch, widthMatch, heightMatch] (or null)
+    let match = dimension.match(dimensionFormat);
+
+    if (match === null || match[0] !== dimension) {
+        window.alert(
+            "Taille de carte invalide (doit être de format LARGEURxHAUTEUR)");
+
+        return;
+    }
+
+    // Parse dimensions
+    let width = parseInt(match[1]);
+    let height = parseInt(match[2]);
+
+    console.log(`New ${width} ${height}`);
+}
 
 function onDumpClick() { uiDumper.value = "(map dump here)"; }
 
