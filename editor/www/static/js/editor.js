@@ -2,6 +2,21 @@
 
 // Main map editor script
 
+// --- UI ---
+// let uiNew = document.getElementById("new");
+// let uiDump = document.getElementById("dump");
+// let uiDumper = document.getElementById("dumper");
+let uiCanvas = document.getElementById("canvas");
+
+function onNewClick() {
+    console.log("New");
+}
+
+function onDumpClick() {
+    console.log("Dump");
+}
+
+// --- Canvas ---
 // Map size (in tiles)
 let mapWidth = 6;
 let mapHeight = 5;
