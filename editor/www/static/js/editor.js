@@ -8,13 +8,16 @@
 let uiDumper = document.getElementById("dumper");
 let uiCanvas = document.getElementById("canvas");
 
-function onNewClick() {
-    console.log("New");
-}
+// TODO : Implement those functions
+function onNewClick() { console.log("New"); }
 
-function onDumpClick() {
-    console.log("Dump");
-    uiDumper.value = "(map dump here)";
+function onDumpClick() { uiDumper.value = "(map dump here)"; }
+
+function onCopyClick() {
+    // Copy uiDumper's text
+    uiDumper.select();
+    uiDumper.setSelectionRange(0, 99999);
+    document.execCommand("copy");
 }
 
 // --- Canvas ---
@@ -27,11 +30,7 @@ mapWidth = TILE_SIZE * (mapWidth * 3 / 4 + 1 / 4);
 mapHeight = TILE_SIZE * (mapHeight + 1 / 2);
 
 // Init
-initGraphics(
-    uiCanvas,
-    mapWidth,
-    mapHeight,
-    onClick);
+initGraphics(uiCanvas, mapWidth, mapHeight, onClick);
 
 // --- Test ---
 // i is the vertical index
