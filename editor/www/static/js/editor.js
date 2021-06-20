@@ -64,11 +64,31 @@ let mapHeight = 5;
 mapWidth = TILE_SIZE * (mapWidth * 3 / 4 + 1 / 4);
 mapHeight = TILE_SIZE * (mapHeight + 1 / 2);
 
+// All sprite tiles to be able to remove and redraw them
+let tiles = [];
+
 // Init
 initGraphics(uiCanvas, mapWidth, mapHeight, onClick);
 
+// Adds and registers a new tile sprite to the view
+function addTile(tileName, x, y) {
+    let sprite = newTile(tileName, x, y);
+
+    tiles.push(sprite);
+    app.stage.addChild(sprite);
+}
+
+// Removes all sprites of the view
+function clearTiles() {
+    for (let tile of tiles)
+        app.stage.removeChild(tile);
+
+    tiles = [];
+}
+
 function updateView() {
-    // TODO : Remove old sprites
+    // Remove old sprites
+    clearTiles();
 
     // i is the vertical index
     for (let i = 0; i < gameState.height; ++i) {
@@ -79,9 +99,7 @@ function updateView() {
             let tile = gameState.map[i][j];
             let tileName = tile !== null && tile[0] === 'P' ? 'panda1' : 'eau';
 
-            let sprite = newTile(tileName, x, y);
-
-            app.stage.addChild(sprite);
+            addTile(tileName, x, y);
         }
     }
 }
@@ -103,6 +121,7 @@ function onClick(x, y) {
 // --- Test ---
 // Default game state
 newGameState(10, 10);
+
 gameState.map[0][0] = [ 'P', 1, 0, 0 ];
 
 updateView();
