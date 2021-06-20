@@ -19,6 +19,9 @@ function newGameState(width, height) {
 
 let gameState = null;
 
+// Brush value
+let brush = ['P', 1, 0, 0];
+
 // --- UI ---
 let uiDumper = document.getElementById("dumper");
 let uiCanvas = document.getElementById("canvas");
@@ -110,12 +113,13 @@ function onClick(x, y) {
     let [i, j] = getPos(x, y);
 
     // Display
-    // console.log(`click ${i} ${j}`);
-    // addTile('panda1_bebe', i, j);
-    // TODO : Check within map + brush value
-    gameState.map[i][j] = ['P', 1, i, j];
+    // TODO : Update pandas
 
-    updateView();
+    if (i >= 0 && i < gameState.height && j >= 0 && j < gameState.width) {
+        gameState.map[i][j] = brush;
+
+        updateView();
+    }
 }
 
 // --- Test ---
