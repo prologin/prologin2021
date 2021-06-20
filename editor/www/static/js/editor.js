@@ -4,6 +4,15 @@
 
 // --- Globals ---
 function newGameState(width, height) {
+    // Update dimension values
+    mapWidth = width;
+    mapHeight = height;
+    updateViewSize();
+
+    // Update view dimensions
+    app.renderer.resize(mapWidth, mapHeight);
+
+    // Create new game state
     gameState = new GameState(width, height);
 
     // Init empty map (filled with water)
@@ -155,18 +164,22 @@ function onPontBrush() {
 
 // --- Graphics ---
 // Map size (in tiles)
-let mapWidth = 6;
-let mapHeight = 5;
-
-// Compute canvas size (in pixels)
-mapWidth = TILE_SIZE * (mapWidth * 3 / 4 + 1 / 4);
-mapHeight = TILE_SIZE * (mapHeight + 1 / 2);
+let mapWidth = 1;
+let mapHeight = 1;
 
 // All sprite tiles to be able to remove and redraw them
 let tiles = [];
 
+updateViewSize();
+
 // Init
 initGraphics(uiCanvas, mapWidth, mapHeight, onClick);
+
+// Compute the view size and update it
+function updateViewSize() {
+    mapWidth = TILE_SIZE * (mapWidth * 3 / 4 + 1 / 4);
+    mapHeight = TILE_SIZE * (mapHeight + 1 / 2);
+}
 
 // Adds and registers a new tile sprite to the view
 function addTile(tileName, x, y) {
@@ -209,7 +222,6 @@ function onClick(x, y) {
 
     // Display
     // TODO : Update pandas
-
     if (i >= 0 && i < gameState.height && j >= 0 && j < gameState.width) {
         gameState.map[i][j] = brush;
 
