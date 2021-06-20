@@ -2,13 +2,27 @@
 
 // Main map editor script
 
+// --- Globals ---
+function newGameState(width, height) {
+    gameState = new GameState(width, height);
+
+    // Init empty map (filled with water)
+    for (let i = 0; i < height; ++i) {
+        gameState.map.push([]);
+        for (let j = 0; j < width; ++j) {
+            gameState.map[i].push(null);
+        }
+    }
+
+    updateView();
+}
+
+let gameState = null;
+
 // --- UI ---
-// let uiNew = document.getElementById("new");
-// let uiDump = document.getElementById("dump");
 let uiDumper = document.getElementById("dumper");
 let uiCanvas = document.getElementById("canvas");
 
-// TODO : New game state
 function onNewClick() {
     let dimension =
         window.prompt("Taille de la carte (LARGEURxHAUTEUR)", "10x10");
@@ -29,7 +43,7 @@ function onNewClick() {
     let width = parseInt(match[1]);
     let height = parseInt(match[2]);
 
-    console.log(`New ${width} ${height}`);
+    newGameState(width, height);
 }
 
 function onDumpClick() { uiDumper.value = "(map dump here)"; }
@@ -41,7 +55,7 @@ function onCopyClick() {
     document.execCommand("copy");
 }
 
-// --- Canvas ---
+// --- Graphics ---
 // Map size (in tiles)
 let mapWidth = 6;
 let mapHeight = 5;
@@ -53,37 +67,24 @@ mapHeight = TILE_SIZE * (mapHeight + 1 / 2);
 // Init
 initGraphics(uiCanvas, mapWidth, mapHeight, onClick);
 
-// --- Test ---
-// i is the vertical index
-for (let i = 0; i < 5; ++i) {
-    // j is the horizontal index
-    for (let j = 0; j < 6; ++j) {
-        let [x, y] = getCoords(i, j);
+function updateView() {
+    // TODO : Remove old sprites
 
-        let sprite = newTile('eau', x, y);
+    // i is the vertical index
+    for (let i = 0; i < gameState.height; ++i) {
+        // j is the horizontal index
+        for (let j = 0; j < gameState.width; ++j) {
+            let [x, y] = getCoords(i, j);
 
-        app.stage.addChild(sprite);
+            let tile = gameState.map[i][j];
+            let tileName = tile !== null && tile[0] === 'P' ? 'panda1' : 'eau';
+
+            let sprite = newTile(tileName, x, y);
+
+            app.stage.addChild(sprite);
+        }
     }
 }
-
-// Adds a tile at the given grid position
-// - Returns the sprite
-function addTile(id, i, j) {
-    let [x, y] = getCoords(i, j);
-    let sprite = newTile(id, x, y);
-    app.stage.addChild(sprite);
-
-    return sprite;
-}
-
-addTile('pont_1_s', 0, 1);
-addTile('pont_2_n', 1, 1);
-addTile('pont_3_so', 1, 2);
-addTile('pont_4_ne', 2, 1);
-
-addTile('panda1', 0, 1);
-
-addTile('panda2', 4, 4);
 
 // When the canvas is clicked
 function onClick(x, y) {
@@ -91,6 +92,17 @@ function onClick(x, y) {
     let [i, j] = getPos(x, y);
 
     // Display
-    console.log(`click ${i} ${j}`);
-    addTile('panda1_bebe', i, j);
+    // console.log(`click ${i} ${j}`);
+    // addTile('panda1_bebe', i, j);
+    // TODO : Check within map + brush value
+    gameState.map[i][j] = ['P', 1, i, j];
+
+    updateView();
 }
+
+// --- Test ---
+// Default game state
+newGameState(10, 10);
+gameState.map[0][0] = [ 'P', 1, 0, 0 ];
+
+updateView();
