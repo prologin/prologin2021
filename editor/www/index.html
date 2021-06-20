@@ -15,6 +15,11 @@
     <!-- new, dump, dumper -->
     <input type="button" value="NOUVEAU" id="new" onclick="onNewClick()"></input>
     <input type="button" value="EXPORTER" id="dump" onclick="onDumpClick()" /></input>
+    <select id="brush" onchange="onBrushChange()">
+        <option value="eau">Eau</option>
+        <option value="panda1">Panda</option>
+        <option value="pont_1_ne">Pont</option>
+    </select>
 
     <br />
     <div id="canvas"></div>

@@ -25,6 +25,7 @@ let brush = ['P', 1, 0, 0];
 // --- UI ---
 let uiDumper = document.getElementById("dumper");
 let uiCanvas = document.getElementById("canvas");
+let uiBrush = document.getElementById("brush");
 
 function onNewClick() {
     let dimension =
@@ -56,6 +57,10 @@ function onCopyClick() {
     uiDumper.select();
     uiDumper.setSelectionRange(0, 99999);
     document.execCommand("copy");
+}
+
+function onBrushChange() {
+    console.log(uiBrush.value);
 }
 
 // --- Graphics ---
