@@ -6,76 +6,139 @@
 #include <cassert>
 #include <stdexcept>
 
-Bebe::Bebe(Map& map, int joueur, int num, position pos)
-    : map_(map)
-    , joueur_(joueur)
+Bebe::Bebe(int joueur, int num, position pos)
+    : joueur_(joueur)
     , num_(num)
     , pos_(pos)
 {
-    if (!map_.is_valid(pos))
-        throw std::invalid_argument("Invalid position coordinates");
-
-    map.set(pos, Cell::bebe(joueur, num));
 }
 
-bool Bebe::is_saved()
+int Bebe::player_id() const
 {
-    return saved_;
+    return joueur_;
 }
 
-position Bebe::get_pos()
+int Bebe::id() const
+{
+    return num_;
+}
+
+position Bebe::pos() const
 {
     return pos_;
 }
 
-bool Bebe::set_pos(position pos)
+void Bebe::update_pos(position pos)
 {
-    if (!map_.is_valid(pos))
-        return false;
-
     pos_ = pos;
-    map_.set(pos, Cell::bebe(joueur_, num_));
-
-    return true;
 }
 
-void Bebe::save()
+bool Bebe::is_saved() const
 {
-    // Maybe remove him from the map too since he'll be with his parent
-    saved_ = true;
+    return savior_ != nullptr;
 }
 
-Panda::Panda(Map& map, int joueur, int num, position pos)
-    : map_(map)
-    , joueur_(joueur)
+const Panda* Bebe::savior() const
+{
+    return savior_;
+}
+
+void Bebe::save(const Panda& savior)
+{
+    assert(savior_ == nullptr);
+
+    savior_ = &savior;
+}
+
+Panda::Panda(int joueur, int num, position pos)
+    : joueur_(joueur)
     , num_(num)
     , pos_(pos)
 {
-    if (!map_.is_valid(pos))
-        throw std::invalid_argument("Invalid position coordinates");
-
-    map.set(pos, Cell::panda(joueur, num));
 }
 
-position Panda::get_pos() const
+int Panda::player_id() const
+{
+    return joueur_;
+}
+
+int Panda::id() const
+{
+    return num_;
+}
+
+position Panda::pos() const
 {
     return pos_;
 }
 
-bool Panda::set_pos(position pos)
+void Panda::update_pos(position pos)
 {
-    if (!map_.is_valid(pos))
-        return false;
-
     pos_ = pos;
-    map_.set(pos, Cell::panda(joueur_, num_));
-
-    return true;
 }
 
-Player::Player(Panda& panda_one, Panda& panda_two, std::vector<Bebe>& bebes)
-    : panda_one_(panda_one)
-    , panda_two_(panda_two)
-    , bebes_(bebes)
+void Panda::save_bebe(Bebe& bebe)
 {
+    assert(bebe.player_id() == player_id());
+
+    bebe.save(*this);
+    saved_bebes_.push_back(&bebe);
+}
+
+const std::vector<const Bebe*> Panda::saved_bebes() const
+{
+    return saved_bebes_;
+}
+
+Player::Player(int id, const std::vector<position>& pandas_positions,
+               const std::vector<position>& bebes_positions)
+    : id_(id)
+{
+    pandas_.reserve(pandas_positions.size());
+    bebes_.reserve(bebes_positions.size());
+
+    for (size_t panda_id = 0; panda_id < pandas_positions.size(); panda_id++)
+    {
+        pandas_.push_back(Panda((int)id, panda_id, pandas_positions[panda_id]));
+    }
+
+    for (size_t bebe_id = 0; bebe_id < bebes_positions.size(); bebe_id++)
+    {
+        bebes_.push_back(Bebe((int)id, bebe_id, bebes_positions[bebe_id]));
+    }
+}
+
+int Player::id() const
+{
+    return id_;
+}
+
+const std::vector<Panda>& Player::pandas() const
+{
+    return pandas_;
+}
+
+const std::vector<Bebe>& Player::bebes() const
+{
+    return bebes_;
+}
+
+const Panda* Player::panda_at(int id) const
+{
+    if (id >= 0 && (size_t)id < pandas_.size())
+    {
+        return &pandas_[id];
+    }
+
+    return nullptr;
+}
+
+const Bebe* Player::bebe_at(int id) const
+{
+    if (id >= 0 && (size_t)id < bebes_.size())
+    {
+        return &bebes_[id];
+    }
+
+    return nullptr;
 }

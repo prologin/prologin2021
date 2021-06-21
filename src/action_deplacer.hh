@@ -38,4 +38,3 @@ private:
     direction dir_;
     int player_id_;
 };
-

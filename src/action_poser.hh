@@ -12,7 +12,8 @@
 class ActionPoser : public rules::Action<GameState>
 {
 public:
-    ActionPoser(int id_panda, direction dir, int pont_debut, int pont_fin, int player_id)
+    ActionPoser(int id_panda, direction dir, int pont_debut, int pont_fin,
+                int player_id)
         : id_panda_(id_panda)
         , dir_(dir)
         , pont_debut_(pont_debut)
@@ -44,4 +45,3 @@ private:
     int pont_fin_;
     int player_id_;
 };
-

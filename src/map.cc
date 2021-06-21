@@ -3,6 +3,21 @@
 
 #include "map.hh"
 
+bool operator==(position a, position b)
+{
+    return std::pair(a.x, a.y) == std::pair(b.x, b.y);
+}
+
+bool operator!=(position a, position b)
+{
+    return std::pair(a.x, a.y) != std::pair(b.x, b.y);
+}
+
+bool operator<(position a, position b)
+{
+    return std::pair(a.x, a.y) < std::pair(b.x, b.y);
+}
+
 Cell::Cell()
     : kind_(CellKind::Invalid)
     , data_(0)

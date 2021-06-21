@@ -8,6 +8,10 @@
 
 #include "constant.hh"
 
+bool operator==(position a, position b);
+bool operator!=(position a, position b);
+bool operator<(position a, position b);
+
 enum class CellKind
 {
     Invalid,

@@ -2,54 +2,38 @@
 
 #include <gtest/gtest.h>
 
-TEST(PlayerTest, EmptyInitialization)
+TEST(PlayerTest, PandaAndBebe)
 {
-    Map map(8, 10);
-
-    Bebe bebe(map, 1, 1, {4, 3});
-    ASSERT_EQ(bebe.get_pos().x, 4);
-    ASSERT_EQ(bebe.get_pos().y, 3);
+    Bebe bebe(1, 1, {4, 3});
+    ASSERT_EQ(bebe.id(), 1);
+    ASSERT_EQ(bebe.player_id(), 1);
+    ASSERT_EQ(bebe.pos().x, 4);
+    ASSERT_EQ(bebe.pos().y, 3);
+    ASSERT_EQ(bebe.savior(), nullptr);
     ASSERT_FALSE(bebe.is_saved());
-    ASSERT_EQ(map.get({4, 3}), Cell::bebe(/* joueur= */ 1, /* num= */ 1));
 
-    Panda panda_one(map, 1, 1, {5, 5});
-    ASSERT_EQ(panda_one.get_pos().x, 5);
-    ASSERT_EQ(panda_one.get_pos().y, 5);
-    ASSERT_EQ(map.get({5, 5}), Cell::panda(/* joueur= */ 1, /* num= */ 1));
+    Panda panda(1, 1, {5, 5});
+    ASSERT_EQ(panda.id(), 1);
+    ASSERT_EQ(panda.player_id(), 1);
+    ASSERT_EQ(panda.pos().x, 5);
+    ASSERT_EQ(panda.pos().y, 5);
+    ASSERT_TRUE(panda.saved_bebes().empty());
 
-    Panda panda_two(map, 1, 1, {7, 5});
-    ASSERT_EQ(panda_two.get_pos().x, 7);
-    ASSERT_EQ(panda_two.get_pos().y, 5);
-    ASSERT_EQ(map.get({7, 5}), Cell::panda(/* joueur= */ 1, /* num= */ 1));
+    // Add a baby, both values change.
+    panda.save_bebe(bebe);
 
-    std::vector<Bebe> babies = {bebe};
-    Player player(panda_one, panda_two, babies);
-}
+    ASSERT_TRUE(bebe.is_saved());
+    ASSERT_EQ(bebe.savior(), &panda);
+    ASSERT_EQ(panda.saved_bebes().size(), (size_t)1);
+    ASSERT_EQ(panda.saved_bebes().at(0), &bebe);
 
-TEST(PlayerTest, SetBebeValid)
-{
-    Map map(8, 10);
+    // Add the same baby again, that's a no-no.
+    ASSERT_DEATH(panda.save_bebe(bebe),
+                 "Assertion `savior_ == nullptr' failed");
 
-    ASSERT_NO_THROW(Bebe bebe(map, 1, 1, {4, 3}));
-}
+    // Add a baby belonging to another player, that's a no-no.
+    Bebe other_player_bebe(0, 0, {0, 0});
 
-TEST(PlayerTest, SetBebeInvalid)
-{
-    Map map(8, 10);
-
-    ASSERT_ANY_THROW(Bebe bebe(map, 1, 1, {9, 3}));
-}
-
-TEST(PlayerTest, SetPandaValid)
-{
-    Map map(8, 10);
-
-    ASSERT_NO_THROW(Panda panda(map, 1, 1, {4, 3}));
-}
-
-TEST(PlayerTest, SetPandaInvalid)
-{
-    Map map(8, 10);
-
-    ASSERT_ANY_THROW(Panda panda(map, 1, 1, {9, 3}));
+    ASSERT_DEATH(panda.save_bebe(other_player_bebe),
+                 "Assertion `bebe.player_id\\(\\) == player_id\\(\\)' failed");
 }

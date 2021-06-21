@@ -25,13 +25,13 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& arr)
     return os;
 }
 
-
 extern "C" erreur api_deplacer(int id_panda, direction dir)
 {
     return api->deplacer(id_panda, dir);
 }
 
-extern "C" erreur api_poser(int id_panda, direction dir, int pont_debut, int pont_fin)
+extern "C" erreur api_poser(int id_panda, direction dir, int pont_debut,
+                            int pont_fin)
 {
     return api->poser(id_panda, dir, pont_debut, pont_fin);
 }

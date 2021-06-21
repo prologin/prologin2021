@@ -31,10 +31,10 @@ Rules::Rules(const rules::Options opt)
 
 void Rules::register_actions()
 {
-    api_->actions()->register_action(ID_ACTION_DEPLACER,
-                                     [] { return std::make_unique<ActionDeplacer>(); });
-    api_->actions()->register_action(ID_ACTION_POSER,
-                                     [] { return std::make_unique<ActionPoser>(); });
+    api_->actions()->register_action(
+        ID_ACTION_DEPLACER, [] { return std::make_unique<ActionDeplacer>(); });
+    api_->actions()->register_action(
+        ID_ACTION_POSER, [] { return std::make_unique<ActionPoser>(); });
 }
 
 rules::Actions* Rules::get_actions()

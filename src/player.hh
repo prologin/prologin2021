@@ -8,58 +8,92 @@
 #include "constant.hh"
 #include "map.hh"
 
+class Panda;
+
 class Bebe
 {
 public:
-    Bebe(Map& map, int joueur, int num, position pos);
+    Bebe(int joueur, int num, position pos);
+
+    // Returns the identifier of the player that may save this bebe.
+    int player_id() const;
+    // Returns the identifier of the bebe.
+    int id() const;
 
     // Returns the baby's position.
-    position get_pos();
-    // Sets the baby's position.
-    // Returns 'false' if the given position is invalid.
-    bool set_pos(position pos);
+    position pos() const;
+    // Updates the baby's position.
+    void update_pos(position pos);
 
     // Return 'false' if the baby hasn't been saved yet
-    bool is_saved();
+    bool is_saved() const;
+    // Returns a pointer to the panda that saved that bebe, if any. If not
+    // saved yet, returns nullptr.
+    const Panda* savior() const;
     // Sets the baby's status as saved.
-    void save();
+    void save(const Panda& savior);
 
 private:
-    Map& map_;
     int joueur_;
     int num_;
     position pos_;
-    bool saved_ = false;
+    const Panda* savior_ = nullptr;
 };
 
 class Panda
 {
 public:
-    Panda(Map& map, int joueur, int num, position pos);
+    Panda(int joueur, int num, position pos);
+
+    // Returns the identifier of the player that controls this panda.
+    int player_id() const;
+    // Returns the identifier of the panda.
+    int id() const;
 
     // Returns the panda's position.
-    position get_pos() const;
-    // Sets the panda's position.
-    // Returns 'false' if the given position is invalid.
-    bool set_pos(position pos);
+    position pos() const;
+    // Updates the panda's position.
+    void update_pos(position pos);
+
+    // Returns the vector of all bebes saved by this panda.
+    const std::vector<const Bebe*> saved_bebes() const;
+
+    // Marks the given bebe as saved by this panda. This method will
+    // automatically call Bebe::save().
+    void save_bebe(Bebe& bebe);
 
 private:
-    Map& map_;
     int joueur_;
     int num_;
     position pos_;
+    std::vector<const Bebe*> saved_bebes_;
 };
 
 class Player
 {
 public:
-    Player(Panda& panda_one, Panda& panda_two, std::vector<Bebe>& bebes);
+    Player(int id, const std::vector<position>& pandas_positions,
+           const std::vector<position>& bebes_positions);
+
+    // Returns the identifier of the player.
+    int id() const;
+    // Returns the vector of all pandas controlled by the player.
+    const std::vector<Panda>& pandas() const;
+    // Returns the vector of all the bebes that may be saved by the player.
+    const std::vector<Bebe>& bebes() const;
+
+    // Returns a pointer to the panda with the given identifier. If no such
+    // panda exists, nullptr is returned.
+    const Panda* panda_at(int id) const;
+    // Returns a pointer to the bebe with the given identifier. If no such bebe
+    // exists, nullptr is returned.
+    const Bebe* bebe_at(int id) const;
 
 private:
-    Panda panda_one_;
-    Panda panda_two_;
+    std::vector<Panda> pandas_;
     std::vector<Bebe> bebes_;
-    int turns_bloced_ = 0;
+    int id_;
+    int turns_blocked_ = 0;
 
     // A ajouter en plus ??? score, inventory...
 };

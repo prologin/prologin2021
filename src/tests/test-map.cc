@@ -1,16 +1,6 @@
-#include <unordered_set>
-#include <gtest/gtest.h>
 #include "../map.hh"
-
-bool operator==(position a, position b)
-{
-    return std::pair(a.x, a.y) == std::pair(b.x, b.y);
-}
-
-bool operator<(position a, position b)
-{
-    return std::pair(a.x, a.y) < std::pair(b.x, b.y);
-}
+#include <gtest/gtest.h>
+#include <unordered_set>
 
 TEST(MapTest, EmptyInitialization)
 {
@@ -20,19 +10,18 @@ TEST(MapTest, EmptyInitialization)
     ASSERT_EQ(map.height(), 10);
 
     for (int x = 0; x < map.width(); x++)
-    for (int y = 0; y < map.height(); y++)
-    {
-        ASSERT_TRUE(map.get({x, y}).is_empty());
-    }
+        for (int y = 0; y < map.height(); y++)
+        {
+            ASSERT_TRUE(map.get({x, y}).is_empty());
+        }
 }
 
 TEST(MapTest, ParseMap)
 {
-    std::istringstream ss(
-        "4 3\n"
-        "P0 P1 __ P2\n"
-        "11 B0 __ P3\n"
-        "__ 23 B1 66\n");
+    std::istringstream ss("4 3\n"
+                          "P0 P1 __ P2\n"
+                          "11 B0 __ P3\n"
+                          "__ 23 B1 66\n");
     Map map(ss, 2);
 
     ASSERT_EQ(map.get({0, 0}), Cell::panda(/* joueur= */ 0, /* num= */ 0));
@@ -107,29 +96,24 @@ TEST(MapTest, AdjacentPositions)
         std::set<position>({{1, 2}, {2, 1}, {3, 2}, {3, 3}, {2, 3}, {1, 3}}));
 
     // Edge case: invalid position.
-    ASSERT_EQ(
-        to_set(map.get_adjacent_positions({-1, -1})),
-        std::set<position>({}));
+    ASSERT_EQ(to_set(map.get_adjacent_positions({-1, -1})),
+              std::set<position>({}));
 
     // Edge case: top-left.
-    ASSERT_EQ(
-        to_set(map.get_adjacent_positions({0, 0})),
-        std::set<position>({{1, 0}, {1, 1}, {0, 1}}));
+    ASSERT_EQ(to_set(map.get_adjacent_positions({0, 0})),
+              std::set<position>({{1, 0}, {1, 1}, {0, 1}}));
 
     // Edge case: left.
-    ASSERT_EQ(
-        to_set(map.get_adjacent_positions({0, 1})),
-        std::set<position>({{0, 0}, {1, 1}, {1, 2}, {0, 2}}));
+    ASSERT_EQ(to_set(map.get_adjacent_positions({0, 1})),
+              std::set<position>({{0, 0}, {1, 1}, {1, 2}, {0, 2}}));
 
     // Edge case: top (odd column).
-    ASSERT_EQ(
-        to_set(map.get_adjacent_positions({1, 0})),
-        std::set<position>({{0, 0}, {1, 1}, {2, 0}}));
+    ASSERT_EQ(to_set(map.get_adjacent_positions({1, 0})),
+              std::set<position>({{0, 0}, {1, 1}, {2, 0}}));
 
     // Edge case: top (even column).
-    ASSERT_EQ(
-        to_set(map.get_adjacent_positions({2, 0})),
-        std::set<position>({{1, 0}, {1, 1}, {2, 1}, {3, 1}, {3, 0}}));
+    ASSERT_EQ(to_set(map.get_adjacent_positions({2, 0})),
+              std::set<position>({{1, 0}, {1, 1}, {2, 1}, {3, 1}, {3, 0}}));
 }
 
 TEST(MapTest, RelativePosition)

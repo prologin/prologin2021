@@ -46,10 +46,10 @@ public:
     /// invalide.
     int panda_sur_case(position pos);
 
-    /// Indique si un bébé panda se trouve sur une case donnée. Renvoie vrai
-    /// s'il y a un bébé panda sur la case. Renvoie faux autrement, ou si la
-    /// position est invalide.
-    bool bebe_panda_sur_case(position pos);
+    /// Renvoie le numéro du joueur à qui appartient le bebe panda sur la case
+    /// indiquée. Renvoie -1 s'il n'y a pas de bebe panda ou si la position est
+    /// invalide.
+    int bebe_panda_sur_case(position pos);
 
     /// Indique la position du panda sur la rivière désigné par le numéro
     /// ``id_panda`` appartenant au joueur ``id_joueur``. Si la description du
@@ -137,5 +137,4 @@ public:
 
     /// Affiche le contenu d'une valeur de type action_hist
     void afficher_action_hist(action_hist v);
-
 };

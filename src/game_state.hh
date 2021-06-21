@@ -7,6 +7,7 @@
 #include <rules/player.hh>
 
 #include "map.hh"
+#include "player.hh"
 
 class GameState final : public rules::GameState
 {
@@ -18,10 +19,17 @@ public:
     ~GameState();
 
     const Map& map() const { return map_; }
-    Map& map() { return map_; }
+    const std::vector<Player>& players() const { return own_players_; }
+
+    // Returns a pointer to the player with the given identifier. If no such
+    // player exists, nullptr is returned.
+    const Player* player_at(int id) const;
 
     GameState* copy() const override;
 
 private:
     Map map_;
+    // Note: `players_` already exists in rules::GameState, so for clarity's
+    // sake we use a slightly different name here.
+    std::vector<Player> own_players_;
 };

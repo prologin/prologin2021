@@ -26,35 +26,93 @@ case_type Api::type_case(position pos)
     // TODO
     abort();
 }
+
 int Api::panda_sur_case(position pos)
 {
-    // TODO
-    abort();
+    int player, id;
+
+    if (game_state_->map().get(pos).is_panda(&player, &id))
+    {
+        return player;
+    }
+
+    return -1;
 }
-bool Api::bebe_panda_sur_case(position pos)
+
+int Api::bebe_panda_sur_case(position pos)
 {
-    // TODO
-    abort();
+    int player, id;
+
+    if (game_state_->map().get(pos).is_bebe(&player, &id))
+    {
+        return player;
+    }
+
+    return -1;
 }
+
 position Api::position_panda(int id_joueur, int id_panda)
 {
-    // TODO
-    abort();
+    const Player* player = game_state_->player_at(id_joueur);
+
+    if (player == nullptr)
+    {
+        return {-1, -1};
+    }
+
+    const Panda* panda = player->panda_at(id_panda);
+
+    if (panda == nullptr)
+    {
+        return {-1, -1};
+    }
+
+    return panda->pos();
 }
+
 pont_type Api::info_pont(position pos)
 {
-    // TODO
+    int value;
+    direction dir;
+
+    if (!game_state_->map().get(pos).is_pont(&value, &dir))
+    {
+        return {{-1, -1}, {-1, -1}, -1, -1};
+    }
+
+    // FIXME
     abort();
 }
+
 panda_info Api::info_panda(position pos)
 {
-    // TODO
-    abort();
+    int player_id, id;
+
+    if (game_state_->map().get(pos).is_panda(&player_id, &id))
+    {
+        const Player& player = game_state_->players().at(player_id);
+
+        return {pos, player_id,
+                (int)player.pandas().at(id).saved_bebes().size()};
+    }
+
+    return {{-1, -1}, -1, -1};
 }
+
 std::vector<panda_info> Api::liste_pandas()
 {
-    // TODO
-    abort();
+    const std::vector<Player>& players = game_state_->players();
+    std::vector<panda_info> result;
+    result.reserve(players.size() * players[0].pandas().size());
+
+    for (const Player& player : players)
+        for (const Panda& panda : player.pandas())
+        {
+            result.push_back(
+                {panda.pos(), player.id(), (int)panda.saved_bebes().size()});
+        }
+
+    return result;
 }
 
 std::vector<position> Api::positions_adjacentes(position pos)
@@ -84,26 +142,34 @@ std::vector<action_hist> Api::historique()
     // TODO
     abort();
 }
+
 int Api::score(int id_joueur)
 {
-    // TODO
-    abort();
+    return player_->score;
 }
+
 int Api::moi()
 {
-    // TODO
-    abort();
+    return player_->id;
 }
+
 int Api::adversaire()
 {
-    // TODO
-    abort();
+    // Assuming that there are always two players:
+    if (player_->id == 0)
+    {
+        return 1;
+    }
+
+    return 0;
 }
+
 tour_info Api::info_tour()
 {
     // TODO
     abort();
 }
+
 carte_info Api::info_carte()
 {
     const Map& map = game_state_->map();

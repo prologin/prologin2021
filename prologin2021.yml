@@ -185,10 +185,10 @@ function:
       - [pos, position, "Case choisie"]
   -
     fct_name: bebe_panda_sur_case
-    fct_summary: Indique si un bébé panda se trouve sur une case donnée.
-                 Renvoie vrai s'il y a un bébé panda sur la case.
-                 Renvoie faux autrement, ou si la position est invalide.
-    fct_ret_type: bool
+    fct_summary: Renvoie le numéro du joueur à qui appartient le bébé panda sur la
+                 case indiquée.
+                 Renvoie -1 s'il n'y a pas de bébé panda ou si la position est invalide.
+    fct_ret_type: int
     fct_arg:
       - [pos, position, "Case choisie"]
   -
