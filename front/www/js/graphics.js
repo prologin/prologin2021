@@ -89,7 +89,7 @@ function getPos(x, y) {
     return [ i, j ];
 }
 
-// Compute the view size and update it
+// Computes the view size and update it
 function updateViewSize() {
     mapWidth = TILE_SIZE * (mapWidth * 3 / 4 + 1 / 4);
     mapHeight = TILE_SIZE * (mapHeight + 1 / 2);
@@ -111,6 +111,7 @@ function clearTiles() {
     tiles = [];
 }
 
+// Redraws the game state
 function updateView() {
     // Remove old sprites
     clearTiles();

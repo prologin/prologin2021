@@ -2,4 +2,4 @@
 
 # Starts the web server for the map editor
 
-python3 editor.py
+python3 front_server.py editor
