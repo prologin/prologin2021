@@ -26,8 +26,6 @@ function newGameState(width, height) {
     updateView();
 }
 
-let gameState = null;
-
 // Brush value
 let brush = ['P', 1, 0, 0];
 
@@ -163,55 +161,25 @@ function onPontBrush() {
 }
 
 // --- Graphics ---
-// Map size (in tiles)
-let mapWidth = 1;
-let mapHeight = 1;
-
-// All sprite tiles to be able to remove and redraw them
-let tiles = [];
-
 updateViewSize();
 
 // Init
 initGraphics(uiCanvas, mapWidth, mapHeight, onClick);
 
-// Compute the view size and update it
-function updateViewSize() {
-    mapWidth = TILE_SIZE * (mapWidth * 3 / 4 + 1 / 4);
-    mapHeight = TILE_SIZE * (mapHeight + 1 / 2);
-}
-
-// Adds and registers a new tile sprite to the view
-function addTile(tileName, x, y) {
-    let sprite = newTile(tileName, x, y);
-
-    tiles.push(sprite);
-    app.stage.addChild(sprite);
-}
-
-// Removes all sprites of the view
-function clearTiles() {
-    for (let tile of tiles)
-        app.stage.removeChild(tile);
-
-    tiles = [];
-}
-
-function updateView() {
-    // Remove old sprites
-    clearTiles();
-
-    // i is the vertical index
-    for (let i = 0; i < gameState.height; ++i) {
-        // j is the horizontal index
-        for (let j = 0; j < gameState.width; ++j) {
-            let [x, y] = getCoords(i, j);
-
-            let tile = gameState.map[i][j];
-            let tileName = tile !== null && tile[0] === 'P' ? 'panda1' : 'eau';
-
-            addTile(tileName, x, y);
-        }
+// Updates the brush value based on the <select> nodes
+function updateBrush() {
+    switch (uiBrush.value) {
+        case 'eau':
+            brush = null;
+            break;
+        case 'panda':
+            // TODO : Other options
+            brush = ['P', 1, 0, 0];
+            break;
+        case 'pont':
+            // TODO : Other options
+            brush = null;
+            break;
     }
 }
 
@@ -219,6 +187,8 @@ function updateView() {
 function onClick(x, y) {
     // Convert to grid position
     let [i, j] = getPos(x, y);
+
+    updateBrush();
 
     // Display
     // TODO : Update pandas

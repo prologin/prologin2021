@@ -7,6 +7,13 @@ let app = null;
 // textures[textureName] = PIXI's texture object
 let textures = {};
 
+// All sprite tiles to be able to remove and redraw them
+let tiles = [];
+
+// Map size (in tiles)
+let mapWidth = 0;
+let mapHeight = 0;
+
 // Inits canvas, textures...
 // - viewParent : An html element (usually a div) where the view is added
 // - onClick : If not null, function(x: int, y: int) called when the
@@ -80,4 +87,45 @@ function getPos(x, y) {
     let i = Math.floor((y - yOffset) / TILE_SIZE);
 
     return [ i, j ];
+}
+
+// Compute the view size and update it
+function updateViewSize() {
+    mapWidth = TILE_SIZE * (mapWidth * 3 / 4 + 1 / 4);
+    mapHeight = TILE_SIZE * (mapHeight + 1 / 2);
+}
+
+// Adds and registers a new tile sprite to the view
+function addTile(tileName, x, y) {
+    let sprite = newTile(tileName, x, y);
+
+    tiles.push(sprite);
+    app.stage.addChild(sprite);
+}
+
+// Removes all sprites of the view
+function clearTiles() {
+    for (let tile of tiles)
+        app.stage.removeChild(tile);
+
+    tiles = [];
+}
+
+function updateView() {
+    // Remove old sprites
+    clearTiles();
+
+    // i is the vertical index
+    for (let i = 0; i < gameState.height; ++i) {
+        // j is the horizontal index
+        for (let j = 0; j < gameState.width; ++j) {
+            let [x, y] = getCoords(i, j);
+
+            // TODO : Update when map format will change
+            let tile = gameState.map[i][j];
+            let tileName = tile !== null && tile[0] === 'P' ? 'panda1' : 'eau';
+
+            addTile(tileName, x, y);
+        }
+    }
 }

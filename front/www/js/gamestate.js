@@ -6,6 +6,9 @@
  - tiles
 */
 
+// The main game state
+let gameState = null;
+
 class GameState {
   // constructor
   constructor(width, height) {
