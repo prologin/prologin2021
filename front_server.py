@@ -29,15 +29,9 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
             # Change to shared front directory
             self.directory = os.path.abspath(self.directory + "/front/www")
         else:
-            print(self.directory)
-            print(RequestHandler.root)
-
             self.directory = os.path.abspath(
                 self.directory + "/" + RequestHandler.root + "/www"
             )
-
-            print(self.directory)
-            print('--------')
 
         return super().do_GET()
 
