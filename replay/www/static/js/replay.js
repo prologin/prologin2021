@@ -36,6 +36,7 @@ function newGameState(width, height) {
 
 // --- UI ---
 let uiCanvas = document.getElementById("canvas");
+let uiStateIndicator = document.getElementById("state-indicator");
 
 function onPrevClick() {
     if (currentGameStateIndex > 0)
@@ -58,7 +59,11 @@ updateViewSize();
 initGraphics(uiCanvas, mapWidth, mapHeight, null);
 
 function updateReplay() {
+    // gameState is the rendered state
     gameState = gameStates[currentGameStateIndex];
+
+    // Update GUI
+    uiStateIndicator.textContent = `${currentGameStateIndex + 1} / ${gameStates.length} tours`
 
     updateView();
 }
