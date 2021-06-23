@@ -84,3 +84,19 @@ gameStates[2].map[1][2] = [ 'P', 1, 0, 0 ];
 
 // Render view
 updateReplay();
+
+function onKey(e) {
+    switch (e.key.toUpperCase()) {
+        case " ":
+            // TODO : Auto replay
+            break;
+        case "N":
+            // Next state
+            onNextClick();
+            break;
+        case "B":
+            // Previous state
+            onPrevClick();
+            break;
+    }
+}
