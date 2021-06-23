@@ -9,6 +9,11 @@ let gameStates = [];
 // The current game state to render
 let currentGameStateIndex = 0;
 
+// Next state every N ms with this option
+let autoreplay = false;
+
+const AUTOREPLAY_PERIOD_MS = 500;
+
 function newGameState(width, height) {
     // Update dimension values
     mapWidth = width;
@@ -39,6 +44,7 @@ let uiCanvas = document.getElementById("canvas");
 let uiStateIndicator = document.getElementById("state-indicator");
 let uiP1Points = document.getElementById("p1-points");
 let uiP2Points = document.getElementById("p2-points");
+let uiAutoReplay = document.getElementById("autoreplay");
 
 function onPrevClick() {
     if (currentGameStateIndex > 0)
@@ -52,6 +58,11 @@ function onNextClick() {
         ++currentGameStateIndex;
 
     updateReplay();
+}
+
+function onAutoReplayChange() {
+    autoreplay = !autoreplay;
+    console.log(autoreplay);
 }
 
 // --- Graphics ---
@@ -86,9 +97,12 @@ gameStates[2].map[1][2] = [ 'P', 1, 0, 0 ];
 updateReplay();
 
 function onKey(e) {
+    let useful = true;
     switch (e.key.toUpperCase()) {
         case " ":
-            // TODO : Auto replay
+            // Toggle autoreplay
+            onAutoReplayChange();
+            uiAutoReplay.checked = autoreplay;
             break;
         case "N":
             // Next state
@@ -98,5 +112,10 @@ function onKey(e) {
             // Previous state
             onPrevClick();
             break;
+        default:
+            useful = false;
+            break;
     }
+
+    if (useful) e.preventDefault();
 }
