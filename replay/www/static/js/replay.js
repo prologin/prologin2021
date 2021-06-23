@@ -3,6 +3,12 @@
 // Main map editor script
 
 // --- Globals ---
+// The replay is a collection of game states
+let gameStates = [];
+
+// The current game state to render
+let currentGameStateIndex = 0;
+
 function newGameState(width, height) {
     // Update dimension values
     mapWidth = width;
@@ -24,10 +30,26 @@ function newGameState(width, height) {
     }
 
     updateView();
+
+    return gameState;
 }
 
 // --- UI ---
 let uiCanvas = document.getElementById("canvas");
+
+function onPrevClick() {
+    if (currentGameStateIndex > 0)
+        --currentGameStateIndex;
+
+    updateReplay();
+}
+
+function onNextClick() {
+    if (currentGameStateIndex < gameStates.length - 1)
+        ++currentGameStateIndex;
+
+    updateReplay();
+}
 
 // --- Graphics ---
 updateViewSize();
@@ -35,19 +57,20 @@ updateViewSize();
 // Init
 initGraphics(uiCanvas, mapWidth, mapHeight, null);
 
+function updateReplay() {
+    gameState = gameStates[currentGameStateIndex];
+
+    updateView();
+}
+
 // --- Test ---
-// Default game state
-newGameState(10, 10);
+// Create 3 states
+for (let i = 0; i < 3; ++i)
+    gameStates.push(newGameState(10, 10));
 
-gameState.map[0][0] = [ 'P', 1, 0, 0 ];
+gameStates[0].map[0][0] = [ 'P', 1, 0, 0 ];
+gameStates[1].map[1][0] = [ 'P', 1, 0, 0 ];
+gameStates[2].map[1][2] = [ 'P', 1, 0, 0 ];
 
-updateView();
-
-
-function onPrevClick() {
-
-}
-
-function onNextClick() {
-
-}
+// Render view
+updateReplay();
