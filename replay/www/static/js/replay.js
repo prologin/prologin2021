@@ -37,6 +37,8 @@ function newGameState(width, height) {
 // --- UI ---
 let uiCanvas = document.getElementById("canvas");
 let uiStateIndicator = document.getElementById("state-indicator");
+let uiP1Points = document.getElementById("p1-points");
+let uiP2Points = document.getElementById("p2-points");
 
 function onPrevClick() {
     if (currentGameStateIndex > 0)
@@ -64,6 +66,9 @@ function updateReplay() {
 
     // Update GUI
     uiStateIndicator.textContent = `${currentGameStateIndex + 1} / ${gameStates.length} tours`
+    // TODO : Display player points
+    uiP1Points.textContent = "Joueur 1 : ??? points";
+    uiP2Points.textContent = "Joueur 2 : ??? points";
 
     updateView();
 }
