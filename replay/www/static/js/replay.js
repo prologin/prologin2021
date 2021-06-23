@@ -62,7 +62,37 @@ function onNextClick() {
 
 function onAutoReplayChange() {
     autoreplay = !autoreplay;
-    console.log(autoreplay);
+
+    if (autoreplay)
+        autoreplayLoop();
+    else
+        window.clearTimeout(autoreplayLoop);
+}
+
+// When a key is pressed
+function onKey(e) {
+    let useful = true;
+    switch (e.key.toUpperCase()) {
+    case " ":
+        // Toggle autoreplay
+        onAutoReplayChange();
+        uiAutoReplay.checked = autoreplay;
+        break;
+    case "N":
+        // Next state
+        onNextClick();
+        break;
+    case "B":
+        // Previous state
+        onPrevClick();
+        break;
+    default:
+        useful = false;
+        break;
+    }
+
+    if (useful)
+        e.preventDefault();
 }
 
 // --- Graphics ---
@@ -76,13 +106,26 @@ function updateReplay() {
     gameState = gameStates[currentGameStateIndex];
 
     // Update GUI
-    uiStateIndicator.textContent = `${currentGameStateIndex + 1} / ${gameStates.length} tours`
+    uiStateIndicator.textContent =
+        `${currentGameStateIndex + 1} / ${gameStates.length} tours`
     // TODO : Display player points
     uiP1Points.textContent = "Joueur 1 : ??? points";
     uiP2Points.textContent = "Joueur 2 : ??? points";
 
     updateView();
 }
+
+// Timer when we need to make an auto replay step
+function autoreplayLoop() {
+    autoreplayStep();
+
+    // Loop again
+    if (autoreplay)
+        window.setTimeout(autoreplayLoop, AUTOREPLAY_PERIOD_MS);
+}
+
+// Auto replay game state update
+function autoreplayStep() { onNextClick(); }
 
 // --- Test ---
 // Create 3 states
@@ -95,27 +138,3 @@ gameStates[2].map[1][2] = [ 'P', 1, 0, 0 ];
 
 // Render view
 updateReplay();
-
-function onKey(e) {
-    let useful = true;
-    switch (e.key.toUpperCase()) {
-        case " ":
-            // Toggle autoreplay
-            onAutoReplayChange();
-            uiAutoReplay.checked = autoreplay;
-            break;
-        case "N":
-            // Next state
-            onNextClick();
-            break;
-        case "B":
-            // Previous state
-            onPrevClick();
-            break;
-        default:
-            useful = false;
-            break;
-    }
-
-    if (useful) e.preventDefault();
-}
