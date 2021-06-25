@@ -21,6 +21,18 @@ let bridgeTiles =
     Array.from({length : 36},
                (_, i) => `pont_${i % 6 + 1}_${DIRECTIONS[Math.floor(i / 6)]}`);
 
+// result :
+// 1 0
+// 2 0
+// .
+// .
+// .
+// 1 1
+// 2 1
+// .
+// .
+// .
+
 const TILES = [
     'panda1',
     'panda1_bebe',

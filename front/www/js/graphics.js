@@ -72,7 +72,7 @@ function newTile(id, x = 0, y = 0) {
 // - j : Horizontal index (0 = left)
 // Returns [x, y]
 // * Use let [x, y] = getCoords(...);
-function getCoords(i, j) {
+function getCoords(i, j) { // hexa -> pixel
     let yOffset = j % 2 == 0 ? TILE_SIZE / 2 : 0;
 
     return [ j * TILE_SIZE * 3 / 4, yOffset + i * TILE_SIZE ];
@@ -81,7 +81,7 @@ function getCoords(i, j) {
 // Get 2d indices of a tile from its coordinates
 // - Returns [i, j] (may be negative / invalid if click outside of grid)
 // * Use let [i, j] = getCoords(...);
-function getPos(x, y) {
+function getPos(x, y) { // pixel -> hexa
     let j = Math.floor(x / (TILE_SIZE * 3 / 4));
     let yOffset = j % 2 == 0 ? TILE_SIZE / 2 : 0;
     let i = Math.floor((y - yOffset) / TILE_SIZE);

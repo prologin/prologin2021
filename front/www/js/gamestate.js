@@ -51,7 +51,7 @@ class GameState {
       let c = map_str[i];
 
       // currently reading buffer ?
-      if (c != ' ' && c != '\n') {
+      if (c !== ' ' && c !== '\n') {
         // add char of tile to buffer and continue
         buffer += c;
         continue;
@@ -104,7 +104,5 @@ function test() {
 }
 
 // let gs = test();
-
-
 
 //
