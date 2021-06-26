@@ -3,6 +3,7 @@
 
 #pragma once
 
+#include <rules/player.hh>
 #include <vector>
 
 #include "constant.hh"
@@ -72,8 +73,12 @@ private:
 class Player
 {
 public:
-    Player(int id, const std::vector<position>& pandas_positions,
+    Player(std::shared_ptr<rules::Player> rules_player,
+           const std::vector<position>& pandas_positions,
            const std::vector<position>& bebes_positions);
+
+    // Returns the player, as seen by the overall Stechec2 engine.
+    const rules::Player& rules_player() const;
 
     // Returns the identifier of the player.
     int id() const;
@@ -89,11 +94,16 @@ public:
     // exists, nullptr is returned.
     const Bebe* bebe_at(int id) const;
 
+    const std::vector<action_hist>& last_actions() const;
+    void reset_last_actions();
+    void log_action(action_hist action);
+
 private:
+    std::shared_ptr<rules::Player> rules_player_;
     std::vector<Panda> pandas_;
     std::vector<Bebe> bebes_;
-    int id_;
     int turns_blocked_ = 0;
+    std::vector<action_hist> last_actions_;
 
     // A ajouter en plus ??? score, inventory...
 };

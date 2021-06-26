@@ -92,7 +92,7 @@ GameState::GameState(const rules::Players& players, Map map)
 
     for (size_t player_id = 0; player_id < players_count; player_id++)
     {
-        own_players_.push_back(Player((int)player_id,
+        own_players_.push_back(Player(players[player_id],
                                       panda_player_positions[player_id],
                                       bebe_player_positions[player_id]));
     }
@@ -123,4 +123,25 @@ const Player* GameState::player_at(int id) const
     }
 
     return nullptr;
+}
+
+bool GameState::is_finished() const
+{
+    return round_ >= NB_TOURS;
+}
+
+int GameState::round_id() const
+{
+    return round_;
+}
+
+int GameState::round_player_id() const
+{
+    return round_ % player_count();
+}
+
+int GameState::round_panda_id() const
+{
+    return round_ % (player_count() * pandas_per_player()) /
+           pandas_per_player();
 }

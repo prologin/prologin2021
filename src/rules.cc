@@ -24,7 +24,9 @@ Rules::Rules(const rules::Options opt)
             champion_dll_->get<f_champion_partie_fin>("partie_fin");
     }
 
-    auto game_state = std::make_unique<GameState>(opt.players, Map(10, 10));
+    std::istringstream map_stream(opt.map_content);
+    auto game_state = std::make_unique<GameState>(
+        opt.players, Map(map_stream, opt.players.size()));
     api_ = std::make_unique<Api>(std::move(game_state), opt.player);
     register_actions();
 }
@@ -59,6 +61,17 @@ void Rules::apply_action(const rules::IAction& action)
 
 bool Rules::is_finished()
 {
-    // FIXME
-    return true;
+    return api_->game_state().is_finished();
+}
+
+void Rules::start_of_player_turn(uint32_t player_id)
+{
+    // TODO
+    abort();
+}
+
+void Rules::end_of_player_turn(uint32_t player_id)
+{
+    // TODO
+    abort();
 }

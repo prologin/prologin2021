@@ -21,6 +21,7 @@ std::vector<direction> Api::chemin(position pos1, position pos2)
     // TODO
     abort();
 }
+
 case_type Api::type_case(position pos)
 {
     // TODO
@@ -72,16 +73,28 @@ position Api::position_panda(int id_joueur, int id_panda)
 
 pont_type Api::info_pont(position pos)
 {
+    const Map& map = game_state_->map();
+
     int value;
     direction dir;
 
-    if (!game_state_->map().get(pos).is_pont(&value, &dir))
+    if (!map.get(pos).is_pont(&value, &dir))
     {
         return {{-1, -1}, {-1, -1}, -1, -1};
     }
 
-    // FIXME
-    abort();
+    position other_pos = map.get_relative_position(pos, dir);
+    int other_value;
+    direction other_dir;
+
+    assert(map.get(other_pos).is_pont(&other_value, &other_dir));
+
+    pont_type info;
+    info.debut_pos = pos;
+    info.debut_val = value;
+    info.fin_pos = other_pos;
+    info.fin_val = other_value;
+    return info;
 }
 
 panda_info Api::info_panda(position pos)
@@ -139,13 +152,12 @@ int Api::direction_entre_positions(position origine, position cible)
 
 std::vector<action_hist> Api::historique()
 {
-    // TODO
-    abort();
+    return game_state_->player_at(adversaire())->last_actions();
 }
 
 int Api::score(int id_joueur)
 {
-    return player_->score;
+    return game_state_->player_at(id_joueur)->rules_player().score;
 }
 
 int Api::moi()
@@ -155,7 +167,8 @@ int Api::moi()
 
 int Api::adversaire()
 {
-    // Assuming that there are always two players:
+    assert(game_state_->player_count() == 2);
+
     if (player_->id == 0)
     {
         return 1;
@@ -166,8 +179,11 @@ int Api::adversaire()
 
 tour_info Api::info_tour()
 {
-    // TODO
-    abort();
+    tour_info info;
+    info.id_tour = game_state_->round_id();
+    info.id_joueur_joue = game_state_->round_player_id();
+    info.id_panda_joue = game_state_->round_panda_id();
+    return info;
 }
 
 carte_info Api::info_carte()

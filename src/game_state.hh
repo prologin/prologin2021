@@ -21,9 +21,22 @@ public:
     const Map& map() const { return map_; }
     const std::vector<Player>& players() const { return own_players_; }
 
+    int player_count() const { return own_players_.size(); }
+    int pandas_per_player() const { return own_players_[0].pandas().size(); }
+
     // Returns a pointer to the player with the given identifier. If no such
     // player exists, nullptr is returned.
     const Player* player_at(int id) const;
+
+    // Whether the game is over.
+    bool is_finished() const;
+
+    // The identifier (integer) of the current round.
+    int round_id() const;
+    // The identifier of the player playing in the current round.
+    int round_player_id() const;
+    // The identifier of the panda being controlled in the current round.
+    int round_panda_id() const;
 
     GameState* copy() const override;
 
@@ -32,4 +45,5 @@ private:
     // Note: `players_` already exists in rules::GameState, so for clarity's
     // sake we use a slightly different name here.
     std::vector<Player> own_players_;
+    int round_ = 0;
 };

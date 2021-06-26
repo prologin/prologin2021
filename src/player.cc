@@ -90,27 +90,35 @@ const std::vector<const Bebe*> Panda::saved_bebes() const
     return saved_bebes_;
 }
 
-Player::Player(int id, const std::vector<position>& pandas_positions,
+Player::Player(std::shared_ptr<rules::Player> rules_player,
+               const std::vector<position>& pandas_positions,
                const std::vector<position>& bebes_positions)
-    : id_(id)
+    : rules_player_(std::move(rules_player))
 {
+    int id = rules_player->id;
+
     pandas_.reserve(pandas_positions.size());
     bebes_.reserve(bebes_positions.size());
 
     for (size_t panda_id = 0; panda_id < pandas_positions.size(); panda_id++)
     {
-        pandas_.push_back(Panda((int)id, panda_id, pandas_positions[panda_id]));
+        pandas_.push_back(Panda(id, panda_id, pandas_positions[panda_id]));
     }
 
     for (size_t bebe_id = 0; bebe_id < bebes_positions.size(); bebe_id++)
     {
-        bebes_.push_back(Bebe((int)id, bebe_id, bebes_positions[bebe_id]));
+        bebes_.push_back(Bebe(id, bebe_id, bebes_positions[bebe_id]));
     }
+}
+
+const rules::Player& Player::rules_player() const
+{
+    return *rules_player_;
 }
 
 int Player::id() const
 {
-    return id_;
+    return rules_player_->id;
 }
 
 const std::vector<Panda>& Player::pandas() const
@@ -141,4 +149,19 @@ const Bebe* Player::bebe_at(int id) const
     }
 
     return nullptr;
+}
+
+const std::vector<action_hist>& Player::last_actions() const
+{
+    return last_actions_;
+}
+
+void Player::reset_last_actions()
+{
+    last_actions_.clear();
+}
+
+void Player::log_action(action_hist action)
+{
+    last_actions_.push_back(action);
 }
