@@ -154,10 +154,10 @@ function loadGameStateFromMapStr(str) {
   return gs;
 }
 
-var test_str = '3 3\n\
-A11 ___ ___\n\
-C99 ___ Z00\n\
-B23 X45 Y61';
+var test_str = '4 3\n\
+A11 ___ ___ ___\n\
+C99 ___ Z00 ___\n\
+B23 X45 Y61 ___';
 
 // let gs = loadGameStateFromMapStr(test_str);
 
