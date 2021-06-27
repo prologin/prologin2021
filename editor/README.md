@@ -3,6 +3,7 @@ The map editor is made using Pixi JS
 
 ## Structure
 - www : Web site interface files
+- www/open.map : Map to open (optional)
 
 ## Setup
 1. Front end must be set up (see [front/README](../front/README.md))

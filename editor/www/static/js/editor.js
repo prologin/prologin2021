@@ -27,7 +27,7 @@ function newGameState(width, height) {
 }
 
 // Brush value
-let brush = ['P', 1, 0, 0];
+let brush = [ 'P', 1, 0, 0 ];
 
 // --- UI ---
 let uiDumper = document.getElementById("dumper");
@@ -74,25 +74,25 @@ function onCopyClick() {
 function onBrushChange() {
     // Update select1 / select2 extra options
     switch (uiBrush.value) {
-        case "eau":
-            brush = null;
-            uiSelect1.hidden = true;
-            uiSelect2.hidden = true;
-            break;
-        case "panda":
-            brush = null;
-            uiSelect1.hidden = false;
-            uiSelect2.hidden = true;
+    case "eau":
+        brush = null;
+        uiSelect1.hidden = true;
+        uiSelect2.hidden = true;
+        break;
+    case "panda":
+        brush = null;
+        uiSelect1.hidden = false;
+        uiSelect2.hidden = true;
 
-            onPandaBrush();
-            break;
-        case "pont":
-            brush = null;
-            uiSelect1.hidden = false;
-            uiSelect2.hidden = false;
+        onPandaBrush();
+        break;
+    case "pont":
+        brush = null;
+        uiSelect1.hidden = false;
+        uiSelect2.hidden = false;
 
-            onPontBrush();
-            break;
+        onPontBrush();
+        break;
     }
 }
 
@@ -103,14 +103,15 @@ function onPandaBrush() {
     }
 
     // Select1 = kind
-    let options = [
-        "panda1",
-        "panda2",
-        "panda1_bebe",
-        "panda2_bebe",
-    ]
+    let options =
+        [
+            "panda1",
+            "panda2",
+            "panda1_bebe",
+            "panda2_bebe",
+        ]
 
-    for (let option of options) {
+        for (let option of options) {
         let node = document.createElement("option");
         node.value = option;
         node.text = option;
@@ -169,17 +170,17 @@ initGraphics(uiCanvas, mapWidth, mapHeight, onClick);
 // Updates the brush value based on the <select> nodes
 function updateBrush() {
     switch (uiBrush.value) {
-        case 'eau':
-            brush = null;
-            break;
-        case 'panda':
-            // TODO : Other options
-            brush = ['P', 1, 0, 0];
-            break;
-        case 'pont':
-            // TODO : Other options
-            brush = null;
-            break;
+    case 'eau':
+        brush = null;
+        break;
+    case 'panda':
+        // TODO : Other options
+        brush = [ 'P', 1, 0, 0 ];
+        break;
+    case 'pont':
+        // TODO : Other options
+        brush = null;
+        break;
     }
 }
 
@@ -199,10 +200,22 @@ function onClick(x, y) {
     }
 }
 
-// --- Test ---
+// --- Main ---
 // Default game state
 newGameState(10, 10);
 
 gameState.map[0][0] = [ 'P', 1, 0, 0 ];
 
 updateView();
+
+// Load map named open.map if necessary
+fetch("/open.map")
+    .then(res => {
+        if (res.status === 200)
+            res.text().then(onMapOpen);
+    });
+
+// Called when there is a map to open at start
+function onMapOpen(data) {
+    console.log(`Map to open data : ${data}`);
+}
