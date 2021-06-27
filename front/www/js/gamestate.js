@@ -9,6 +9,33 @@
 // The main game state
 let gameState = null;
 
+/*
+class Player
+class Tile
+
+deux matrices :
+ - map
+ - panda_matrix
+
+
+*/
+
+class Tile {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+  }
+}
+
+
+class Player {
+  constructor() {
+    this.pandas = [];
+    this.points = 0;
+  }
+}
+
+
 class GameState {
   // constructor
   constructor(width, height) {
@@ -97,12 +124,24 @@ class GameState {
 }
 
 function test() {
-  let test_map_str = '__ __ __ P1 __\n__ 11 __ B2 __\n02 __ P2 __ __';
+  let test_map_str = '__ __ __ P1\n__ __ 11 __\nB2 __ 02\n__ P2 __ __';
   let gs = new GameState(4, 4);
   gs.loadGame(test_map_str);
   return gs;
 }
 
 // let gs = test();
+
+
+/*
+
+
+3 3
+__ __ 12|P1|B2
+P4 12|B5 __
+__ __ __
+
+
+*/
 
 //
