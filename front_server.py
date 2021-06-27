@@ -1,4 +1,4 @@
-# Front end (map editor / replay...) web server
+# Front end (map editor / replay / spectator) web server
 # This script must be executed from the root directory
 
 import os
@@ -40,6 +40,7 @@ def print_help():
     print("utilisation:")
     print("front_server editor      Lance l'éditeur de cartes")
     print("front_server replay      Lance le replay")
+    print("front_server spectator   Lance le spectateur")
 
 
 if __name__ == "__main__":
@@ -54,6 +55,10 @@ if __name__ == "__main__":
         server_id = 2
         server_name = "le replay"
         server_root = "replay"
+    elif sys.argv[1] == "spectator":
+        server_id = 3
+        server_name = "le spectateur"
+        server_root = "spectator"
     else:
         print_help()
         exit(-1)

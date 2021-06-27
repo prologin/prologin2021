@@ -1,6 +1,8 @@
 "use strict";
 
-// Main replay script
+// Main spectator script
+
+// TODO : Update (this script is a copy of replay.js)
 
 // --- Globals ---
 // The replay is a collection of game states
