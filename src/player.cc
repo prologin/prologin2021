@@ -161,6 +161,16 @@ const Bebe* Player::bebe_at(int id) const
     return nullptr;
 }
 
+Bebe* Player::bebe_at(int id)
+{
+    if (id >= 0 && (size_t)id < bebes_.size())
+    {
+        return &bebes_[id];
+    }
+
+    return nullptr;
+}
+
 const std::vector<action_hist>& Player::last_actions() const
 {
     return last_actions_;

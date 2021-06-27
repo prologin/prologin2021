@@ -5,22 +5,35 @@
 
 int ActionDeplacer::check(const GameState& st) const
 {
+    // Ensure the specified panda exists.
     const Panda* panda = st.player_at(player_id_)->panda_at(id_panda_);
-
-    // Maybe add some more conditions
 
     if (panda == nullptr)
         return ID_PANDA_INVALIDE;
 
-    position desired_position =
+    // Ensure moving in the given direction won't bring us out of bounds.
+    const position target_position =
         st.map().get_relative_position(panda->pos(), dir_);
+    const Cell target_cell = st.map().get(target_position);
 
-    if (st.map().is_valid(desired_position))
+    if (target_cell.is_invalid())
         return DEPLACEMENT_HORS_LIMITES;
 
-    int valeur;
-    direction dir;
-    if (!st.map().get(desired_position).is_pont(&valeur, &dir) || dir != dir_)
+    // Ensure the target cell is an empty bridge.
+    int target_value, target_player, target_panda;
+    direction target_dir;
+
+    if (!target_cell.is_pont(&target_value, &target_dir) || target_cell.has_panda(&target_player, &target_panda))
+        return MOUVEMENT_INVALIDE;
+
+    // Ensure the value of both bridges is the same.
+    const Cell source_cell = st.map().get(panda->pos());
+    int source_value;
+    direction source_dir;
+
+    assert(source_cell.is_pont(&source_value, &source_dir));
+
+    if (target_value != source_value)
         return MOUVEMENT_INVALIDE;
 
     return OK;
@@ -29,15 +42,29 @@ int ActionDeplacer::check(const GameState& st) const
 void ActionDeplacer::apply_on(GameState* st) const
 {
     Map& map = st->map();
-    Panda* panda = st->player_at(player_id_)->panda_at(id_panda_);
-    position desired_position = map.get_relative_position(panda->pos(), dir_);
+    Panda& panda = *st->player_at(player_id_)->panda_at(id_panda_);
+    const position desired_position = map.get_relative_position(panda.pos(), dir_);
 
-    // How do we want to manage errors???
+    // Update map and positions.
     map.set(desired_position,
             map.get(desired_position).with_panda(player_id_, id_panda_));
-    map.set(panda->pos(), map.get(panda->pos()).without_panda());
+    map.set(panda.pos(), map.get(panda.pos()).without_panda());
 
-    // TODO: capture bebe when next to it.
+    panda.update_pos(desired_position);
 
-    panda->update_pos(desired_position);
+    // TODO: update value of both ends of the bridge.
+
+    // Pick up adjacent baby pandas, if any.
+    for (const position adjacent_pos : map.get_adjacent_positions(desired_position))
+    {
+        int player, num;
+
+        if (map.get(adjacent_pos).is_bebe(&player, &num) && player == player_id_)
+        {
+            Bebe& bebe = *st->player_at(player_id_)->bebe_at(num);
+
+            map.set(adjacent_pos, Cell::empty());
+            panda.save_bebe(bebe);
+        }
+    }
 }

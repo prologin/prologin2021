@@ -94,6 +94,7 @@ public:
     // Returns a pointer to the bebe with the given identifier. If no such bebe
     // exists, nullptr is returned.
     const Bebe* bebe_at(int id) const;
+    Bebe* bebe_at(int id);
 
     const std::vector<action_hist>& last_actions() const;
     void reset_last_actions();
