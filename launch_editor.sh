@@ -2,7 +2,7 @@
 
 # Starts the web server for the map editor
 
-rm editor/www/open.map
+rm -f editor/www/open.map
 
 if [ -n "$1" ]
 then
