@@ -1,36 +1,43 @@
-
-/*
- - map
- - pandas (positions)
- - bebe pandas (positions)
- - tiles
-*/
-
 // The main game state
 let gameState = null;
 
-/*
-class Player
-class Tile
-
-deux matrices :
- - map
- - panda_matrix
-
-
-*/
-
-class Tile {
+class MapTile {
+  // constructor
   constructor(x, y) {
     this.x = x;
     this.y = y;
+    this.bridge = null;
   }
+  // methods
+  isEmpty() { return this.bridge === null; }
+  isBridge() { return !this.isEmpty(); }
+}
+
+class Panda {
+  // constructor
+  constructor(player, id) {
+    this.player = player;
+    this.id = id;
+  }
+  // methods
+}
+
+class BabyPanda {
+  // constructor
+  constructor(player, id) {
+    this.player = player;
+    this.id = id;
+  }
+  // methods
 }
 
 
 class Player {
-  constructor() {
+  // constructor
+  constructor(id) {
+    this.id = id;
     this.pandas = [];
+    this.baby_pandas = [];
     this.points = 0;
   }
 }
@@ -41,36 +48,33 @@ class GameState {
   constructor(width, height) {
     this.width = width;
     this.height = height;
-    this.map = [];
-    this.pandas = [];
-    this.baby_pandas = [];
-    this.bridges = [];
+    this.map = this.initMap();
+    this.panda_map = this.initPandaMap();
+    this.players = {'1': new Player(1),
+                    '2': new Player(2)};
   }
   // methods
-  init(map, pandas, baby_pandas, bridges) {
-    initMap(map);
-    initPandas(pandas);
-    initBabyPandas(baby_pandas);
-    initBridges(bridges);
+  initMap() {
+    let map = Array.from(Array(this.height), () => new Array(this.width));
+    for (let i = 0; i < this.height; i++) {
+      for (let j = 0; j < this.width; j++) {
+        map[i][j] = new MapTile(j, i);
+      }
+    }
+
+    return map;
   }
-  initMap(map) {
-    this.map = map;
+  initPandaMap() {
+    let map = Array.from(Array(this.height), () => new Array(this.width));
+    for (let i = 0; i < this.height; i++) {
+      for (let j = 0; j < this.width; j++) {
+        map[i][j] = null;
+      }
+    }
+
+    return map;
   }
-  initPandas(pandas) {
-    this.pandas = pandas;
-  }
-  initBabyPandas(baby_pandas) {
-    this.baby_pandas = baby_pandas;
-  }
-  initBridges(bridges) {
-    this.bridges = bridges;
-  }
-  loadGame(map_str) {
-    // reset/init
-    this.initMap([[]]);
-    this.initPandas([]);
-    this.initBabyPandas([]);
-    this.initBridges([]);
+  loadMap(map) {
     // read map str
     var x = 0, y = 0, buffer = '';
     for (let i = 0; i < map_str.length; i++) {
@@ -87,10 +91,9 @@ class GameState {
       // - buffer has ended ! -
 
       // add hte buffer to the map (pas sur ?)
-      this.map[y][x] = buffer; // j'avoue ne pas avoir bien compris qqchose, mais j'espère que cette ligne est OK ?
 
       // process & reset buffer
-      this.processTileBuffer(buffer);
+      this.processTileBuffer(buffer, x, y);
       buffer = '';
 
       // goto next coordinates
@@ -101,47 +104,55 @@ class GameState {
       }
     }
   }
-  processTileBuffer(buffer) {
+  processTileBuffer(buffer, x, y) {
     console.log("process: " + buffer + "\n");
-    // water tile
-    if (buffer == '__') {
+    // ___ empty/water
+    if (buffer == '___') {
+      console.log('water');
       return;
     }
-    // panda tile
-    if (buffer[0] == 'P') {
-      let id = parseInt(buffer.substring(1));
-      this.pandas.push(id);
+
+    // a baby panda ?
+    if (buffer[0] == 'C') { // } || buffer[0] == 'Z' /*buffer.substring(1) == '00'*/) {
+      this.panda_map[y][x] = new BabyPanda(this.players['1'], parseInt(buffer.substring(1)));
+      console.log('Baby panda: ' + buffer);
+      return;
     }
-    // bridge tile
-    if (buffer[0] == 'B') {
-      let id = parseInt(buffer.substring(1));
-      this.baby_pandas.push(id);
+    if (buffer[0] == 'Z') { // } || buffer[0] == 'Z' /*buffer.substring(1) == '00'*/) {
+      this.panda_map[y][x] = new BabyPanda(this.players['Z'], parseInt(buffer.substring(1)));
+      console.log('Baby panda: ' + buffer);
+      return;
     }
-    // baby panda
-    let id = parseInt(buffer);
-    this.baby_pandas.push(id);
+
+    // a panda (with a bridge) !
+    console.log('Panda: ' + buffer);
+    // panda
+    let player = (buffer[0] == 'A' || buffer[0] == 'B') ? '1' : '2';
+    this.panda_map[y][x] = new Panda(this.players[player], buffer[0]);
+    // bridge
+    let direction = parseInt(buffer[1]);
+    let value = parseInt(buffer[2]);
+    this.map[y][x].bridge = [direction, value]
+
+    return;
   }
 }
 
-function test() {
-  let test_map_str = '__ __ __ P1\n__ __ 11 __\nB2 __ 02\n__ P2 __ __';
-  let gs = new GameState(4, 4);
-  gs.loadGame(test_map_str);
+function loadGameStateFromStr(str) {
+  // initial parse on input str
+  let return_index = str.indexOf('\n');
+  let dimensions = str.substring(0, return_index);
+  let map = str.substring(return_index + 1);
+  // get dimensions
+  let dim_array = dimensions.split(' ');
+  let width = parseInt(dim_array[0]);
+  let height = parseInt(dim_array[1]);
+  // create gamestate
+  let gs = new GameState(width, height);
+  gs.loadMap(map);
+
   return gs;
 }
 
-// let gs = test();
-
-
-/*
-
-
-3 3
-__ __ 12|P1|B2
-P4 12|B5 __
-__ __ __
-
-
-*/
 
 //
