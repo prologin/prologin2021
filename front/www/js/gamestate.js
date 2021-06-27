@@ -74,7 +74,7 @@ class GameState {
 
     return map;
   }
-  loadMap(map) {
+  loadMap(map_str) {
     // read map str
     var x = 0, y = 0, buffer = '';
     for (let i = 0; i < map_str.length; i++) {
@@ -85,12 +85,12 @@ class GameState {
       if (c !== ' ' && c !== '\n') {
         // add char of tile to buffer and continue
         buffer += c;
-        continue;
+        if (i != map_str.length - 1) {
+          continue;
+        }
       }
 
       // - buffer has ended ! -
-
-      // add hte buffer to the map (pas sur ?)
 
       // process & reset buffer
       this.processTileBuffer(buffer, x, y);
@@ -99,8 +99,8 @@ class GameState {
       // goto next coordinates
       x++;
       if (x == this.width) {
-        this.x = 0;
-        this.y++;
+        x = 0;
+        y++;
       }
     }
   }
@@ -138,7 +138,7 @@ class GameState {
   }
 }
 
-function loadGameStateFromStr(str) {
+function loadGameStateFromMapStr(str) {
   // initial parse on input str
   let return_index = str.indexOf('\n');
   let dimensions = str.substring(0, return_index);
@@ -154,5 +154,11 @@ function loadGameStateFromStr(str) {
   return gs;
 }
 
+var test_str = '3 3\n\
+A11 ___ ___\n\
+C99 ___ Z00\n\
+B23 X45 Y61';
+
+// let gs = loadGameStateFromMapStr(test_str);
 
 //
