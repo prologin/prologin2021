@@ -13,6 +13,20 @@ class MapTile {
   isBridge() { return !this.isEmpty(); }
 }
 
+class PandaMapTile {
+  // constructor
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.panda = null;
+    this.baby_panda = null;
+  }
+  // methods
+  isEmpty() {return !(this.isPanda() || this.isBabyPanda()); }
+  isPanda() { return this.panda !== null; }
+  isBabyPanda() { return this.baby_panda !== null; }
+}
+
 class Panda {
   // constructor
   constructor(player, id) {
@@ -68,7 +82,7 @@ class GameState {
     let map = Array.from(Array(this.height), () => new Array(this.width));
     for (let i = 0; i < this.height; i++) {
       for (let j = 0; j < this.width; j++) {
-        map[i][j] = null;
+        map[i][j] = new PandaMapTile(j, i);
       }
     }
 
@@ -114,12 +128,16 @@ class GameState {
 
     // a baby panda ?
     if (buffer[0] == 'C') { // } || buffer[0] == 'Z' /*buffer.substring(1) == '00'*/) {
-      this.panda_map[y][x] = new BabyPanda(this.players['1'], parseInt(buffer.substring(1)));
+      let baby = new BabyPanda(this.players['1'], parseInt(buffer.substring(1)));
+      this.panda_map[y][x].baby_panda = baby;
+      this.players['1'].baby_pandas.push(baby);
       console.log('Baby panda: ' + buffer);
       return;
     }
     if (buffer[0] == 'Z') { // } || buffer[0] == 'Z' /*buffer.substring(1) == '00'*/) {
-      this.panda_map[y][x] = new BabyPanda(this.players['Z'], parseInt(buffer.substring(1)));
+      let baby = new BabyPanda(this.players['Z'], parseInt(buffer.substring(1)));
+      this.panda_map[y][x].baby_panda = baby;
+      this.players['2'].baby_pandas.push(baby);
       console.log('Baby panda: ' + buffer);
       return;
     }
@@ -128,7 +146,9 @@ class GameState {
     console.log('Panda: ' + buffer);
     // panda
     let player = (buffer[0] == 'A' || buffer[0] == 'B') ? '1' : '2';
-    this.panda_map[y][x] = new Panda(this.players[player], buffer[0]);
+    let panda = new Panda(this.players[player], buffer[0]);
+    this.panda_map[y][x].panda = panda;
+    this.players[player].pandas.push(panda);
     // bridge
     let direction = parseInt(buffer[1]);
     let value = parseInt(buffer[2]);
@@ -155,10 +175,10 @@ function loadGameStateFromMapStr(str) {
 }
 
 var test_str = '4 3\n\
-A11 ___ ___ ___\n\
+A11 ___ ___ Z01\n\
 C99 ___ Z00 ___\n\
 B23 X45 Y61 ___';
 
-// let gs = loadGameStateFromMapStr(test_str);
+let gs = loadGameStateFromMapStr(test_str);
 
 //
