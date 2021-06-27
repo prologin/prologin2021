@@ -19,7 +19,7 @@ GameState::GameState(const rules::Players& players, Map map)
             int player, num;
             bool is_panda;
 
-            if (cell.is_panda(&player, &num))
+            if (cell.has_panda(&player, &num))
             {
                 is_panda = true;
             }
@@ -116,6 +116,16 @@ GameState* GameState::copy() const
 }
 
 const Player* GameState::player_at(int id) const
+{
+    if (id >= 0 && (size_t)id < own_players_.size())
+    {
+        return &own_players_[id];
+    }
+
+    return nullptr;
+}
+
+Player* GameState::player_at(int id)
 {
     if (id >= 0 && (size_t)id < own_players_.size())
     {

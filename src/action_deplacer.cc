@@ -28,14 +28,16 @@ int ActionDeplacer::check(const GameState& st) const
 
 void ActionDeplacer::apply_on(GameState* st) const
 {
-    Map map = st->map();
-    Panda* panda = (Panda*)st->player_at(player_id_)->panda_at(id_panda_);
+    Map& map = st->map();
+    Panda* panda = st->player_at(player_id_)->panda_at(id_panda_);
     position desired_position = map.get_relative_position(panda->pos(), dir_);
 
     // How do we want to manage errors???
-    map.set(desired_position, Cell::panda(player_id_, id_panda_));
-    map.set(panda->pos(),
-            Cell::empty()); // FIXME Should be replaces with pont...
+    map.set(desired_position,
+            map.get(desired_position).with_panda(player_id_, id_panda_));
+    map.set(panda->pos(), map.get(panda->pos()).without_panda());
+
+    // TODO: capture bebe when next to it.
 
     panda->update_pos(desired_position);
 }

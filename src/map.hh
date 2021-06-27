@@ -17,7 +17,6 @@ enum class CellKind
     Invalid,
     Empty,
     Bebe,
-    Panda,
     Pont,
 };
 
@@ -31,23 +30,26 @@ public:
 
     bool is_invalid() const;
     bool is_empty() const;
-    bool is_panda(int* joueur, int* num) const;
     bool is_bebe(int* joueur, int* num) const;
     bool is_pont(int* valeur, direction* direction) const;
+    bool has_panda(int* joueur, int* num) const;
 
     static Cell invalid();
     static Cell empty();
-    static Cell panda(int joueur, int num);
     static Cell bebe(int joueur, int num);
     static Cell pont(int valeur, direction direction);
+
+    Cell with_panda(int joueur, int num) const;
+    Cell without_panda() const;
 
     bool operator==(Cell other) const;
 
 private:
-    Cell(CellKind kind, uint64_t data);
+    Cell(CellKind kind, uint32_t data, uint32_t panda_data);
 
     CellKind kind_;
-    uint64_t data_;
+    uint32_t data_;
+    uint32_t panda_data_;
 };
 
 // The map is an hexagonal grid, and uses the "even-q" coordinate system.

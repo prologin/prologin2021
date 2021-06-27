@@ -3,6 +3,11 @@
 
 #include "map.hh"
 
+namespace
+{
+constexpr uint32_t kNoPanda = 0xffffffff;
+}
+
 bool operator==(position a, position b)
 {
     return std::pair(a.x, a.y) == std::pair(b.x, b.y);
@@ -21,42 +26,38 @@ bool operator<(position a, position b)
 Cell::Cell()
     : kind_(CellKind::Invalid)
     , data_(0)
+    , panda_data_(0)
 {
 }
-Cell::Cell(CellKind kind, uint64_t data = 0)
+Cell::Cell(CellKind kind, uint32_t data, uint32_t panda_data = kNoPanda)
     : kind_(kind)
     , data_(data)
+    , panda_data_(panda_data)
 {
 }
 
 // static
 Cell Cell::invalid()
 {
-    return Cell(CellKind::Invalid);
+    return Cell(CellKind::Invalid, 0);
 }
 
 // static
 Cell Cell::empty()
 {
-    return Cell(CellKind::Empty);
-}
-
-// static
-Cell Cell::panda(int joueur, int num)
-{
-    return Cell(CellKind::Panda, (int64_t)joueur << 32 | num);
+    return Cell(CellKind::Empty, 0);
 }
 
 // static
 Cell Cell::pont(int valeur, direction direction)
 {
-    return Cell(CellKind::Pont, (int64_t)valeur << 32 | direction);
+    return Cell(CellKind::Pont, (int32_t)valeur << 16 | direction);
 }
 
 // static
 Cell Cell::bebe(int joueur, int num)
 {
-    return Cell(CellKind::Bebe, (int64_t)joueur << 32 | num);
+    return Cell(CellKind::Bebe, (int32_t)joueur << 16 | num);
 }
 
 CellKind Cell::kind() const
@@ -74,33 +75,44 @@ bool Cell::is_empty() const
     return kind_ == CellKind::Empty;
 }
 
-bool Cell::is_panda(int* joueur, int* num) const
-{
-    *joueur = data_ >> 32;
-    *num = data_ & 0xffffffff;
-
-    return kind_ == CellKind::Panda;
-}
-
 bool Cell::is_pont(int* valeur, direction* direction) const
 {
-    *valeur = data_ >> 32;
-    *direction = (enum direction)(data_ & 0xffffffff);
+    *valeur = data_ >> 16;
+    *direction = (enum direction)(data_ & 0xffff);
 
     return kind_ == CellKind::Pont;
 }
 
 bool Cell::is_bebe(int* joueur, int* num) const
 {
-    *joueur = data_ >> 32;
-    *num = data_ & 0xffffffff;
+    *joueur = data_ >> 16;
+    *num = data_ & 0xffff;
 
     return kind_ == CellKind::Bebe;
 }
 
+bool Cell::has_panda(int* joueur, int* num) const
+{
+    *joueur = panda_data_ >> 16;
+    *num = panda_data_ & 0xffff;
+
+    return kind_ == CellKind::Pont && panda_data_ != kNoPanda;
+}
+
+Cell Cell::with_panda(int joueur, int num) const
+{
+    return Cell(kind_, data_, joueur << 16 | num);
+}
+
+Cell Cell::without_panda() const
+{
+    return Cell(kind_, data_, kNoPanda);
+}
+
 bool Cell::operator==(Cell other) const
 {
-    return kind_ == other.kind_ && data_ == other.data_;
+    return kind_ == other.kind_ && data_ == other.data_ &&
+           panda_data_ == other.panda_data_;
 }
 
 Map::Map(int width, int height)
@@ -137,66 +149,81 @@ Map::Map(std::istream& input, int num_players)
 
         for (int x = 0; x < width; x++)
         {
-            // Every cell is represented by two characters followed by either
+            // Every cell is represented by three characters followed by either
             // a line break or a single space character.
-            input.read(data, 3);
+            input.read(data, 4);
 
             if (x == width - 1)
             {
-                assert(data[2] == '\n' || data[2] == 0);
+                assert(data[3] == '\n' || data[3] == 0);
             }
             else
             {
-                assert(data[2] == ' ');
+                assert(data[3] == ' ');
             }
+
+            int panda = -1, player = -1;
 
             switch (data[0])
             {
             case '_':
             {
                 // Empty cell.
-                assert(data[1] == '_');
+                assert(data[1] == '_' && data[2] == '_');
 
                 line.push_back(Cell::empty());
             }
             break;
 
-            case 'P':
+            case 'A': // Panda 1 of player 1.
+                player = 0;
+                panda = 0;
+                goto bridge;
+            case 'B': // Panda 2 of player 1.
+                player = 0;
+                panda = 1;
+                goto bridge;
+            case 'X': // Panda 1 of player 2.
+                player = 1;
+                panda = 0;
+                goto bridge;
+            case 'Y': // Panda 2 of player 2.
+                player = 1;
+                panda = 1;
+                goto bridge;
+
+            case 'P': // Bridge.
+            bridge:
             {
-                // Panda.
-                assert(data[1] >= '0' && data[1] <= '9');
+                assert(data[1] >= '1' && data[1] <= '6' && data[2] >= '1' &&
+                       data[2] <= '6');
 
                 const int n = data[1] - '0';
+                const int direction = data[2] - '1';
 
-                line.push_back(Cell::panda(n % num_players, n / num_players));
+                Cell cell = Cell::pont(n, (enum direction)direction);
+
+                if (panda != -1 && player != -1)
+                {
+                    cell = cell.with_panda(player, panda);
+                }
+
+                line.push_back(cell);
             }
             break;
 
-            case 'B':
+            case 'C': // Baby of player 1.
+            case 'Z': // Baby of player 2.
             {
-                // Baby.
-                assert(data[1] >= '0' && data[1] <= '9');
+                assert(data[1] >= '0' && data[1] <= '9' && data[2] >= '0' &&
+                       data[2] <= '9');
 
-                const int n = data[1] - '0';
+                const int player = data[0] == 'C' ? 0 : 1;
+                const int n = (data[1] - '0') * 10 + data[2] - '0';
 
-                line.push_back(Cell::bebe(n % num_players, n / num_players));
-            }
-            break;
+                assert(n > 0);
 
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            {
-                // Bridge.
-                assert(data[1] >= '1' && data[1] <= '6');
-
-                const int n = data[0] - '0';
-                const int direction = data[1] - '1';
-
-                line.push_back(Cell::pont(n, (enum direction)direction));
+                line.push_back(Cell::bebe(player, n - 1));
             }
             break;
 
@@ -209,6 +236,28 @@ Map::Map(std::istream& input, int num_players)
 
         cells_.push_back(std::move(line));
     }
+
+    // For every cell, make sure that bridge directions make sense.
+    for (int y = 0; y < height; y++)
+        for (int x = 0; x < width; x++)
+        {
+            const position pos = {x, y};
+            const Cell& cell = get(pos);
+
+            int value;
+            direction dir;
+
+            if (cell.is_pont(&value, &dir))
+            {
+                const position other_pos = get_relative_position(pos, dir);
+                const Cell& other_cell = get(other_pos);
+
+                direction other_dir;
+
+                assert(other_cell.is_pont(&value, &other_dir));
+                assert(get_relative_position(other_pos, other_dir) == pos);
+            }
+        }
 }
 
 int Map::width() const

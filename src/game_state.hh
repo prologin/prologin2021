@@ -19,6 +19,7 @@ public:
     ~GameState();
 
     const Map& map() const { return map_; }
+    Map& map() { return map_; }
     const std::vector<Player>& players() const { return own_players_; }
 
     int player_count() const { return own_players_.size(); }
@@ -27,6 +28,7 @@ public:
     // Returns a pointer to the player with the given identifier. If no such
     // player exists, nullptr is returned.
     const Player* player_at(int id) const;
+    Player* player_at(int id);
 
     // Whether the game is over.
     bool is_finished() const;

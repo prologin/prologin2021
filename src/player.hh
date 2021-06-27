@@ -90,6 +90,7 @@ public:
     // Returns a pointer to the panda with the given identifier. If no such
     // panda exists, nullptr is returned.
     const Panda* panda_at(int id) const;
+    Panda* panda_at(int id);
     // Returns a pointer to the bebe with the given identifier. If no such bebe
     // exists, nullptr is returned.
     const Bebe* bebe_at(int id) const;

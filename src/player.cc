@@ -141,6 +141,16 @@ const Panda* Player::panda_at(int id) const
     return nullptr;
 }
 
+Panda* Player::panda_at(int id)
+{
+    if (id >= 0 && (size_t)id < pandas_.size())
+    {
+        return &pandas_[id];
+    }
+
+    return nullptr;
+}
+
 const Bebe* Player::bebe_at(int id) const
 {
     if (id >= 0 && (size_t)id < bebes_.size())

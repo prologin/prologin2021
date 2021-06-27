@@ -32,7 +32,7 @@ int Api::panda_sur_case(position pos)
 {
     int player, id;
 
-    if (game_state_->map().get(pos).is_panda(&player, &id))
+    if (game_state_->map().get(pos).has_panda(&player, &id))
     {
         return player;
     }
@@ -101,7 +101,7 @@ panda_info Api::info_panda(position pos)
 {
     int player_id, id;
 
-    if (game_state_->map().get(pos).is_panda(&player_id, &id))
+    if (game_state_->map().get(pos).has_panda(&player_id, &id))
     {
         const Player& player = game_state_->players().at(player_id);
 

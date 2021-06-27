@@ -18,27 +18,87 @@ TEST(MapTest, EmptyInitialization)
 
 TEST(MapTest, ParseMap)
 {
+    // Reminder: even columns are "lower" than odd columns.
     std::istringstream ss("4 3\n"
-                          "P0 P1 __ P2\n"
-                          "11 B0 __ P3\n"
-                          "__ 23 B1 66\n");
+                          "A11 B34 ___ Y23\n"
+                          "P42 C01 ___ X66\n"
+                          "___ P55 Z01 ___\n");
     Map map(ss, 2);
 
-    ASSERT_EQ(map.get({0, 0}), Cell::panda(/* joueur= */ 0, /* num= */ 0));
-    ASSERT_EQ(map.get({1, 0}), Cell::panda(/* joueur= */ 1, /* num= */ 0));
-    ASSERT_EQ(map.get({3, 0}), Cell::panda(/* joueur= */ 0, /* num= */ 1));
-    ASSERT_EQ(map.get({3, 1}), Cell::panda(/* joueur= */ 1, /* num= */ 1));
-
-    ASSERT_EQ(map.get({1, 1}), Cell::bebe(/* joueur= */ 0, /* num= */ 0));
-    ASSERT_EQ(map.get({2, 2}), Cell::bebe(/* joueur= */ 1, /* num= */ 0));
-
-    ASSERT_EQ(map.get({0, 1}), Cell::pont(/* valeur= */ 1, NORD_EST));
-    ASSERT_EQ(map.get({1, 2}), Cell::pont(/* valeur= */ 2, SUD));
-    ASSERT_EQ(map.get({3, 2}), Cell::pont(/* valeur= */ 6, NORD));
-
+    // Line #0.
+    ASSERT_EQ(
+        map.get({0, 0}),
+        Cell::pont(1, NORD_EST).with_panda(/* player= */ 0, /* panda= */ 0));
+    ASSERT_EQ(
+        map.get({1, 0}),
+        Cell::pont(3, SUD_OUEST).with_panda(/* player= */ 0, /* panda= */ 1));
     ASSERT_EQ(map.get({2, 0}), Cell::empty());
+    ASSERT_EQ(map.get({3, 0}),
+              Cell::pont(2, SUD).with_panda(/* player= */ 1, /* panda= */ 1));
+
+    // Line #1.
+    ASSERT_EQ(map.get({0, 1}), Cell::pont(4, SUD_EST));
+    ASSERT_EQ(map.get({1, 1}), Cell::bebe(/* player= */ 0, /* num= */ 0));
     ASSERT_EQ(map.get({2, 1}), Cell::empty());
+    ASSERT_EQ(map.get({3, 1}),
+              Cell::pont(6, NORD).with_panda(/* player= */ 1, /* panda= */ 0));
+
+    // Line #2.
     ASSERT_EQ(map.get({0, 2}), Cell::empty());
+    ASSERT_EQ(map.get({1, 2}), Cell::pont(5, NORD_OUEST));
+    ASSERT_EQ(map.get({2, 2}), Cell::bebe(/* player= */ 1, /* num= */ 0));
+    ASSERT_EQ(map.get({3, 2}), Cell::empty());
+}
+
+TEST(MapTest, ParseInvalidMap)
+{
+    auto parse_map = [](std::string_view map_str) {
+        std::istringstream ss(map_str.data());
+        Map map(ss, 2);
+    };
+
+    // Correct example.
+    parse_map("4 3\n"
+              "A11 B34 ___ Y23\n"
+              "P42 C01 ___ X66\n"
+              "___ P55 Z01 ___\n");
+
+    // Empty.
+    ASSERT_DEATH(parse_map(""), "");
+
+    // Wrong dimensions.
+    ASSERT_DEATH(parse_map("4 3\n"
+                           "A11 B34 ___ Y23\n"
+                           "P42 C01 ___ X66\n"),
+                 "");
+
+    // Unknown cell.
+    ASSERT_DEATH(parse_map("4 3\n"
+                           "A11 B34 ___ Y23\n"
+                           "P42 C01 ___ X66\n"
+                           "___ I55 Z01 ___\n"),
+                 "");
+
+    // Invalid cell value.
+    ASSERT_DEATH(parse_map("4 3\n"
+                           "A11 B34 ___ Y23\n"
+                           "P42 C01 ___ X66\n"
+                           "___ P75 Z01 ___\n"),
+                 "");
+
+    // Unmatched bridge.
+    ASSERT_DEATH(parse_map("4 3\n"
+                           "A11 B34 P11 Y23\n"
+                           "P42 C01 ___ X66\n"
+                           "___ P55 Z01 ___\n"),
+                 "");
+
+    // Bridge facing the wrong way.
+    ASSERT_DEATH(parse_map("4 3\n"
+                           "A11 B35 ___ Y23\n"
+                           "P42 C01 ___ X66\n"
+                           "___ P55 Z01 ___\n"),
+                 "");
 }
 
 TEST(MapTest, PositionValidation)
