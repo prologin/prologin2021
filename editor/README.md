@@ -1,5 +1,13 @@
 # Map Editor
-The map editor is made using Pixi JS
+The map editor is made using Pixi JS.
+To use it, go to the root of prologin2021 and type :
+```sh
+./launch_editor.sh
+```
+To load a map :
+```sh
+./launch_editor.sh path/to/map
+```
 
 ## Structure
 - www : Web site interface files
