@@ -15,19 +15,11 @@ function newGameState(width, height) {
     // Create new game state
     gameState = new GameState(width, height);
 
-    // Init empty map (filled with water)
-    for (let i = 0; i < height; ++i) {
-        gameState.map.push([]);
-        for (let j = 0; j < width; ++j) {
-            gameState.map[i].push(null);
-        }
-    }
-
     updateView();
 }
 
-// Brush value
-let brush = [ 'P', 1, 0, 0 ];
+// Brush value (bridge, panda...)
+let brush;
 
 // --- UI ---
 let uiDumper = document.getElementById("dumper");
@@ -175,11 +167,11 @@ function updateBrush() {
         break;
     case 'panda':
         // TODO : Other options
-        brush = [ 'P', 1, 0, 0 ];
+        brush = new Panda(1, 1);
         break;
     case 'pont':
         // TODO : Other options
-        brush = null;
+        brush = [1, 1];
         break;
     }
 }
@@ -194,7 +186,21 @@ function onClick(x, y) {
     // Display
     // TODO : Update pandas
     if (i >= 0 && i < gameState.height && j >= 0 && j < gameState.width) {
-        gameState.map[i][j] = brush;
+        // Water
+        if (brush === null) {
+            gameState.map[i][j].bridge = null;
+        } else if (brush instanceof Panda) {
+            gameState.panda_map[i][j].panda = brush;
+            gameState.panda_map[i][j].baby_panda = null;
+        } else if (brush instanceof BabyPanda) {
+            gameState.panda_map[i][j].panda = null;
+            gameState.panda_map[i][j].baby_panda = brush;
+        } else if (brush instanceof Array) {
+            gameState.map[i][j].bridge = brush;
+        } else {
+            console.warn('Invalid brush');
+            console.warn(brush);
+        }
 
         updateView();
     }
@@ -204,7 +210,7 @@ function onClick(x, y) {
 // Default game state
 newGameState(10, 10);
 
-gameState.map[0][0] = [ 'P', 1, 0, 0 ];
+// TODO : Default panda positions (map area must be > 2)
 
 updateView();
 
