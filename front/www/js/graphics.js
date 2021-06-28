@@ -111,22 +111,49 @@ function clearTiles() {
     tiles = [];
 }
 
-// Redraws the game state
-function updateView() {
-    // Remove old sprites
-    clearTiles();
-
+// Draws a layer of the map
+// The map has two layers
+function drawMapLayer(layer, isForeground) {
     // i is the vertical index
     for (let i = 0; i < gameState.height; ++i) {
         // j is the horizontal index
         for (let j = 0; j < gameState.width; ++j) {
             let [x, y] = getCoords(i, j);
 
-            // TODO : Update when map format will change
-            let tile = gameState.map[i][j];
-            let tileName = tile !== null && tile[0] === 'P' ? 'panda1' : 'eau';
+            let tile = layer[i][j];
+            let tileName;
 
-            addTile(tileName, x, y);
+            if (tile instanceof MapTile) {
+                if (tile.isBridge()) {
+                    tileName = `pont_1_n`;
+                } else {
+                    tileName = 'eau';
+                }
+            } else if (tile instanceof PandaMapTile) {
+                if (tile.baby_panda !== null) {
+                    tileName = 'panda1_bebe';
+                } else if (tile.panda !== null) {
+                    tileName = 'panda1';
+                }
+            } else {
+                console.warn('Invalid tile at position ' + i + ' ' + j + ' ' +
+                             (isForeground ? '(foreground)' : '(background)'));
+                console.warn(tile);
+            }
+
+            if (tileName !== undefined) {
+                addTile(tileName, x, y);
+            }
         }
     }
+}
+
+// Redraws the game state
+function updateView() {
+    // Remove old sprites
+    clearTiles();
+
+    // Draw layers in order (background then foreground)
+    drawMapLayer(gameState.map, false);
+    drawMapLayer(gameState.panda_map, true);
 }

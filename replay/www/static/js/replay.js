@@ -26,14 +26,6 @@ function newGameState(width, height) {
     // Create new game state
     gameState = new GameState(width, height);
 
-    // Init empty map (filled with water)
-    for (let i = 0; i < height; ++i) {
-        gameState.map.push([]);
-        for (let j = 0; j < width; ++j) {
-            gameState.map[i].push(null);
-        }
-    }
-
     updateView();
 
     return gameState;
@@ -132,9 +124,15 @@ function autoreplayStep() { onNextClick(); }
 for (let i = 0; i < 3; ++i)
     gameStates.push(newGameState(10, 10));
 
-gameStates[0].map[0][0] = [ 'P', 1, 0, 0 ];
-gameStates[1].map[1][0] = [ 'P', 1, 0, 0 ];
-gameStates[2].map[1][2] = [ 'P', 1, 0, 0 ];
+gameStates[0].panda_map[0][0].panda = new Panda(1, 1);
+gameStates[1].panda_map[1][0].panda = new Panda(1, 1);
+gameStates[2].panda_map[1][1].panda = new Panda(1, 1);
+
+for (let gs of gameStates) {
+    gs.map[0][1].bridge = [4, 1];
+    gs.map[0][2].bridge = [2, 2];
+    gs.panda_map[2][1].baby_panda = new BabyPanda(1, 1);
+}
 
 // Render view
 updateReplay();
