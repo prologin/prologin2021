@@ -125,15 +125,16 @@ function drawMapLayer(layer, isForeground) {
 
             if (tile instanceof MapTile) {
                 if (tile.isBridge()) {
-                    tileName = `pont_1_n`;
+                    let direction = DIRECTIONS[tile.bridge[0] - 1];
+                    tileName = `pont_${tile.bridge[1]}_${direction}`;
                 } else {
                     tileName = 'eau';
                 }
             } else if (tile instanceof PandaMapTile) {
-                if (tile.baby_panda !== null) {
-                    tileName = 'panda1_bebe';
-                } else if (tile.panda !== null) {
-                    tileName = 'panda1';
+                if (tile.isBabyPanda()) {
+                    tileName = `panda${tile.baby_panda.player}_bebe`;
+                } else if (tile.isPanda()) {
+                    tileName = `panda${tile.panda.player}`;
                 }
             } else {
                 console.warn('Invalid tile at position ' + i + ' ' + j + ' ' +
