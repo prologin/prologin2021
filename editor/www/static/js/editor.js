@@ -74,7 +74,7 @@ function onBrushChange() {
     case "panda":
         brush = null;
         uiSelect1.hidden = false;
-        uiSelect2.hidden = true;
+        uiSelect2.hidden = false;
 
         onPandaBrush();
         break;
@@ -89,27 +89,46 @@ function onBrushChange() {
 }
 
 function onPandaBrush() {
-    // Clear node
+    // Clear nodes
     while (uiSelect1.firstChild) {
         uiSelect1.removeChild(uiSelect1.firstChild);
     }
 
     // Select1 = kind
-    let options =
-        [
-            "panda1",
-            "panda2",
-            "panda1_bebe",
-            "panda2_bebe",
-        ]
+    let options = [
+        "panda1",
+        "panda2",
+        "panda1_bebe",
+        "panda2_bebe",
+    ];
 
-        for (let option of options) {
+    for (let option of options) {
         let node = document.createElement("option");
         node.value = option;
         node.text = option;
 
         uiSelect1.appendChild(node);
     }
+
+    // Clear nodes
+    while (uiSelect2.firstChild) {
+        uiSelect2.removeChild(uiSelect2.firstChild);
+    }
+
+    // Select2 = id
+    options = [
+        "1",
+        "2",
+    ];
+
+    for (let option of options) {
+        let node = document.createElement("option");
+        node.value = option;
+        node.text = option;
+
+        uiSelect2.appendChild(node);
+    }
+
 }
 
 function onPontBrush() {
@@ -169,23 +188,24 @@ function updateBrush() {
     case 'pont':
         let value = parseInt(uiSelect1.value);
         let directionId = DIRECTIONS.indexOf(uiSelect2.value) + 1;
-        brush = [directionId, value];
+        brush = [ directionId, value ];
         break;
     case 'panda':
-        // TODO : Id option
+        let id = parseInt(uiSelect2.value);
+
         switch (uiSelect1.value) {
-            case 'panda1':
-                brush = new Panda(1, 1);
-                break;
-            case 'panda2':
-                brush = new Panda(2, 1);
-                break;
-            case 'panda1_bebe':
-                brush = new BabyPanda(1, 1);
-                break;
-            case 'panda2_bebe':
-                brush = new BabyPanda(2, 1);
-                break;
+        case 'panda1':
+            brush = new Panda(1, id);
+            break;
+        case 'panda2':
+            brush = new Panda(2, id);
+            break;
+        case 'panda1_bebe':
+            brush = new BabyPanda(1, id);
+            break;
+        case 'panda2_bebe':
+            brush = new BabyPanda(2, id);
+            break;
         }
         break;
     }
@@ -230,13 +250,10 @@ newGameState(10, 10);
 updateView();
 
 // Load map named open.map if necessary
-fetch("/open.map")
-    .then(res => {
-        if (res.status === 200)
-            res.text().then(onMapOpen);
-    });
+fetch("/open.map").then(res => {
+    if (res.status === 200)
+        res.text().then(onMapOpen);
+});
 
 // Called when there is a map to open at start
-function onMapOpen(data) {
-    console.log(`Map to open data : ${data}`);
-}
+function onMapOpen(data) { console.log(`Map to open data : ${data}`); }
