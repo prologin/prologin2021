@@ -128,7 +128,6 @@ function onPandaBrush() {
 
         uiSelect2.appendChild(node);
     }
-
 }
 
 function onPontBrush() {
@@ -211,6 +210,23 @@ function updateBrush() {
     }
 }
 
+// Removes the panda (Panda or BabyPanda)
+// in the brush variable
+// Used to avoid two pandas of the same type
+function removeBrushPanda() {
+    for (let i = 0; i < gameState.height; ++i) {
+        for (let j = 0; j < gameState.width; ++j) {
+            let panda = gameState.panda_map[i][j].panda;
+
+            if (panda !== null && panda !== undefined &&
+                panda.player === brush.player && panda.id === brush.id) {
+                gameState.panda_map[i][j].panda = null;
+                return;
+            }
+        }
+    }
+}
+
 // When the canvas is clicked
 function onClick(x, y) {
     // Convert to grid position
@@ -219,12 +235,12 @@ function onClick(x, y) {
     updateBrush();
 
     // Display
-    // TODO : Update pandas
     if (i >= 0 && i < gameState.height && j >= 0 && j < gameState.width) {
         // Water
         if (brush === null) {
             gameState.map[i][j].bridge = null;
         } else if (brush instanceof Panda) {
+            removeBrushPanda();
             gameState.panda_map[i][j].panda = brush;
             gameState.panda_map[i][j].baby_panda = null;
         } else if (brush instanceof BabyPanda) {
@@ -247,6 +263,7 @@ newGameState(10, 10);
 
 // TODO : Default panda positions (map area must be > 2)
 
+onBrushChange();
 updateView();
 
 // Load map named open.map if necessary
