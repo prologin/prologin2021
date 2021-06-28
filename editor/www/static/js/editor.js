@@ -161,17 +161,32 @@ initGraphics(uiCanvas, mapWidth, mapHeight, onClick);
 
 // Updates the brush value based on the <select> nodes
 function updateBrush() {
+    // TODO : Change option names
     switch (uiBrush.value) {
     case 'eau':
         brush = null;
         break;
-    case 'panda':
-        // TODO : Other options
-        brush = new Panda(1, 1);
-        break;
     case 'pont':
-        // TODO : Other options
-        brush = [1, 1];
+        let value = parseInt(uiSelect1.value);
+        let directionId = DIRECTIONS.indexOf(uiSelect2.value) + 1;
+        brush = [directionId, value];
+        break;
+    case 'panda':
+        // TODO : Id option
+        switch (uiSelect1.value) {
+            case 'panda1':
+                brush = new Panda(1, 1);
+                break;
+            case 'panda2':
+                brush = new Panda(2, 1);
+                break;
+            case 'panda1_bebe':
+                brush = new BabyPanda(1, 1);
+                break;
+            case 'panda2_bebe':
+                brush = new BabyPanda(2, 1);
+                break;
+        }
         break;
     }
 }
