@@ -114,6 +114,7 @@ function onPandaBrush() {
         "panda2",
         "panda1_bebe",
         "panda2_bebe",
+        "Effacer",
     ];
 
     for (let option of options) {
@@ -219,6 +220,9 @@ function updateBrush() {
         case 'panda2_bebe':
             brush = new BabyPanda(2, id);
             break;
+        case 'Effacer':
+            brush = null;
+            break;
         }
         break;
     }
@@ -250,14 +254,19 @@ function onClick(x, y) {
 
     // Display
     if (i >= 0 && i < gameState.height && j >= 0 && j < gameState.width) {
-        // Water
+        // Delete
         if (brush === null) {
             gameState.map[i][j].bridge = null;
+            gameState.panda_map[i][j].baby_panda = null;
         } else if (brush instanceof Panda) {
+            if (!gameState.panda_map[i][j].isEmpty()) return;
+
             removeBrushPanda();
             gameState.panda_map[i][j].panda = brush;
             gameState.panda_map[i][j].baby_panda = null;
         } else if (brush instanceof BabyPanda) {
+            if (gameState.panda_map[i][j].isPanda()) return;
+
             gameState.panda_map[i][j].panda = null;
             gameState.panda_map[i][j].baby_panda = brush;
         } else if (brush instanceof Array) {
@@ -274,8 +283,6 @@ function onClick(x, y) {
 // --- Main ---
 // Default game state
 newGameState(10, 10);
-
-// TODO : Default panda positions (map area must be > 2)
 
 onBrushChange();
 updateView();
