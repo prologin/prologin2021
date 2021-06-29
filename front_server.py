@@ -19,6 +19,19 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         print("GET", self.path)
+
+        is_action = self.path.startswith("/action/")
+
+        if is_action:
+            action = self.path[len("/action/") :]
+
+            if action == "next_state":
+                with open("front/www/next_state", "w") as f:
+                    # TODO : Play next turn and store the gamestate in f
+                    f.write("This is the next state")
+
+            self.path = "/front/" + action
+
         is_shared = self.path.startswith("/front/")
 
         # Change directory

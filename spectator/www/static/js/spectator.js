@@ -2,4 +2,14 @@
 
 // Main spectator script
 
-// TODO : Update (this script is a copy of replay.js)
+function onNextClick() {
+    // The server will play a turn and send the new game state
+    fetch("/action/next_state").then(res => {
+        if (res.status === 200)
+            res.text().then(onNextStateFetched);
+    });
+}
+
+function onNextStateFetched(nextStateJson) {
+    console.log(`Got next state ${nextStateJson}`);
+}
