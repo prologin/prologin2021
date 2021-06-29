@@ -3,6 +3,15 @@
 // Main map editor script
 
 // --- Globals ---
+let allDirections = [
+    "Nord",
+    "Nord-Est",
+    "Nord-Ouest",
+    "Sud",
+    "Sud-Est",
+    "Sud-Ouest",
+];
+
 function newGameState(width, height) {
     if (width * height < 2) {
         width = 2;
@@ -110,10 +119,10 @@ function onPandaBrush() {
 
     // Select1 = kind
     let options = [
-        "panda1",
-        "panda2",
-        "panda1_bebe",
-        "panda2_bebe",
+        "Panda (joueur 1)",
+        "Panda (joueur 2)",
+        "Bébé panda (joueur 1)",
+        "Bébé panda (joueur 2)",
         "Effacer",
     ];
 
@@ -132,8 +141,8 @@ function onPandaBrush() {
 
     // Select2 = id
     options = [
-        "1",
-        "2",
+        "Premier",
+        "Deuxième",
     ];
 
     for (let option of options) {
@@ -168,16 +177,7 @@ function onPontBrush() {
     }
 
     // Select2 = direction
-    let options = [
-        "n",
-        "ne",
-        "no",
-        "s",
-        "se",
-        "so",
-    ];
-
-    for (let option of options) {
+    for (let option of allDirections) {
         let node = document.createElement("option");
         node.value = option;
         node.text = option;
@@ -194,30 +194,29 @@ initGraphics(uiCanvas, mapWidth, mapHeight, onClick);
 
 // Updates the brush value based on the <select> nodes
 function updateBrush() {
-    // TODO : Change option names
     switch (uiBrush.value) {
     case 'eau':
         brush = null;
         break;
     case 'pont':
         let value = parseInt(uiSelect1.value);
-        let directionId = DIRECTIONS.indexOf(uiSelect2.value) + 1;
+        let directionId = allDirections.indexOf(uiSelect2.value) + 1;
         brush = [ directionId, value ];
         break;
     case 'panda':
-        let id = parseInt(uiSelect2.value);
+        let id = uiSelect2.value === "Premier" ? 1 : 2;
 
         switch (uiSelect1.value) {
-        case 'panda1':
+        case 'Panda (joueur 1)':
             brush = new Panda(1, id);
             break;
-        case 'panda2':
+        case 'Panda (joueur 2)':
             brush = new Panda(2, id);
             break;
-        case 'panda1_bebe':
+        case 'Bébé panda (joueur 1)':
             brush = new BabyPanda(1, id);
             break;
-        case 'panda2_bebe':
+        case 'Bébé panda (joueur 2)':
             brush = new BabyPanda(2, id);
             break;
         case 'Effacer':
