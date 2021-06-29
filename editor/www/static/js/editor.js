@@ -18,7 +18,7 @@ function newGameState(width, height) {
         height = 2;
 
         alert("Les dimensions de la cartes sont trop petites, " +
-            "les dimensions sont changées à 2x2");
+              "les dimensions sont changées à 2x2");
     }
 
     // Update dimension values
@@ -50,6 +50,8 @@ let uiCanvas = document.getElementById("canvas");
 let uiBrush = document.getElementById("brush");
 let uiSelect1 = document.getElementById("select1");
 let uiSelect2 = document.getElementById("select2");
+let uiSelect1Info = document.getElementById("select1-info");
+let uiSelect2Info = document.getElementById("select2-info");
 
 onBrushChange();
 
@@ -93,11 +95,15 @@ function onBrushChange() {
         brush = null;
         uiSelect1.hidden = true;
         uiSelect2.hidden = true;
+        uiSelect1Info.textContent = "";
+        uiSelect2Info.textContent = "";
         break;
     case "panda":
         brush = null;
         uiSelect1.hidden = false;
         uiSelect2.hidden = false;
+        uiSelect1Info.textContent = "Type";
+        uiSelect2Info.textContent = "Identifiant";
 
         onPandaBrush();
         break;
@@ -105,6 +111,8 @@ function onBrushChange() {
         brush = null;
         uiSelect1.hidden = false;
         uiSelect2.hidden = false;
+        uiSelect1Info.textContent = "Valeur";
+        uiSelect2Info.textContent = "Direction";
 
         onPontBrush();
         break;
@@ -258,13 +266,15 @@ function onClick(x, y) {
             gameState.map[i][j].bridge = null;
             gameState.panda_map[i][j].baby_panda = null;
         } else if (brush instanceof Panda) {
-            if (!gameState.panda_map[i][j].isEmpty()) return;
+            if (!gameState.panda_map[i][j].isEmpty())
+                return;
 
             removeBrushPanda();
             gameState.panda_map[i][j].panda = brush;
             gameState.panda_map[i][j].baby_panda = null;
         } else if (brush instanceof BabyPanda) {
-            if (gameState.panda_map[i][j].isPanda()) return;
+            if (gameState.panda_map[i][j].isPanda())
+                return;
 
             gameState.panda_map[i][j].panda = null;
             gameState.panda_map[i][j].baby_panda = brush;
