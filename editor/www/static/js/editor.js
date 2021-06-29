@@ -4,6 +4,14 @@
 
 // --- Globals ---
 function newGameState(width, height) {
+    if (width * height < 2) {
+        width = 2;
+        height = 2;
+
+        alert("Les dimensions de la cartes sont trop petites, " +
+            "les dimensions sont changées à 2x2");
+    }
+
     // Update dimension values
     mapWidth = width;
     mapHeight = height;
@@ -14,6 +22,12 @@ function newGameState(width, height) {
 
     // Create new game state
     gameState = new GameState(width, height);
+
+    // Set pandas start position
+    gameState.panda_map[0][0].panda = new Panda(1, 1);
+    gameState.panda_map[0][1].panda = new Panda(1, 2);
+    gameState.panda_map[1][0].panda = new Panda(2, 1);
+    gameState.panda_map[1][1].panda = new Panda(2, 2);
 
     updateView();
 }
