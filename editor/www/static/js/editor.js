@@ -212,20 +212,21 @@ function updateBrush() {
         brush = [ directionId, value ];
         break;
     case 'panda':
-        let id = uiSelect2.value === "Premier" ? 1 : 2;
+        let firstId = uiSelect2.value === "Premier";
+        let id = firstId ? 1 : 2;
 
         switch (uiSelect1.value) {
         case 'Panda (joueur 1)':
-            brush = new Panda(1, id);
+            brush = new Panda("1", firstId ? "A" : "B");
             break;
         case 'Panda (joueur 2)':
-            brush = new Panda(2, id);
+            brush = new Panda("2", firstId ? "X" : "Y");
             break;
         case 'Bébé panda (joueur 1)':
-            brush = new BabyPanda(1, id);
+            brush = new BabyPanda("1", id);
             break;
         case 'Bébé panda (joueur 2)':
-            brush = new BabyPanda(2, id);
+            brush = new BabyPanda("2", id);
             break;
         case 'Effacer':
             brush = null;
@@ -244,7 +245,7 @@ function removeBrushPanda() {
             let panda = gameState.panda_map[i][j].panda;
 
             if (panda !== null && panda !== undefined &&
-                panda.player === brush.player && panda.id === brush.id) {
+                panda.id === brush.id) {
                 gameState.panda_map[i][j].panda = null;
                 return;
             }
