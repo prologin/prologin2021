@@ -53,6 +53,7 @@ class Player {
     this.pandas = [];
     this.baby_pandas = [];
     this.points = 0;
+    this.babies_on_back = 0;
   }
 }
 
@@ -99,7 +100,7 @@ class GameState {
       if (c !== ' ' && c !== '\n') {
         // add char of tile to buffer and continue
         buffer += c;
-        if (i != map_str.length - 1) {
+        if (buffer.length != 3 || i != map_str.length - 1) {
           continue;
         }
       }
@@ -135,26 +136,68 @@ class GameState {
       return;
     }
     if (buffer[0] == 'Z') { // } || buffer[0] == 'Z' /*buffer.substring(1) == '00'*/) {
-      let baby = new BabyPanda(this.players['Z'], parseInt(buffer.substring(1)));
+      let baby = new BabyPanda(this.players['2'], parseInt(buffer.substring(1)));
       this.panda_map[y][x].baby_panda = baby;
       this.players['2'].baby_pandas.push(baby);
       console.log('Baby panda: ' + buffer);
       return;
     }
 
-    // a panda (with a bridge) !
-    console.log('Panda: ' + buffer);
-    // panda
-    let player = (buffer[0] == 'A' || buffer[0] == 'B') ? '1' : '2';
-    let panda = new Panda(this.players[player], buffer[0]);
-    this.panda_map[y][x].panda = panda;
-    this.players[player].pandas.push(panda);
+    // a panda
+    if (buffer[0] != '_') {
+      console.log('Panda: ' + buffer);
+      let player = (buffer[0] == 'A' || buffer[0] == 'B') ? '1' : '2';
+      let panda = new Panda(this.players[player], buffer[0]);
+      this.panda_map[y][x].panda = panda;
+      this.players[player].pandas.push(panda);
+    }
+
     // bridge
+    console.log('Bridge: ' + buffer);
     let direction = parseInt(buffer[1]);
     let value = parseInt(buffer[2]);
     this.map[y][x].bridge = [direction, value]
 
     return;
+  }
+  //
+  exportToMapStr() {
+    let s = this.width + ' ' + this.height + '\n';
+    for (let i = 0; i < this.height; i++) {
+      for (let j = 0; j < this.width; j++) {
+        let buffer0 = '_', buffer1 = '_', buffer2 = '_';
+        // bridge
+        if (this.map[i][j].isBridge()) {
+          buffer1 = this.map[i][j].bridge[0].toString();
+          buffer2 = this.map[i][j].bridge[1].toString();
+        }
+        // panda
+        if (this.panda_map[i][j].isPanda()) {
+          buffer0 = this.panda_map[i][j].panda.id;
+        }
+        // baby panda
+        else if (this.panda_map[i][j].isBabyPanda()) {
+          buffer0 = this.panda_map[i][j].baby_panda.player == this.players['1'] ? 'C' : 'Z';
+          let tmp = this.panda_map[i][j].baby_panda.id.toString();
+          buffer1 = (~~(tmp / 10)).toString(); // (~~(tmp / 10)) is integer division of tmp by 10
+          buffer2 = (tmp % 10).toString();
+        }
+        // water
+        else {
+          // start off by being water, so ...
+        }
+        // append buffer
+        s += buffer0 + buffer1 + buffer2;
+        // append ' '
+        if (j !== this.width - 1) {
+          s += ' ';
+        }
+      }
+      // goto next line
+      s += '\n';
+    }
+
+    return s;
   }
 }
 
