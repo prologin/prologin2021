@@ -60,7 +60,8 @@ class Player {
 
 class GameState {
   // constructor
-  constructor(width, height) {
+  constructor(width, height, debug = false) {
+    this.debug = debug;
     this.width = width;
     this.height = height;
     this.map = this.initMap();
@@ -120,40 +121,40 @@ class GameState {
     }
   }
   processTileBuffer(buffer, x, y) {
-    console.log("process: " + buffer + "\n");
+    if (this.debug) console.log("process: " + buffer + "\n");
     // ___ empty/water
     if (buffer == '___') {
-      console.log('water');
+      if (this.debug) console.log('water');
       return;
     }
 
     // a baby panda ?
     if (buffer[0] == 'C') { // } || buffer[0] == 'Z' /*buffer.substring(1) == '00'*/) {
-      let baby = new BabyPanda(this.players['1'], parseInt(buffer.substring(1)));
+      let baby = new BabyPanda('1', parseInt(buffer.substring(1)));
       this.panda_map[y][x].baby_panda = baby;
       this.players['1'].baby_pandas.push(baby);
-      console.log('Baby panda: ' + buffer);
+      if (this.debug) console.log('Baby panda: ' + buffer);
       return;
     }
     if (buffer[0] == 'Z') { // } || buffer[0] == 'Z' /*buffer.substring(1) == '00'*/) {
-      let baby = new BabyPanda(this.players['2'], parseInt(buffer.substring(1)));
+      let baby = new BabyPanda('2', parseInt(buffer.substring(1)));
       this.panda_map[y][x].baby_panda = baby;
       this.players['2'].baby_pandas.push(baby);
-      console.log('Baby panda: ' + buffer);
+      if (this.debug) console.log('Baby panda: ' + buffer);
       return;
     }
 
     // a panda
     if (buffer[0] != '_') {
-      console.log('Panda: ' + buffer);
+      if (this.debug) console.log('Panda: ' + buffer);
       let player = (buffer[0] == 'A' || buffer[0] == 'B') ? '1' : '2';
-      let panda = new Panda(this.players[player], buffer[0]);
+      let panda = new Panda(player, buffer[0]);
       this.panda_map[y][x].panda = panda;
       this.players[player].pandas.push(panda);
     }
 
     // bridge
-    console.log('Bridge: ' + buffer);
+    if (this.debug) console.log('Bridge: ' + buffer);
     let direction = parseInt(buffer[1]);
     let value = parseInt(buffer[2]);
     this.map[y][x].bridge = [direction, value]
@@ -177,7 +178,7 @@ class GameState {
         }
         // baby panda
         else if (this.panda_map[i][j].isBabyPanda()) {
-          buffer0 = this.panda_map[i][j].baby_panda.player == this.players['1'] ? 'C' : 'Z';
+          buffer0 = this.panda_map[i][j].baby_panda.player == '1' ? 'C' : 'Z';
           let tmp = this.panda_map[i][j].baby_panda.id.toString();
           buffer1 = (~~(tmp / 10)).toString(); // (~~(tmp / 10)) is integer division of tmp by 10
           buffer2 = (tmp % 10).toString();
@@ -211,7 +212,7 @@ function loadGameStateFromMapStr(str) {
   let width = parseInt(dim_array[0]);
   let height = parseInt(dim_array[1]);
   // create gamestate
-  let gs = new GameState(width, height);
+  let gs = new GameState(width, height, false);
   gs.loadMap(map);
 
   return gs;
