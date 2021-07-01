@@ -32,9 +32,14 @@
     <br />
 
     <form>
-        <textarea name="dumper" id="dumper" readonly="true"></textarea>
+        <style>
+        .dumper {
+            width: 50%;
+            height: 10%;
+        }
+        </style>
+        <textarea name="dumper" id="dumper" readonly="true" class="dumper"></textarea>
     </form>
-    <!--<input type="text" id="dumper" readonly="true" />-->
     <input type="button" value="COPIER" id="copy" onclick="onCopyClick()" /></input>
 
     <script src="static/js/editor.js"></script>

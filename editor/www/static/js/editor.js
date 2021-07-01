@@ -291,7 +291,7 @@ function onClick(x, y) {
 
 // --- Main ---
 // Default game state
-newGameState(10, 10);
+newGameState(10, 10); // how avoid this ?
 
 onBrushChange();
 updateView();
@@ -305,6 +305,12 @@ fetch("/open.map").then(res => {
 // Called when there is a map to open at start
 function onMapOpen(data) {
     gameState = loadGameStateFromMapStr(data);
+    // change width + height
+    mapWidth = gameState.width;
+    mapHeight = gameState.height;
     updateViewSize();
+    // Update view dimensions
+    app.renderer.resize(mapWidth, mapHeight);
+    // Update the view
     updateView();
 }
