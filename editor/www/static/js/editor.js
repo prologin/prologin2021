@@ -78,7 +78,7 @@ function onNewClick() {
     newGameState(width, height);
 }
 
-function onDumpClick() { uiDumper.value = "(map dump here)"; }
+function onDumpClick() { uiDumper.value = gameState.exportToMapStr(); }
 
 function onCopyClick() {
     // Copy uiDumper's text
@@ -303,4 +303,8 @@ fetch("/open.map").then(res => {
 });
 
 // Called when there is a map to open at start
-function onMapOpen(data) { console.log(`Map to open data : ${data}`); }
+function onMapOpen(data) {
+    gameState = loadGameStateFromMapStr(data);
+    updateViewSize();
+    updateView();
+}
