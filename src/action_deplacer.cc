@@ -23,7 +23,8 @@ int ActionDeplacer::check(const GameState& st) const
     int target_value, target_player, target_panda;
     direction target_dir;
 
-    if (!target_cell.is_pont(&target_value, &target_dir) || target_cell.has_panda(&target_player, &target_panda))
+    if (!target_cell.is_pont(&target_value, &target_dir) ||
+        target_cell.has_panda(&target_player, &target_panda))
         return MOUVEMENT_INVALIDE;
 
     // Ensure the value of both bridges is the same.
@@ -43,7 +44,8 @@ void ActionDeplacer::apply_on(GameState* st) const
 {
     Map& map = st->map();
     Panda& panda = *st->player_at(player_id_)->panda_at(id_panda_);
-    const position desired_position = map.get_relative_position(panda.pos(), dir_);
+    const position desired_position =
+        map.get_relative_position(panda.pos(), dir_);
 
     // Update map and positions.
     map.set(desired_position,
@@ -55,11 +57,13 @@ void ActionDeplacer::apply_on(GameState* st) const
     // TODO: update value of both ends of the bridge.
 
     // Pick up adjacent baby pandas, if any.
-    for (const position adjacent_pos : map.get_adjacent_positions(desired_position))
+    for (const position adjacent_pos :
+         map.get_adjacent_positions(desired_position))
     {
         int player, num;
 
-        if (map.get(adjacent_pos).is_bebe(&player, &num) && player == player_id_)
+        if (map.get(adjacent_pos).is_bebe(&player, &num) &&
+            player == player_id_)
         {
             Bebe& bebe = *st->player_at(player_id_)->bebe_at(num);
 

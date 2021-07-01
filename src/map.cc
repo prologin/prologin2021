@@ -166,15 +166,6 @@ Map::Map(std::istream& input, int num_players)
 
             switch (data[0])
             {
-            case '_':
-            {
-                // Empty cell.
-                assert(data[1] == '_' && data[2] == '_');
-
-                line.push_back(Cell::empty());
-            }
-            break;
-
             case 'A': // Panda 1 of player 1.
                 player = 0;
                 panda = 0;
@@ -192,26 +183,6 @@ Map::Map(std::istream& input, int num_players)
                 panda = 1;
                 goto bridge;
 
-            case 'P': // Bridge.
-            bridge:
-            {
-                assert(data[1] >= '1' && data[1] <= '6' && data[2] >= '1' &&
-                       data[2] <= '6');
-
-                const int n = data[1] - '0';
-                const int direction = data[2] - '1';
-
-                Cell cell = Cell::pont(n, (enum direction)direction);
-
-                if (panda != -1 && player != -1)
-                {
-                    cell = cell.with_panda(player, panda);
-                }
-
-                line.push_back(cell);
-            }
-            break;
-
             case 'C': // Baby of player 1.
             case 'Z': // Baby of player 2.
             {
@@ -226,6 +197,35 @@ Map::Map(std::istream& input, int num_players)
                 line.push_back(Cell::bebe(player, n - 1));
             }
             break;
+
+            case '_':
+                if (data[1] == '_')
+                {
+                    // Empty cell.
+                    assert(data[2] == '_');
+
+                    line.push_back(Cell::empty());
+                }
+                else
+                {
+                bridge:
+                    // Bridge.
+                    assert(data[1] >= '1' && data[1] <= '6' && data[2] >= '1' &&
+                           data[2] <= '6');
+
+                    const int n = data[1] - '0';
+                    const int direction = data[2] - '1';
+
+                    Cell cell = Cell::pont(n, (enum direction)direction);
+
+                    if (panda != -1 && player != -1)
+                    {
+                        cell = cell.with_panda(player, panda);
+                    }
+
+                    line.push_back(cell);
+                }
+                break;
 
             default:
                 // Invalid.

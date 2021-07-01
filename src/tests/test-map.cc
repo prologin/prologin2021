@@ -21,8 +21,8 @@ TEST(MapTest, ParseMap)
     // Reminder: even columns are "lower" than odd columns.
     std::istringstream ss("4 3\n"
                           "A11 B34 ___ Y23\n"
-                          "P42 C01 ___ X66\n"
-                          "___ P55 Z01 ___\n");
+                          "_42 C01 ___ X66\n"
+                          "___ _55 Z01 ___\n");
     Map map(ss, 2);
 
     // Line #0.
@@ -60,8 +60,8 @@ TEST(MapTest, ParseInvalidMap)
     // Correct example.
     parse_map("4 3\n"
               "A11 B34 ___ Y23\n"
-              "P42 C01 ___ X66\n"
-              "___ P55 Z01 ___\n");
+              "_42 C01 ___ X66\n"
+              "___ _55 Z01 ___\n");
 
     // Empty.
     ASSERT_DEATH(parse_map(""), "");
@@ -69,35 +69,35 @@ TEST(MapTest, ParseInvalidMap)
     // Wrong dimensions.
     ASSERT_DEATH(parse_map("4 3\n"
                            "A11 B34 ___ Y23\n"
-                           "P42 C01 ___ X66\n"),
+                           "_42 C01 ___ X66\n"),
                  "");
 
     // Unknown cell.
     ASSERT_DEATH(parse_map("4 3\n"
                            "A11 B34 ___ Y23\n"
-                           "P42 C01 ___ X66\n"
+                           "_42 C01 ___ X66\n"
                            "___ I55 Z01 ___\n"),
                  "");
 
     // Invalid cell value.
     ASSERT_DEATH(parse_map("4 3\n"
                            "A11 B34 ___ Y23\n"
-                           "P42 C01 ___ X66\n"
-                           "___ P75 Z01 ___\n"),
+                           "_42 C01 ___ X66\n"
+                           "___ _75 Z01 ___\n"),
                  "");
 
     // Unmatched bridge.
     ASSERT_DEATH(parse_map("4 3\n"
-                           "A11 B34 P11 Y23\n"
-                           "P42 C01 ___ X66\n"
-                           "___ P55 Z01 ___\n"),
+                           "A11 B34 _11 Y23\n"
+                           "_42 C01 ___ X66\n"
+                           "___ _55 Z01 ___\n"),
                  "");
 
     // Bridge facing the wrong way.
     ASSERT_DEATH(parse_map("4 3\n"
                            "A11 B35 ___ Y23\n"
-                           "P42 C01 ___ X66\n"
-                           "___ P55 Z01 ___\n"),
+                           "_42 C01 ___ X66\n"
+                           "___ _55 Z01 ___\n"),
                  "");
 }
 
