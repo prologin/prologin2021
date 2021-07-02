@@ -79,6 +79,8 @@ if __name__ == "__main__":
     port = BASE_PORT + server_id
     RequestHandler.root = server_root
 
+    # To avoid address already in use error
+    TCPServer.allow_reuse_address = True
     with TCPServer(("127.0.0.1", port), RequestHandler) as httpd:
         print(f"Lien vers {server_name} : http://localhost:{port}")
         httpd.serve_forever()
