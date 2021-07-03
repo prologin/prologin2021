@@ -5,9 +5,11 @@ import os
 import sys
 from http import server
 from socketserver import TCPServer
+import requests
 
 
 BASE_PORT = 8000
+SPECTATOR_URL = "http://localhost:8102"
 
 
 class RequestHandler(server.SimpleHTTPRequestHandler):
@@ -26,9 +28,17 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
             action = self.path[len("/action/") :]
 
             if action == "next_state":
-                with open("front/www/next_state", "w") as f:
-                    # TODO : Play next turn and store the gamestate in f
-                    f.write("This is the next state")
+                # Get from spectator server
+                rq = requests.get(SPECTATOR_URL)
+
+                # Write next_state file
+                if rq.status_code == 200:
+                    data = rq.text
+                    with open("front/www/next_state", "w") as f:
+                        f.write(data)
+            elif action == "stop":
+                # Just stop
+                rq = requests.get(SPECTATOR_URL + "/stop")
 
             self.path = "/front/" + action
 
