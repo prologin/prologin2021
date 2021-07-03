@@ -31,13 +31,6 @@ public:
     /// Pose un pont dans la direction choisie à partir du panda ``id_panda``.
     ApiActionFunc<ActionPoser> poser{this};
 
-    /// Renvoie le plus court chemin entre deux positions de la rivière sous la
-    /// forme d'une suite de direction à emprunter. Ce chemin ne prend pas en
-    /// compte les ponts et leurs valeurs, uniquement des déplacements. Si la
-    /// position est invalide ou que le chemin n'existe pas, le chemin renvoyé
-    /// est vide.
-    std::vector<direction> chemin(position pos1, position pos2);
-
     /// Renvoie le type d'une case donnée.
     case_type type_case(position pos);
 

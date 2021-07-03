@@ -156,19 +156,6 @@ function:
       - [pont_fin, int, "Fin du pont"]
 
 # Fonctions de requête de l'état du jeu
-  # TODO : Useful ?
-  -
-    fct_name: chemin
-    fct_summary: Renvoie le plus court chemin entre deux positions de la
-                 rivière sous la forme d'une suite de direction à emprunter. Ce
-                 chemin ne prend pas en compte les ponts et leurs valeurs,
-                 uniquement des déplacements.
-                 Si la position est invalide ou que le chemin n'existe pas, le
-                 chemin renvoyé est vide.
-    fct_ret_type: direction array
-    fct_arg:
-      - [pos1, position, "Position de départ"]
-      - [pos2, position, "Position d'arrivée"]
   -
     fct_name: type_case
     fct_summary: Renvoie le type d'une case donnée.

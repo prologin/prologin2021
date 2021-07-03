@@ -16,12 +16,6 @@ Api::Api(std::unique_ptr<GameState> game_state,
     api = this;
 }
 
-std::vector<direction> Api::chemin(position pos1, position pos2)
-{
-    // TODO
-    abort();
-}
-
 case_type Api::type_case(position pos)
 {
     // TODO

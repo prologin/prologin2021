@@ -36,11 +36,6 @@ extern "C" erreur api_poser(int id_panda, direction dir, int pont_debut,
     return api->poser(id_panda, dir, pont_debut, pont_fin);
 }
 
-extern "C" std::vector<direction> api_chemin(position pos1, position pos2)
-{
-    return api->chemin(pos1, pos2);
-}
-
 extern "C" case_type api_type_case(position pos)
 {
     return api->type_case(pos);
