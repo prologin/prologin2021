@@ -4,7 +4,7 @@
 #pragma once
 
 /// Nombre de tours à jouer avant la fin de la partie.
-#define NB_TOURS 100
+#define NB_TOURS 200
 
 /// Nombre de pandas par joueur.
 #define NB_PANDAS 2
