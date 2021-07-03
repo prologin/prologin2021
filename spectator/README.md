@@ -3,6 +3,7 @@ Displays a match in real time
 
 ## Structure
 - www : Web site interface files
+- champion : The champion to use as spectator
 
 ## Setup
 1. Front end must be set up (see [front/README](../front/README.md))
