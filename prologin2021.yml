@@ -64,6 +64,7 @@ enum:
       - [mouvement_invalide, "Le panda ne peut pas se déplacer dans cette direction."]
       - [pose_invalide, "Le pont ne peut pas être placé a cette position et dans cette direction."]
       - [id_panda_invalide, "Le panda spécifié n'existe pas."]
+      - [action_deja_effectuee, "Une action a déjà été effectuée ce tour."]
       - [rien_a_pousser, "Aucun panda à pousser dans la direction indiquée."]
       - [drapeau_invalide, "Le drapeau spécifié n'existe pas."]
   -
@@ -141,7 +142,6 @@ function:
     fct_ret_type: erreur
     fct_action: yes
     fct_arg:
-      - [id_panda, int, "Numéro du panda"]
       - [dir, direction, "Direction visée"]
   -
     fct_name: poser
@@ -150,7 +150,7 @@ function:
     fct_ret_type: erreur
     fct_action: yes
     fct_arg:
-      - [id_panda, int, "Numéro du panda"]
+      - [position_debut, position, "Position de début du pont"]
       - [dir, direction, "Direction visée"]
       - [pont_debut, int, "Début du pont placé"]
       - [pont_fin, int, "Fin du pont"]

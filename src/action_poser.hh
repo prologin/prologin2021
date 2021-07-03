@@ -12,9 +12,9 @@
 class ActionPoser : public rules::Action<GameState>
 {
 public:
-    ActionPoser(int id_panda, direction dir, int pont_debut, int pont_fin,
-                int player_id)
-        : id_panda_(id_panda)
+    ActionPoser(position position_debut, direction dir, int pont_debut,
+                int pont_fin, int player_id)
+        : position_debut_(position_debut)
         , dir_(dir)
         , pont_debut_(pont_debut)
         , pont_fin_(pont_fin)
@@ -28,7 +28,7 @@ public:
 
     void handle_buffer(utils::Buffer& buf) override
     {
-        buf.handle(id_panda_);
+        buf.handle(position_debut_);
         buf.handle(dir_);
         buf.handle(pont_debut_);
         buf.handle(pont_fin_);
@@ -39,7 +39,7 @@ public:
     uint32_t id() const override { return ID_ACTION_POSER; }
 
 private:
-    int id_panda_;
+    position position_debut_;
     direction dir_;
     int pont_debut_;
     int pont_fin_;

@@ -5,15 +5,12 @@
 
 int ActionDeplacer::check(const GameState& st) const
 {
-    // Ensure the specified panda exists.
-    const Panda* panda = st.player_at(player_id_)->panda_at(id_panda_);
-
-    if (panda == nullptr)
-        return ID_PANDA_INVALIDE;
+    const Panda& panda =
+        *st.player_at(player_id_)->panda_at(st.round_panda_id());
 
     // Ensure moving in the given direction won't bring us out of bounds.
     const position target_position =
-        st.map().get_relative_position(panda->pos(), dir_);
+        st.map().get_relative_position(panda.pos(), dir_);
     const Cell target_cell = st.map().get(target_position);
 
     if (target_cell.is_invalid())
@@ -27,7 +24,7 @@ int ActionDeplacer::check(const GameState& st) const
         return MOUVEMENT_INVALIDE;
 
     // If the cells belong to different bridges, ensure their values are equal.
-    const Cell source_cell = st.map().get(panda->pos());
+    const Cell source_cell = st.map().get(panda.pos());
 
     int source_value;
     direction source_dir;
@@ -45,7 +42,8 @@ int ActionDeplacer::check(const GameState& st) const
 void ActionDeplacer::apply_on(GameState* st) const
 {
     Map& map = st->map();
-    Panda& panda = *st->player_at(player_id_)->panda_at(id_panda_);
+    Player& player = *st->player_at(player_id_);
+    Panda& panda = *player.panda_at(st->round_panda_id());
     const position previous_position = panda.pos();
     const position desired_position =
         map.get_relative_position(panda.pos(), dir_);
@@ -77,7 +75,7 @@ void ActionDeplacer::apply_on(GameState* st) const
 
     // Update map and positions.
     map.set(desired_position,
-            map.get(desired_position).with_panda(player_id_, id_panda_));
+            map.get(desired_position).with_panda(player.id(), panda.id()));
     map.set(previous_position, updated_previous_cell);
 
     panda.update_pos(desired_position);
@@ -97,4 +95,12 @@ void ActionDeplacer::apply_on(GameState* st) const
             panda.save_bebe(bebe);
         }
     }
+
+    // Log action.
+    action_hist action;
+    action.type_action = ACTION_DEPLACER;
+    action.id_panda = st->round_panda_id();
+    action.dir = dir_;
+
+    player.log_action(action);
 }

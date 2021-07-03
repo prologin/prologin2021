@@ -25,15 +25,15 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T>& arr)
     return os;
 }
 
-extern "C" erreur api_deplacer(int id_panda, direction dir)
+extern "C" erreur api_deplacer(direction dir)
 {
-    return api->deplacer(id_panda, dir);
+    return api->deplacer(dir);
 }
 
-extern "C" erreur api_poser(int id_panda, direction dir, int pont_debut,
-                            int pont_fin)
+extern "C" erreur api_poser(position position_debut, direction dir,
+                            int pont_debut, int pont_fin)
 {
-    return api->poser(id_panda, dir, pont_debut, pont_fin);
+    return api->poser(position_debut, dir, pont_debut, pont_fin);
 }
 
 extern "C" case_type api_type_case(position pos)
@@ -185,6 +185,9 @@ std::ostream& operator<<(std::ostream& os, erreur v)
         break;
     case ID_PANDA_INVALIDE:
         os << "ID_PANDA_INVALIDE";
+        break;
+    case ACTION_DEJA_EFFECTUEE:
+        os << "ACTION_DEJA_EFFECTUEE";
         break;
     case RIEN_A_POUSSER:
         os << "RIEN_A_POUSSER";

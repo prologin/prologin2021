@@ -53,9 +53,10 @@ typedef enum erreur
                               ///< direction.
     POSE_INVALIDE, ///< Le pont ne peut pas être placé a cette position et dans
                    ///< cette direction.
-    ID_PANDA_INVALIDE, ///< Le panda spécifié n'existe pas.
-    RIEN_A_POUSSER,    ///< Aucun panda à pousser dans la direction indiquée.
-    DRAPEAU_INVALIDE,  ///< Le drapeau spécifié n'existe pas.
+    ID_PANDA_INVALIDE,     ///< Le panda spécifié n'existe pas.
+    ACTION_DEJA_EFFECTUEE, ///< Une action a déjà été effectuée ce tour.
+    RIEN_A_POUSSER,   ///< Aucun panda à pousser dans la direction indiquée.
+    DRAPEAU_INVALIDE, ///< Le drapeau spécifié n'existe pas.
 } erreur;
 
 /// Types d'actions
