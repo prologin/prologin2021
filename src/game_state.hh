@@ -18,6 +18,8 @@ public:
     GameState(const GameState& st);
     ~GameState();
 
+    GameState* copy() const override;
+
     const Map& map() const { return map_; }
     Map& map() { return map_; }
     const std::vector<Player>& players() const { return own_players_; }
@@ -40,7 +42,13 @@ public:
     // The identifier of the panda being controlled in the current round.
     int round_panda_id() const;
 
-    GameState* copy() const override;
+    // Switches to the next round, updating the game state as needed. Player
+    // scores will be updated.
+    //
+    // Unlike the rules::Rules object which considers that both players play
+    // in a single round, the internal GameState round counter increases every
+    // time the current player changes.
+    void next_round();
 
 private:
     Map map_;

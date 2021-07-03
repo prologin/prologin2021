@@ -67,11 +67,9 @@ bool Rules::is_finished()
 void Rules::start_of_player_turn(uint32_t player_id)
 {
     // TODO
-    abort();
 }
 
 void Rules::end_of_player_turn(uint32_t player_id)
 {
-    // TODO
-    abort();
+    api_->game_state().next_round();
 }

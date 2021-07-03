@@ -31,13 +31,13 @@ public:
     bool is_invalid() const;
     bool is_empty() const;
     bool is_bebe(int* joueur, int* num) const;
-    bool is_pont(int* valeur, direction* direction) const;
+    bool is_pont(int* valeur, direction* direction, bool* is_start) const;
     bool has_panda(int* joueur, int* num) const;
 
     static Cell invalid();
     static Cell empty();
     static Cell bebe(int joueur, int num);
-    static Cell pont(int valeur, direction direction);
+    static Cell pont(int valeur, direction direction, bool is_start);
 
     Cell with_panda(int joueur, int num) const;
     Cell without_panda() const;

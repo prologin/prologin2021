@@ -111,7 +111,7 @@ Player::Player(std::shared_ptr<rules::Player> rules_player,
     }
 }
 
-const rules::Player& Player::rules_player() const
+rules::Player& Player::rules_player() const
 {
     return *rules_player_;
 }

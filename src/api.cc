@@ -78,7 +78,7 @@ pont_type Api::info_pont(position pos)
     int value;
     direction dir;
 
-    if (!map.get(pos).is_pont(&value, &dir))
+    if (!map.get(pos).is_pont(&value, &dir, nullptr))
     {
         return {{-1, -1}, {-1, -1}, -1, -1};
     }
@@ -87,7 +87,7 @@ pont_type Api::info_pont(position pos)
     int other_value;
     direction other_dir;
 
-    assert(map.get(other_pos).is_pont(&other_value, &other_dir));
+    assert(map.get(other_pos).is_pont(&other_value, &other_dir, nullptr));
 
     pont_type info;
     info.debut_pos = pos;

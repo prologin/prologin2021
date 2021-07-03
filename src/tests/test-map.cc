@@ -26,26 +26,29 @@ TEST(MapTest, ParseMap)
     Map map(ss, 2);
 
     // Line #0.
-    ASSERT_EQ(
-        map.get({0, 0}),
-        Cell::pont(1, NORD_EST).with_panda(/* player= */ 0, /* panda= */ 0));
-    ASSERT_EQ(
-        map.get({1, 0}),
-        Cell::pont(3, SUD_OUEST).with_panda(/* player= */ 0, /* panda= */ 1));
+    // TODO: update `is_start` values
+    ASSERT_EQ(map.get({0, 0}),
+              Cell::pont(1, NORD_EST, true)
+                  .with_panda(/* player= */ 0, /* panda= */ 0));
+    ASSERT_EQ(map.get({1, 0}),
+              Cell::pont(3, SUD_OUEST, true)
+                  .with_panda(/* player= */ 0, /* panda= */ 1));
     ASSERT_EQ(map.get({2, 0}), Cell::empty());
-    ASSERT_EQ(map.get({3, 0}),
-              Cell::pont(2, SUD).with_panda(/* player= */ 1, /* panda= */ 1));
+    ASSERT_EQ(
+        map.get({3, 0}),
+        Cell::pont(2, SUD, true).with_panda(/* player= */ 1, /* panda= */ 1));
 
     // Line #1.
-    ASSERT_EQ(map.get({0, 1}), Cell::pont(4, SUD_EST));
+    ASSERT_EQ(map.get({0, 1}), Cell::pont(4, SUD_EST, true));
     ASSERT_EQ(map.get({1, 1}), Cell::bebe(/* player= */ 0, /* num= */ 0));
     ASSERT_EQ(map.get({2, 1}), Cell::empty());
-    ASSERT_EQ(map.get({3, 1}),
-              Cell::pont(6, NORD).with_panda(/* player= */ 1, /* panda= */ 0));
+    ASSERT_EQ(
+        map.get({3, 1}),
+        Cell::pont(6, NORD, true).with_panda(/* player= */ 1, /* panda= */ 0));
 
     // Line #2.
     ASSERT_EQ(map.get({0, 2}), Cell::empty());
-    ASSERT_EQ(map.get({1, 2}), Cell::pont(5, NORD_OUEST));
+    ASSERT_EQ(map.get({1, 2}), Cell::pont(5, NORD_OUEST, true));
     ASSERT_EQ(map.get({2, 2}), Cell::bebe(/* player= */ 1, /* num= */ 0));
     ASSERT_EQ(map.get({3, 2}), Cell::empty());
 }

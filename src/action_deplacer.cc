@@ -21,20 +21,22 @@ int ActionDeplacer::check(const GameState& st) const
 
     // Ensure the target cell is an empty bridge.
     int target_value, target_player, target_panda;
-    direction target_dir;
 
-    if (!target_cell.is_pont(&target_value, &target_dir) ||
+    if (!target_cell.is_pont(&target_value, nullptr, nullptr) ||
         target_cell.has_panda(&target_player, &target_panda))
         return MOUVEMENT_INVALIDE;
 
-    // Ensure the value of both bridges is the same.
+    // If the cells belong to different bridges, ensure their values are equal.
     const Cell source_cell = st.map().get(panda->pos());
+
     int source_value;
     direction source_dir;
 
-    assert(source_cell.is_pont(&source_value, &source_dir));
+    assert(source_cell.is_pont(&source_value, &source_dir, nullptr));
 
-    if (target_value != source_value)
+    const bool is_same_brige = source_dir == dir_;
+
+    if (!is_same_brige && target_value != source_value)
         return MOUVEMENT_INVALIDE;
 
     return OK;
@@ -44,17 +46,41 @@ void ActionDeplacer::apply_on(GameState* st) const
 {
     Map& map = st->map();
     Panda& panda = *st->player_at(player_id_)->panda_at(id_panda_);
+    const position previous_position = panda.pos();
     const position desired_position =
         map.get_relative_position(panda.pos(), dir_);
+
+    // Compute new value of the cell that was left.
+    const Cell previous_cell = map.get(previous_position);
+    int previous_cell_value;
+    bool previous_cell_is_start;
+    direction previous_cell_direction;
+
+    assert(previous_cell.is_pont(&previous_cell_value, &previous_cell_direction,
+                                 &previous_cell_is_start));
+
+    if (previous_cell_is_start)
+    {
+        // Increase cell value.
+        previous_cell_value =
+            previous_cell_value == 6 ? 1 : previous_cell_value + 1;
+    }
+    else
+    {
+        // Decrease cell value.
+        previous_cell_value =
+            previous_cell_value == 1 ? 6 : previous_cell_value - 1;
+    }
+
+    Cell updated_previous_cell = Cell::pont(
+        previous_cell_value, previous_cell_direction, previous_cell_is_start);
 
     // Update map and positions.
     map.set(desired_position,
             map.get(desired_position).with_panda(player_id_, id_panda_));
-    map.set(panda.pos(), map.get(panda.pos()).without_panda());
+    map.set(previous_position, updated_previous_cell);
 
     panda.update_pos(desired_position);
-
-    // TODO: update value of both ends of the bridge.
 
     // Pick up adjacent baby pandas, if any.
     for (const position adjacent_pos :

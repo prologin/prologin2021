@@ -49,9 +49,10 @@ Cell Cell::empty()
 }
 
 // static
-Cell Cell::pont(int valeur, direction direction)
+Cell Cell::pont(int valeur, direction direction, bool is_start)
 {
-    return Cell(CellKind::Pont, (int32_t)valeur << 16 | direction);
+    return Cell(CellKind::Pont,
+                (int32_t)valeur << 16 | direction << 1 | is_start);
 }
 
 // static
@@ -75,28 +76,47 @@ bool Cell::is_empty() const
     return kind_ == CellKind::Empty;
 }
 
-bool Cell::is_pont(int* valeur, direction* direction) const
+bool Cell::is_pont(int* valeur, direction* direction, bool* is_start) const
 {
-    *valeur = data_ >> 16;
-    *direction = (enum direction)(data_ & 0xffff);
+    if (kind_ != CellKind::Pont)
+        return false;
 
-    return kind_ == CellKind::Pont;
+    if (is_start)
+        *is_start = data_ & 1;
+    if (valeur)
+        *valeur = data_ >> 16;
+    if (direction)
+        *direction = (enum direction)((data_ & 0xffff) >> 1);
+
+    return true;
 }
 
 bool Cell::is_bebe(int* joueur, int* num) const
 {
-    *joueur = data_ >> 16;
-    *num = data_ & 0xffff;
+    if (kind_ != CellKind::Bebe)
+        return false;
 
-    return kind_ == CellKind::Bebe;
+    if (joueur)
+        *joueur = data_ >> 16;
+    if (num)
+        *num = data_ & 0xffff;
+
+    return true;
 }
 
 bool Cell::has_panda(int* joueur, int* num) const
 {
-    *joueur = panda_data_ >> 16;
-    *num = panda_data_ & 0xffff;
+    if (panda_data_ == kNoPanda)
+        return false;
 
-    return kind_ == CellKind::Pont && panda_data_ != kNoPanda;
+    assert(kind_ == CellKind::Pont);
+
+    if (joueur)
+        *joueur = panda_data_ >> 16;
+    if (num)
+        *num = panda_data_ & 0xffff;
+
+    return true;
 }
 
 Cell Cell::with_panda(int joueur, int num) const
@@ -215,8 +235,10 @@ Map::Map(std::istream& input, int num_players)
 
                     const int n = data[1] - '0';
                     const int direction = data[2] - '1';
+                    const bool is_start = true; // TODO
 
-                    Cell cell = Cell::pont(n, (enum direction)direction);
+                    Cell cell =
+                        Cell::pont(n, (enum direction)direction, is_start);
 
                     if (panda != -1 && player != -1)
                     {
@@ -246,16 +268,21 @@ Map::Map(std::istream& input, int num_players)
 
             int value;
             direction dir;
+            bool is_start;
 
-            if (cell.is_pont(&value, &dir))
+            if (cell.is_pont(&value, &dir, &is_start))
             {
                 const position other_pos = get_relative_position(pos, dir);
                 const Cell& other_cell = get(other_pos);
 
                 direction other_dir;
+                bool other_is_start;
 
-                assert(other_cell.is_pont(&value, &other_dir));
+                assert(
+                    other_cell.is_pont(nullptr, &other_dir, &other_is_start));
                 assert(get_relative_position(other_pos, other_dir) == pos);
+                // TODO
+                // assert(other_is_start != is_start);
             }
         }
 }

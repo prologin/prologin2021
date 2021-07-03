@@ -155,3 +155,26 @@ int GameState::round_panda_id() const
     return round_ % (player_count() * pandas_per_player()) /
            pandas_per_player();
 }
+
+void GameState::next_round()
+{
+    // Increment round counter.
+    round_++;
+
+    if (round_player_id() == 0)
+    {
+        // Update scores when both players have played.
+        const int points_per_saved_bebe = 5;
+
+        for (const Player& player : players())
+        {
+            int32_t& player_score = player.rules_player().score;
+
+            for (const Panda& panda : player.pandas())
+            {
+                player_score +=
+                    panda.saved_bebes().size() * points_per_saved_bebe;
+            }
+        }
+    }
+}

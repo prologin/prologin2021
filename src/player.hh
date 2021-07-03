@@ -78,7 +78,7 @@ public:
            const std::vector<position>& bebes_positions);
 
     // Returns the player, as seen by the overall Stechec2 engine.
-    const rules::Player& rules_player() const;
+    rules::Player& rules_player() const;
 
     // Returns the identifier of the player.
     int id() const;
