@@ -16,41 +16,59 @@ TEST(MapTest, EmptyInitialization)
         }
 }
 
+// Reminder: even columns are "lower" than odd columns.
+constexpr std::string_view kValidMap = "4 5\n"
+                                       "A11 -34 ___ Y23\n"
+                                       "-42 C01 ___ -66\n"
+                                       "___ B55 ___ ___\n"
+                                       "+62 ___ X13 Z01\n"
+                                       "___ -25 -46 ___\n";
+constexpr bool kIsStart = true;
+constexpr bool kIsEnd = false;
+constexpr int kPlayer1 = 0;
+constexpr int kPlayer2 = 1;
+constexpr int kPanda1 = 0;
+constexpr int kPanda2 = 1;
+
 TEST(MapTest, ParseMap)
 {
-    // Reminder: even columns are "lower" than odd columns.
-    std::istringstream ss("4 3\n"
-                          "A11 B34 ___ Y23\n"
-                          "_42 C01 ___ X66\n"
-                          "___ _55 Z01 ___\n");
+    std::istringstream ss(kValidMap.data());
     Map map(ss, 2);
 
     // Line #0.
-    // TODO: update `is_start` values
     ASSERT_EQ(map.get({0, 0}),
-              Cell::pont(1, NORD_EST, true)
-                  .with_panda(/* player= */ 0, /* panda= */ 0));
-    ASSERT_EQ(map.get({1, 0}),
-              Cell::pont(3, SUD_OUEST, true)
-                  .with_panda(/* player= */ 0, /* panda= */ 1));
+              Cell::pont(1, NORD_EST, kIsStart).with_panda(kPlayer1, kPanda1));
+    ASSERT_EQ(map.get({1, 0}), Cell::pont(3, SUD_OUEST, kIsEnd));
     ASSERT_EQ(map.get({2, 0}), Cell::empty());
-    ASSERT_EQ(
-        map.get({3, 0}),
-        Cell::pont(2, SUD, true).with_panda(/* player= */ 1, /* panda= */ 1));
+    ASSERT_EQ(map.get({3, 0}),
+              Cell::pont(2, SUD, kIsStart).with_panda(kPlayer2, kPanda2));
 
     // Line #1.
-    ASSERT_EQ(map.get({0, 1}), Cell::pont(4, SUD_EST, true));
-    ASSERT_EQ(map.get({1, 1}), Cell::bebe(/* player= */ 0, /* num= */ 0));
+    ASSERT_EQ(map.get({0, 1}), Cell::pont(4, SUD_EST, kIsEnd));
+    ASSERT_EQ(map.get({1, 1}), Cell::bebe(kPlayer1, 0));
     ASSERT_EQ(map.get({2, 1}), Cell::empty());
-    ASSERT_EQ(
-        map.get({3, 1}),
-        Cell::pont(6, NORD, true).with_panda(/* player= */ 1, /* panda= */ 0));
+    ASSERT_EQ(map.get({3, 1}), Cell::pont(6, NORD, kIsEnd));
 
     // Line #2.
     ASSERT_EQ(map.get({0, 2}), Cell::empty());
-    ASSERT_EQ(map.get({1, 2}), Cell::pont(5, NORD_OUEST, true));
-    ASSERT_EQ(map.get({2, 2}), Cell::bebe(/* player= */ 1, /* num= */ 0));
+    ASSERT_EQ(
+        map.get({1, 2}),
+        Cell::pont(5, NORD_OUEST, kIsStart).with_panda(kPlayer1, kPanda2));
+    ASSERT_EQ(map.get({2, 2}), Cell::empty());
     ASSERT_EQ(map.get({3, 2}), Cell::empty());
+
+    // Line #3.
+    ASSERT_EQ(map.get({0, 3}), Cell::pont(6, SUD_EST, kIsStart));
+    ASSERT_EQ(map.get({1, 3}), Cell::empty());
+    ASSERT_EQ(map.get({2, 3}),
+              Cell::pont(1, SUD, kIsStart).with_panda(kPlayer2, kPanda1));
+    ASSERT_EQ(map.get({3, 3}), Cell::bebe(kPlayer2, 0));
+
+    // Line #4.
+    ASSERT_EQ(map.get({0, 4}), Cell::empty());
+    ASSERT_EQ(map.get({1, 4}), Cell::pont(2, NORD_OUEST, kIsEnd));
+    ASSERT_EQ(map.get({2, 4}), Cell::pont(4, NORD, kIsEnd));
+    ASSERT_EQ(map.get({3, 4}), Cell::empty());
 }
 
 TEST(MapTest, ParseInvalidMap)
@@ -59,49 +77,36 @@ TEST(MapTest, ParseInvalidMap)
         std::istringstream ss(map_str.data());
         Map map(ss, 2);
     };
+    auto replace = [](std::string_view str, std::string_view pat,
+                      std::string_view rep) {
+        std::string rep_str(str);
+        rep_str.replace(rep_str.find(pat), pat.size(), rep);
+        return rep_str;
+    };
 
     // Correct example.
-    parse_map("4 3\n"
-              "A11 B34 ___ Y23\n"
-              "_42 C01 ___ X66\n"
-              "___ _55 Z01 ___\n");
+    parse_map(kValidMap);
 
     // Empty.
     ASSERT_DEATH(parse_map(""), "");
 
     // Wrong dimensions.
-    ASSERT_DEATH(parse_map("4 3\n"
-                           "A11 B34 ___ Y23\n"
-                           "_42 C01 ___ X66\n"),
-                 "");
+    ASSERT_DEATH(parse_map(replace(kValidMap, "4 5\n", "4 6\n")), "");
 
     // Unknown cell.
-    ASSERT_DEATH(parse_map("4 3\n"
-                           "A11 B34 ___ Y23\n"
-                           "_42 C01 ___ X66\n"
-                           "___ I55 Z01 ___\n"),
-                 "");
+    ASSERT_DEATH(parse_map(replace(kValidMap, "A11", "I11")), "");
 
     // Invalid cell value.
-    ASSERT_DEATH(parse_map("4 3\n"
-                           "A11 B34 ___ Y23\n"
-                           "_42 C01 ___ X66\n"
-                           "___ _75 Z01 ___\n"),
-                 "");
+    ASSERT_DEATH(parse_map(replace(kValidMap, "55", "75")), "");
 
     // Unmatched bridge.
-    ASSERT_DEATH(parse_map("4 3\n"
-                           "A11 B34 _11 Y23\n"
-                           "_42 C01 ___ X66\n"
-                           "___ _55 Z01 ___\n"),
-                 "");
+    ASSERT_DEATH(parse_map(replace(kValidMap, "A11", "___")), "");
 
     // Bridge facing the wrong way.
-    ASSERT_DEATH(parse_map("4 3\n"
-                           "A11 B35 ___ Y23\n"
-                           "_42 C01 ___ X66\n"
-                           "___ _55 Z01 ___\n"),
-                 "");
+    ASSERT_DEATH(parse_map(replace(kValidMap, "34", "35")), "");
+
+    // Bridge only has + ends.
+    ASSERT_DEATH(parse_map(replace(kValidMap, "-", "+")), "");
 }
 
 TEST(MapTest, PositionValidation)

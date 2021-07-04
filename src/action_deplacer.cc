@@ -17,10 +17,10 @@ int ActionDeplacer::check(const GameState& st) const
         return DEPLACEMENT_HORS_LIMITES;
 
     // Ensure the target cell is an empty bridge.
-    int target_value, target_player, target_panda;
+    int target_value;
 
     if (!target_cell.is_pont(&target_value, nullptr, nullptr) ||
-        target_cell.has_panda(&target_player, &target_panda))
+        target_cell.has_panda(nullptr, nullptr))
         return MOUVEMENT_INVALIDE;
 
     // If the cells belong to different bridges, ensure their values are equal.
