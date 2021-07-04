@@ -196,10 +196,12 @@ class GameState {
           sign_value = -1;
         } else {
           let partner_bridge_pos = this.getPosByDirectionStr(pos, DIRECTIONS[direction - 1]); // returns [x, y]
-          let partner_bridge = this.map[partner_bridge_pos[1]][partner_bridge_pos[0]]; // access [y][x]
+          let partner_bridge = this.map[partner_bridge_pos[1]][partner_bridge_pos[0]].bridge; // access [y][x]
+          if (this.debug) console.log('partner bridge', partner_bridge);
           if (partner_bridge instanceof BridgeTile) {
             sign_value = -partner_bridge.sign;
           } else {
+            if (this.debug) console.log('array', pos, DIRECTIONS[direction - 1], partner_bridge_pos);
             if (partner_bridge[2] == '-') {
               sign_value = 1;
             } else {
@@ -222,14 +224,14 @@ class GameState {
       case 'ne':
         nx = x + 1;
         ny = y;
-        if (y % 2 == 1) {
+        if (x % 2 == 1) {
           ny--;
         }
         break;
       case 'no':
         nx = x - 1;
         ny = y;
-        if (y % 2 == 1) {
+        if (x % 2 == 1) {
           ny--;
         }
         break;
@@ -240,14 +242,14 @@ class GameState {
       case 'se':
         nx = x + 1;
         ny = y;
-        if (y % 2 == 0) {
+        if (x % 2 == 0) {
           ny++;
         }
         break;
       case 'so':
         nx = x - 1;
         ny = y;
-        if (y % 2 == 0) {
+        if (x % 2 == 0) {
           ny++;
         }
       }
@@ -262,8 +264,9 @@ class GameState {
         let buffer0 = '_', buffer1 = '_', buffer2 = '_';
         // bridge
         if (this.map[i][j].isBridge()) {
-          buffer1 = this.map[i][j].bridge[0].toString();
-          buffer2 = this.map[i][j].bridge[1].toString();
+          buffer0 = this.map[i][j].bridge.sign == 1 ? '+' : '-';
+          buffer1 = this.map[i][j].bridge.direction.toString();
+          buffer2 = this.map[i][j].bridge.value.toString();
         }
         // panda
         if (this.panda_map[i][j].isPanda()) {
@@ -305,7 +308,7 @@ function loadGameStateFromMapStr(str) {
   let width = parseInt(dim_array[0]);
   let height = parseInt(dim_array[1]);
   // create gamestate
-  let gs = new GameState(width, height, true);
+  let gs = new GameState(width, height, false);
   gs.loadMap(map);
 
   return gs;
