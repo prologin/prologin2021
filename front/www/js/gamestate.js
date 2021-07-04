@@ -47,9 +47,9 @@ class BabyPanda {
 
 class BridgeTile {
   // constructor
-  constructor(value, direction, sign, pos) {
-    this.value = value; // 1-6
+  constructor(direction, value, sign, pos) {
     this.direction = direction; // 1-6
+    this.value = value; // 1-6
     this.sign = sign; // -1 or +1 (int value)
     this.pos = pos; // [x, y]
   }
@@ -184,6 +184,7 @@ class GameState {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
         let array = this.map[y][x].bridge;
+        if (array == null) continue;
         let direction = array[0],
             value     = array[1],
             sign      = array[2],
@@ -194,7 +195,7 @@ class GameState {
         } else if (sign == '-') {
           sign_value = -1;
         } else {
-          let partner_bridge_pos = this.getPosByDirection(pos, DIRECTIONS[direction - 1]); // returns [x, y]
+          let partner_bridge_pos = this.getPosByDirectionStr(pos, DIRECTIONS[direction - 1]); // returns [x, y]
           let partner_bridge = this.map[partner_bridge_pos[1]][partner_bridge_pos[0]]; // access [y][x]
           if (partner_bridge instanceof BridgeTile) {
             sign_value = -partner_bridge.sign;
@@ -304,7 +305,7 @@ function loadGameStateFromMapStr(str) {
   let width = parseInt(dim_array[0]);
   let height = parseInt(dim_array[1]);
   // create gamestate
-  let gs = new GameState(width, height, false);
+  let gs = new GameState(width, height, true);
   gs.loadMap(map);
 
   return gs;
