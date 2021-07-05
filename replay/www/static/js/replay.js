@@ -7,6 +7,11 @@
 function fetchNextState() {
 }
 
+// Not used by the replay but by the spectator
+function hasGameEnded() {
+    return false;
+}
+
 // --- Test ---
 // Create 3 states
 for (let i = 0; i < 3; ++i)
