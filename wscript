@@ -22,6 +22,7 @@ def build(bld):
             src/action_deplacer.cc
             src/action_poser.cc
             src/api.cc
+            src/dumper.cc
             src/entry.cc
             src/game_state.cc
             src/interface.cc

@@ -70,3 +70,14 @@ void ActionPoser::apply_on(GameState* st) const
 
     st->player_at(player_id_)->log_action(action);
 }
+
+void ActionPoser::dump_json(const GameState& st, std::ostream& ss) const
+{
+    ss << "{ \"action_poser\": "
+       << "ActionPoser, ";
+    ss << "\"position_debut_x\": " << position_debut_.x << ", ";
+    ss << "\"position_debut_y\": " << position_debut_.y << ", ";
+    ss << "\"direction\": " << dir_ << ", ";
+    ss << "\"pont_debut\": " << pont_debut_ << ", ";
+    ss << "\"pont_fin\": " << pont_fin_ << "}";
+}

@@ -104,3 +104,10 @@ void ActionDeplacer::apply_on(GameState* st) const
 
     player.log_action(action);
 }
+
+void ActionDeplacer::dump_json(const GameState& st, std::ostream& ss) const
+{
+    ss << "{ \"action_type\": "
+       << "ActionDeplacer, "
+       << "\"direction\": " << dir_ << "}";
+}
