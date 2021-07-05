@@ -58,7 +58,7 @@ function newTile(id, x = 0, y = 0) {
     }
 
     let sprite = new PIXI.Sprite(textures[id]);
-    
+
     sprite.position.x = x;
     sprite.position.y = y;
     sprite.height = TILE_SIZE;
