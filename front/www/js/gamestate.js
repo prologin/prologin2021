@@ -45,6 +45,23 @@ class BabyPanda {
   // methods
 }
 
+class BridgeTile {
+  // constructor
+  constructor(direction, value, sign, pos) {
+    this.direction = direction; // 1-6
+    this.value = value; // 1-6
+    this.sign = sign; // -1 or +1 (int value)
+    this.pos = pos; // [x, y]
+  }
+  // methods
+  toCardinalDirStr() {
+    return DIRECTIONS[this.direction - 1];
+  }
+  /*getPartnerBridgeTile() {
+    //
+  }*/
+}
+
 
 class Player {
   // constructor
@@ -119,6 +136,7 @@ class GameState {
         y++;
       }
     }
+    this.deduceBridgeSigns();
   }
   processTileBuffer(buffer, x, y) {
     if (this.debug) console.log("process: " + buffer + "\n");
@@ -145,7 +163,7 @@ class GameState {
     }
 
     // a panda
-    if (buffer[0] != '_') {
+    if (buffer[0] != '+' && buffer[0] != '-') {
       if (this.debug) console.log('Panda: ' + buffer);
       let player = (buffer[0] == 'A' || buffer[0] == 'B') ? '1' : '2';
       let panda = new Panda(player, buffer[0]);
@@ -157,10 +175,87 @@ class GameState {
     if (this.debug) console.log('Bridge: ' + buffer);
     let direction = parseInt(buffer[1]);
     let value = parseInt(buffer[2]);
-    this.map[y][x].bridge = [direction, value]
+    // only save the buffer[0], because we will look at the signs later
+    this.map[y][x].bridge = [direction, value, buffer[0], [x, y]];
 
     return;
   }
+  deduceBridgeSigns() {
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        let array = this.map[y][x].bridge;
+        if (array == null) continue;
+        let direction = array[0],
+            value     = array[1],
+            sign      = array[2],
+            pos       = array[3];
+        let sign_value = 0;
+        if (sign == '+') {
+          sign_value = 1;
+        } else if (sign == '-') {
+          sign_value = -1;
+        } else {
+          let partner_bridge_pos = this.getPosByDirectionStr(pos, DIRECTIONS[direction - 1]); // returns [x, y]
+          let partner_bridge = this.map[partner_bridge_pos[1]][partner_bridge_pos[0]].bridge; // access [y][x]
+          if (this.debug) console.log('partner bridge', partner_bridge);
+          if (partner_bridge instanceof BridgeTile) {
+            sign_value = -partner_bridge.sign;
+          } else {
+            if (this.debug) console.log('array', pos, DIRECTIONS[direction - 1], partner_bridge_pos);
+            if (partner_bridge[2] == '-') {
+              sign_value = 1;
+            } else {
+              sign_value = -1;
+            }
+          }
+        }
+        this.map[y][x].bridge = new BridgeTile(direction, value, sign_value, pos);
+      }
+    }
+  }
+  getPosByDirectionStr(pos, direction_str) {
+    let x = pos[0], y = pos[1],
+        nx = -1, ny = -1;
+    switch(direction_str) {
+      case 'n':
+        nx = x;
+        ny = y - 1;
+        break;
+      case 'ne':
+        nx = x + 1;
+        ny = y;
+        if (x % 2 == 1) {
+          ny--;
+        }
+        break;
+      case 'no':
+        nx = x - 1;
+        ny = y;
+        if (x % 2 == 1) {
+          ny--;
+        }
+        break;
+      case 's':
+        nx = x;
+        ny = y + 1;
+        break;
+      case 'se':
+        nx = x + 1;
+        ny = y;
+        if (x % 2 == 0) {
+          ny++;
+        }
+        break;
+      case 'so':
+        nx = x - 1;
+        ny = y;
+        if (x % 2 == 0) {
+          ny++;
+        }
+      }
+
+      return [nx, ny];
+    }
   //
   exportToMapStr() {
     let s = this.width + ' ' + this.height + '\n';
@@ -169,8 +264,9 @@ class GameState {
         let buffer0 = '_', buffer1 = '_', buffer2 = '_';
         // bridge
         if (this.map[i][j].isBridge()) {
-          buffer1 = this.map[i][j].bridge[0].toString();
-          buffer2 = this.map[i][j].bridge[1].toString();
+          buffer0 = this.map[i][j].bridge.sign == 1 ? '+' : '-';
+          buffer1 = this.map[i][j].bridge.direction.toString();
+          buffer2 = this.map[i][j].bridge.value.toString();
         }
         // panda
         if (this.panda_map[i][j].isPanda()) {

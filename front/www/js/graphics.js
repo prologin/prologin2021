@@ -58,7 +58,7 @@ function newTile(id, x = 0, y = 0) {
     }
 
     let sprite = new PIXI.Sprite(textures[id]);
-
+    
     sprite.position.x = x;
     sprite.position.y = y;
     sprite.height = TILE_SIZE;
@@ -125,8 +125,8 @@ function drawMapLayer(layer, isForeground) {
 
             if (tile instanceof MapTile) {
                 if (tile.isBridge()) {
-                    let direction = DIRECTIONS[tile.bridge[0] - 1];
-                    tileName = `pont_${tile.bridge[1]}_${direction}`;
+                    let direction = DIRECTIONS[tile.bridge.direction - 1];
+                    tileName = `pont_${tile.bridge.value}_${direction}`;
                 } else {
                     tileName = 'eau';
                 }
