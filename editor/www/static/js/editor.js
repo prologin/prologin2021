@@ -209,7 +209,8 @@ function updateBrush() {
     case 'pont':
         let value = parseInt(uiSelect1.value);
         let directionId = allDirections.indexOf(uiSelect2.value) + 1;
-        brush = [ directionId, value ];
+        // TODO : Sign
+        brush = new BridgeTile(directionId, value, true, null);
         break;
     case 'panda':
         let firstId = uiSelect2.value === "Premier";
@@ -279,7 +280,7 @@ function onClick(x, y) {
 
             gameState.panda_map[i][j].panda = null;
             gameState.panda_map[i][j].baby_panda = brush;
-        } else if (brush instanceof Array) {
+        } else if (brush instanceof BridgeTile) {
             gameState.map[i][j].bridge = brush;
         } else {
             console.warn('Invalid brush');
