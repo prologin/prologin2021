@@ -342,8 +342,17 @@ std::ostream& operator<<(std::ostream& os, action_hist v)
     os << "dir"
        << "=" << v.dir;
     os << ", ";
-    os << "type_pont"
-       << "=" << v.type_pont;
+    os << "valeur_debut"
+       << "=" << v.valeur_debut;
+    os << ", ";
+    os << "valeur_fin"
+       << "=" << v.valeur_fin;
+    os << ", ";
+    os << "pos_debut"
+       << "=" << v.pos_debut;
+    os << ", ";
+    os << "pos_fin"
+       << "=" << v.pos_fin;
     os << " }";
     return os;
 }

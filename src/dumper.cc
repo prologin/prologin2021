@@ -1,11 +1,15 @@
-#include "dumper.hh"
+#include "api.hh"
+#include <iomanip>
+
+// from api.cc
+extern Api* api;
 
 constexpr auto COMMA = ", ";
 
 /// Decodes a UTF-8 string to a list of 32 bit unicode codepoints. Ignores
 /// erroneous characters.
 /// Imported from prologin2016
-static std::u32string utf8_decode(const std::string& s)
+static std::u32string utf8_decode(std::string_view s)
 {
     std::u32string ret;
     size_t i = 0;
@@ -49,7 +53,7 @@ static std::u32string utf8_decode(const std::string& s)
 
 /// Dump a JSON-escaped UTF-8 string
 /// Imported from prologin2016
-static void dump_string(std::ostream& ss, const std::string& s)
+static void dump_string(std::ostream& ss, std::string_view s)
 {
     /*
      * RFC4627, 2.5:
@@ -124,29 +128,42 @@ static void dump_string(std::ostream& ss, const std::string& s)
 //     }
 // }
 
-static std::ostream& operator<<(std::ostream& ss, const position& pos)
+struct Str
 {
-    ss << "{\"x\": " << pos.x << ", \"y\":" << pos.y << "}";
+    Str(std::string_view str)
+        : str(str)
+    {
+    }
+
+    std::string_view str;
+};
+
+static std::ostream& operator<<(std::ostream& ss, Str str)
+{
+    dump_string(ss, str.str);
+
     return ss;
 }
 
-static std::ostream& operator<<(std::ostream& ss, action_id action_type)
+// Enums.
+// ===========================================================================
+
+static std::ostream& operator<<(std::ostream& ss, enum action_type action_type)
 {
     ss << "\"";
     switch (action_type)
     {
-    case ID_ACTION_DEPLACER:
-        ss << "ID_ACTION_DEPLACER";
+    case ACTION_DEPLACER:
+        ss << "ACTION_DEPLACER";
         break;
-    case ID_ACTION_POSER:
-        ss << "ID_ACTION_POSER";
+    case ACTION_POSER:
+        ss << "ACTION_POSER";
         break;
     }
-    ss << "\"";
-    return ss;
+    return ss << "\"";
 }
 
-static std::ostream& operator<<(std::ostream& ss, const case_type& ctype)
+static std::ostream& operator<<(std::ostream& ss, case_type ctype)
 {
     ss << "\"";
     switch (ctype)
@@ -168,7 +185,7 @@ static std::ostream& operator<<(std::ostream& ss, const case_type& ctype)
     return ss;
 }
 
-static std::ostream& operator<<(std::ostream& ss, const direction& dir)
+static std::ostream& operator<<(std::ostream& ss, direction dir)
 {
     ss << "\"";
     switch (dir)
@@ -196,22 +213,174 @@ static std::ostream& operator<<(std::ostream& ss, const direction& dir)
     return ss;
 }
 
-static void dump_history(std::ostream& ss, const GameState& st, int player_id)
+// Basic structs.
+// ===========================================================================
+
+template <typename V> struct KV
 {
-    const std::vector<action_hist>& history =
-        st.player_at(player_id)->last_actions();
-
-    auto sep = "";
-    ss << "[";
-    for (const auto& action : history)
+    KV(std::string_view key, const V& value)
+        : key(key)
+        , value(value)
     {
-        ss << sep;
-        sep = COMMA;
-
-        ss << "{\"atype\": " << action.type_action << ", ";
-        ss << "\"id_agent\": " << action.move_action.id_agent << ", "
-           << "\"dir\": " << action.move_action.dir;
-        ss << "}";
     }
-    ss << "]";
+
+    std::string_view key;
+    const V& value;
+};
+
+template <typename V>
+static std::ostream& operator<<(std::ostream& ss, KV<V> kv)
+{
+    return ss << Str(kv.key) << ": " << kv.value;
+}
+
+template <typename T> struct Vec
+{
+    Vec(const std::vector<T>& vec)
+        : vec(vec)
+    {
+    }
+
+    const std::vector<T>& vec;
+};
+
+static std::ostream& operator<<(std::ostream& ss, position pos)
+{
+    return ss << '{' << KV{"x", pos.x} << ", " << KV{"y", pos.y} << '}';
+}
+
+static std::ostream& operator<<(std::ostream& ss, tour_info tour)
+{
+    return ss << '{' << KV{"round_id", tour.id_tour} << ", "
+              << KV{"player_id", tour.id_joueur_joue} << ", "
+              << KV{"panda_id", tour.id_panda_joue} << '}';
+}
+
+static std::ostream& operator<<(std::ostream& ss, action_hist action)
+{
+    ss << '{' << KV{"type", action.type_action} << ", "
+       << KV{"panda_id", action.id_panda} << ", ";
+
+    switch (action.type_action)
+    {
+    case ACTION_DEPLACER:
+        ss << KV{"direction", action.dir};
+        break;
+    case ACTION_POSER:
+        ss << KV{"direction", action.dir} << ", "
+           << KV{"start_value", action.valeur_debut} << ", "
+           << KV{"end_value", action.valeur_fin} << ", "
+           << KV{"start_position", action.pos_debut} << ", "
+           << KV{"end_position", action.pos_fin};
+        break;
+    }
+
+    return ss << '}';
+}
+
+// Large classes.
+// ===========================================================================
+
+template <typename T>
+static std::ostream& operator<<(std::ostream& ss, Vec<T> vec)
+{
+    ss << '[';
+
+    const auto& values = vec.vec;
+
+    for (size_t i = 0; i < values.size(); i++)
+    {
+        ss << values[i];
+
+        if (i < values.size() - 1)
+            ss << ", ";
+    }
+
+    return ss << ']';
+}
+
+static std::ostream& operator<<(std::ostream& ss, const Map& map)
+{
+    ss << R"({"cells": [)";
+
+    for (int x = 0; x < map.width(); x++)
+        for (int y = 0; y < map.height(); y++)
+        {
+            const position pos{x, y};
+            const Cell cell = map.get(pos);
+
+            ss << '{' << KV{"position", pos} << ", ";
+
+            int value, player;
+            direction dir;
+            bool is_start;
+
+            if (cell.is_empty())
+            {
+                ss << KV{"type", LIBRE};
+            }
+            else if (cell.is_bebe(&player, &value))
+            {
+                ss << KV{"type", BEBE} << ", " << KV{"player", player} << ", "
+                   << KV{"id", value};
+            }
+            else if (cell.is_pont(&value, &dir, &is_start))
+            {
+                ss << KV{"type", PONT} << ", " << KV{"value", value} << ", "
+                   << KV{"direction", dir} << ", " << KV{"is_start", is_start};
+
+                if (cell.has_panda(&player, &value))
+                {
+                    ss << KV{"panda", true} << ", " << KV{"player", player}
+                       << ", " << KV{"id", value};
+                }
+                else
+                {
+                    ss << KV{"panda", false};
+                }
+            }
+
+            ss << '}';
+
+            if (x < map.width() - 1 || y < map.height() - 1)
+                ss << ", ";
+        }
+
+    return ss << "]}";
+}
+
+static std::ostream& operator<<(std::ostream& ss, const Panda& panda)
+{
+    return ss << '{' << KV{"id", panda.id()} << ", " << KV{"pos", panda.pos()}
+              << ", " << KV{"saved_babies", panda.saved_bebes().size()} << '}';
+}
+
+static std::ostream& operator<<(std::ostream& ss, const Player& player)
+{
+    return ss << '{' << KV{"id", player.id()} << ", "
+              << KV{"name", player.rules_player().name} << ", "
+              << KV{"score", player.rules_player().score} << ", "
+              << KV{"total_babies", player.bebes().size()} << ", "
+              << KV{"pandas", Vec{player.pandas()}} << ", "
+              << KV{"last_actions", Vec{player.last_actions()}} << '}';
+}
+
+static std::ostream& operator<<(std::ostream& ss, const GameState& st)
+{
+    return ss << '{' << KV{"round", api->info_tour()} << ", "
+              << KV{"map", st.map()} << ", " << KV{"players", Vec{st.players()}}
+              << '}';
+}
+
+extern "C" const char* dump_state_json()
+{
+    // Warning: everytime this function is called, it invalidates the previous
+    // return values by free-ing them.
+    // This allows us to return a const char* that doesn't get invalidated as
+    // soon as the function returns, though.
+    static std::string s;
+    std::ostringstream ss;
+    ss << api->game_state();
+    s = ss.str();
+    return s.c_str();
 }

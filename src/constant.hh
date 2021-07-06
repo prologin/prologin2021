@@ -121,6 +121,9 @@ typedef struct action_hist
 {
     action_type type_action; ///< Type de l'action
     int id_panda;            ///< Identifiant du panda concerné par l'action
-    direction dir; ///< Direction visée par le panda durant le déplacement
-    int type_pont; ///< Type du pont posé (typiquement de 1 à 6 inclus)
+    direction dir;    ///< Direction visée par le panda durant le déplacement
+    int valeur_debut; ///< Valeur au début du pont posé (de 1 à 6 inclus)
+    int valeur_fin;   ///< Valeur à la fin du pont posé (de 1 à 6 inclus)
+    position pos_debut; ///< Position du début du pont posé
+    position pos_fin;   ///< Position de la fin du pont posé
 } action_hist;

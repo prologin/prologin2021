@@ -18,8 +18,21 @@ Api::Api(std::unique_ptr<GameState> game_state,
 
 case_type Api::type_case(position pos)
 {
-    // TODO
-    abort();
+    const Cell cell = game_state_->map().get(pos);
+
+    switch (cell.kind())
+    {
+    case CellKind::Invalid:
+        return OBSTACLE;
+    case CellKind::Pont:
+        return PONT;
+    case CellKind::Bebe:
+        return BEBE;
+    case CellKind::Empty:
+        return LIBRE;
+    default:
+        assert(false);
+    }
 }
 
 int Api::panda_sur_case(position pos)

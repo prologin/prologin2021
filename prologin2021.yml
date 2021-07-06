@@ -130,7 +130,10 @@ struct:
       - [type_action, action_type, "Type de l'action"]
       - [id_panda, int, "Identifiant du panda concerné par l'action"]
       - [dir, direction, "Direction visée par le panda durant le déplacement"]
-      - [type_pont, int, "Type du pont posé (typiquement de 1 à 6 inclus)"]
+      - [valeur_debut, int, "Valeur au début du pont posé (de 1 à 6 inclus)"]
+      - [valeur_fin, int, "Valeur à la fin du pont posé (de 1 à 6 inclus)"]
+      - [pos_debut, position, "Position du début du pont posé"]
+      - [pos_fin, position, "Position de la fin du pont posé"]
 
 function:
 

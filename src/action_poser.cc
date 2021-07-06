@@ -66,18 +66,10 @@ void ActionPoser::apply_on(GameState* st) const
     action.type_action = ACTION_POSER;
     action.id_panda = st->round_panda_id();
     action.dir = dir_;
-    action.type_pont = pont_debut_;
+    action.valeur_debut = pont_debut_;
+    action.valeur_fin = pont_fin_;
+    action.pos_debut = start_pos;
+    action.pos_fin = end_pos;
 
     st->player_at(player_id_)->log_action(action);
-}
-
-void ActionPoser::dump_json(const GameState& st, std::ostream& ss) const
-{
-    ss << "{ \"action_poser\": "
-       << "ActionPoser, ";
-    ss << "\"position_debut_x\": " << position_debut_.x << ", ";
-    ss << "\"position_debut_y\": " << position_debut_.y << ", ";
-    ss << "\"direction\": " << dir_ << ", ";
-    ss << "\"pont_debut\": " << pont_debut_ << ", ";
-    ss << "\"pont_fin\": " << pont_fin_ << "}";
 }

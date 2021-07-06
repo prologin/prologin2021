@@ -21,7 +21,6 @@ public:
 
     int check(const GameState& st) const override;
     void apply_on(GameState* st) const override;
-    void dump_json(const GameState& st, std::ostream& ss) const;
 
     void handle_buffer(utils::Buffer& buf) override
     {
