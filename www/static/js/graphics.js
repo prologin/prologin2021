@@ -44,9 +44,11 @@ function initGraphics(viewParent, width = VIEW_WIDTH, height = VIEW_HEIGHT,
 
 // Called in initGraphics, loads all textures
 function loadTextures() {
+    let prefix = isWww ? '/static/img' : '/front/images';
+
     for (let tile in TILES) {
         textures[TILES[tile]] =
-            PIXI.Texture.from(`front/images/${TILES[tile]}.png`);
+            PIXI.Texture.from(`${prefix}/${TILES[tile]}.png`);
     }
 }
 

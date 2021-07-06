@@ -23,6 +23,8 @@ echo '> Front end initialisé'
 # www
 # TODO : CSS theme
 cp front/www/js/* front/www/lib/* www/static/js
+cp editor/www/static/js/editor.js www/static/js
+cp replay/www/static/js/replay.js www/static/js
 cp front/www/images/* www/static/img
 echo '> WWW initialisé'
 
