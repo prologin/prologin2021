@@ -44,6 +44,11 @@ let uiP2Points = document.getElementById("p2-points");
 let uiAutoReplay = document.getElementById("autoreplay");
 
 function onPrevClick() {
+    // Disable autoreplay
+    if (autoreplay) {
+        onAutoReplayChange(false);
+    }
+
     if (currentGameStateIndex > 0)
         --currentGameStateIndex;
 
@@ -65,8 +70,12 @@ function onNextClick() {
     updateReplay();
 }
 
-function onAutoReplayChange() {
-    autoreplay = !autoreplay;
+function onAutoReplayChange(forceValue = undefined) {
+    autoreplay = forceValue === undefined ? !autoreplay : forceValue;
+
+    if (forceValue !== undefined) {
+        uiAutoReplay.checked = autoreplay;
+    }
 
     if (autoreplay)
         autoreplayLoop();
@@ -109,7 +118,8 @@ if (!isWww) {
 }
 
 function updateReplay() {
-    if (gameStates.length == 0) return;
+    if (gameStates.length == 0)
+        return;
 
     // gameState is the rendered state
     gameState = gameStates[currentGameStateIndex];
@@ -129,11 +139,12 @@ function updateReplay() {
 
 // Timer when we need to make an auto replay step
 function autoreplayLoop() {
-    autoreplayStep();
+    if (autoreplay) {
+        autoreplayStep();
 
-    // Loop again
-    if (autoreplay)
+        // Loop again
         window.setTimeout(autoreplayLoop, AUTOREPLAY_PERIOD_MS);
+    }
 }
 
 // Auto replay game state update
