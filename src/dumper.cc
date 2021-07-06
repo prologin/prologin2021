@@ -1,5 +1,7 @@
 #include "dumper.hh"
 
+constexpr auto COMMA = ", ";
+
 /// Decodes a UTF-8 string to a list of 32 bit unicode codepoints. Ignores
 /// erroneous characters.
 /// Imported from prologin2016
@@ -97,28 +99,119 @@ static void dump_string(std::ostream& ss, const std::string& s)
     ss << '"';
 }
 
-static void dump_player_turn(std::ostream& ss, const GameState& st,
-                             int player_id)
+// static void dump_player_turn(std::ostream& ss, const GameState& st,
+//                              int player_id)
+// {
+//     ss << "{";
+//     ss << "\"round\": [" << st.round_id() << ", " << NB_TOURS << "]";
+
+//     ss << ", \"active_player\": {";
+//     ss << "\"player_id\"" << player_id << ", \"name\":";
+
+//     const Player* player = st.player_at(player_id);
+//     dump_string(ss, player->rules_player().name);
+
+//     ss << ", \"score\": " << player->rules_player().score << "}";
+//     ss << ", \"actions\": [";
+//     const std::vector<action_hist> history = player->last_actions();
+//     std::string sep = "";
+//     for (const action_hist& action : history)
+//     {
+//         ss << sep;
+//         sep = ",";
+//         // TODO
+//         // action.dump_json();
+//     }
+// }
+
+static std::ostream& operator<<(std::ostream& ss, const position& pos)
 {
-    ss << "{";
-    ss << "\"round\": [" << st.round_id() << ", " << NB_TOURS << "]";
+    ss << "{\"x\": " << pos.x << ", \"y\":" << pos.y << "}";
+    return ss;
+}
 
-    ss << ", \"active_player\": {";
-    ss << "\"player_id\"" << player_id << ", \"name\":";
-    // TODO
-    // dump_string(ss, player.get_name());
+static std::ostream& operator<<(std::ostream& ss, action_id action_type)
+{
+    ss << "\"";
+    switch (action_type)
+    {
+    case ID_ACTION_DEPLACER:
+        ss << "ID_ACTION_DEPLACER";
+        break;
+    case ID_ACTION_POSER:
+        ss << "ID_ACTION_POSER";
+        break;
+    }
+    ss << "\"";
+    return ss;
+}
 
-    // TODO
-    // ss << ", \"score\": " << player.get_score() << "}";
-    ss << ", \"actions\": [";
-    const std::vector<action_hist> history =
+static std::ostream& operator<<(std::ostream& ss, const case_type& ctype)
+{
+    ss << "\"";
+    switch (ctype)
+    {
+    case LIBRE:
+        ss << "LIBRE";
+        break;
+    case OBSTACLE:
+        ss << "OBSTACLE";
+        break;
+    case PONT:
+        ss << "PONT";
+        break;
+    case BEBE:
+        ss << "BEBE";
+        break;
+    }
+    ss << "\"";
+    return ss;
+}
+
+static std::ostream& operator<<(std::ostream& ss, const direction& dir)
+{
+    ss << "\"";
+    switch (dir)
+    {
+    case NORD_EST:
+        ss << "NORD_EST";
+        break;
+    case SUD_EST:
+        ss << "SUD_EST";
+        break;
+    case SUD:
+        ss << "SUD";
+        break;
+    case SUD_OUEST:
+        ss << "SUD_OUEST";
+        break;
+    case NORD_OUEST:
+        ss << "NORD_OUEST";
+        break;
+    case NORD:
+        ss << "NORD";
+        break;
+    }
+    ss << "\"";
+    return ss;
+}
+
+static void dump_history(std::ostream& ss, const GameState& st, int player_id)
+{
+    const std::vector<action_hist>& history =
         st.player_at(player_id)->last_actions();
-    std::string sep = "";
-    for (const action_hist& action : history)
+
+    auto sep = "";
+    ss << "[";
+    for (const auto& action : history)
     {
         ss << sep;
-        sep = ",";
-        // TODO
-        // action.dump_json();
+        sep = COMMA;
+
+        ss << "{\"atype\": " << action.type_action << ", ";
+        ss << "\"id_agent\": " << action.move_action.id_agent << ", "
+           << "\"dir\": " << action.move_action.dir;
+        ss << "}";
     }
+    ss << "]";
 }
