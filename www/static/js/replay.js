@@ -16,6 +16,24 @@ $(function () {
     let $replay = $('#replay'),
         $dump_content = $('#dump');
 
+    $replay.html(`
+    <input type="button" value="AVANT" id="prev" onclick="onPrevClick()"></input>
+    <input type="button" value="APRES" id="next" onclick="onNextClick()"></input>
+    <span>
+        <p style="display: inline;">Replay automatique :</p>
+        <input type="checkbox" value="Replay automatique" id="autoreplay"
+            onchange="onAutoReplayChange()" checked="true"></input>
+    </span>
+
+    <ul>
+        <li id="state-indicator"></li>
+        <li id="p1-points"></li>
+        <li id="p2-points"></li>
+    </ul>
+
+    <div id="canvas"></div>
+    `);
+
     $replay.hide();
 
     let scripts = [
