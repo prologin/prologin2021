@@ -100,10 +100,12 @@ function onKey(e) {
 }
 
 // --- Graphics ---
-updateViewSize();
+if (!isWww) {
+    updateViewSize();
 
-// Init
-initGraphics(uiCanvas, mapWidth, mapHeight, null);
+    // Init
+    initGraphics(uiCanvas, mapWidth, mapHeight, null);
+}
 
 function updateReplay() {
     if (gameStates.length == 0) return;
