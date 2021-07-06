@@ -64,12 +64,63 @@ bool Rules::is_finished()
     return api_->game_state().is_finished();
 }
 
-void Rules::start_of_player_turn(uint32_t player_id)
+void Rules::at_player_start(rules::ClientMessenger_sptr)
+{
+    try
+    {
+        sandbox_.execute(champion_partie_init_);
+    }
+    catch (utils::SandboxTimeout&)
+    {
+        FATAL("player_start: timeout");
+    }
+}
+
+void Rules::at_spectator_start(rules::ClientMessenger_sptr)
+{
+    champion_partie_init_();
+}
+
+void Rules::at_player_end(rules::ClientMessenger_sptr)
+{
+    try
+    {
+        sandbox_.execute(champion_partie_fin_);
+    }
+    catch (utils::SandboxTimeout&)
+    {
+        FATAL("player_end: timeout");
+    }
+}
+
+void Rules::at_spectator_end(rules::ClientMessenger_sptr)
+{
+    champion_partie_fin_();
+}
+
+void Rules::player_turn()
+{
+    try
+    {
+        sandbox_.execute(champion_jouer_tour_);
+    }
+    catch (utils::SandboxTimeout&)
+    {
+        FATAL("player_turn: timeout");
+    }
+}
+
+void Rules::spectator_turn()
+{
+    champion_jouer_tour_();
+}
+
+void Rules::start_of_player_turn(uint32_t)
 {
     // TODO
 }
 
-void Rules::end_of_player_turn(uint32_t player_id)
+void Rules::end_of_player_turn(uint32_t)
 {
     api_->game_state().next_round();
 }

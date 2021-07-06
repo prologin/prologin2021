@@ -1,4 +1,6 @@
 #include "api.hh"
+#include "rules.hh"
+
 #include <iomanip>
 
 // from api.cc
@@ -370,6 +372,11 @@ static std::ostream& operator<<(std::ostream& ss, const GameState& st)
     return ss << '{' << KV{"round", api->info_tour()} << ", "
               << KV{"map", st.map()} << ", " << KV{"players", Vec{st.players()}}
               << '}';
+}
+
+void Rules::dump_state(std::ostream& ss)
+{
+    ss << api_->game_state();
 }
 
 extern "C" const char* dump_state_json()
