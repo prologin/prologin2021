@@ -33,10 +33,10 @@ function newGameState(width, height) {
     gameState = new GameState(width, height);
 
     // Set pandas start position
-    gameState.panda_map[0][0].panda = new Panda(1, 1);
-    gameState.panda_map[0][1].panda = new Panda(1, 2);
-    gameState.panda_map[1][0].panda = new Panda(2, 1);
-    gameState.panda_map[1][1].panda = new Panda(2, 2);
+    gameState.panda_map[0][0].panda = new Panda("1", "A");
+    gameState.panda_map[0][1].panda = new Panda("1", "B");
+    gameState.panda_map[1][0].panda = new Panda("2", "X");
+    gameState.panda_map[1][1].panda = new Panda("2", "Y");
 
     updateView();
 }

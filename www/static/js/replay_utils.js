@@ -100,6 +100,13 @@ function onKey(e) {
 }
 
 // --- Graphics ---
+if (!isWww) {
+    updateViewSize();
+
+    // Init
+    initGraphics(uiCanvas, mapWidth, mapHeight, null);
+}
+
 function updateReplay() {
     if (gameStates.length == 0) return;
 
@@ -130,10 +137,3 @@ function autoreplayLoop() {
 
 // Auto replay game state update
 function autoreplayStep() { onNextClick(); }
-
-function startReplay() {
-    updateViewSize();
-
-    // Init
-    initGraphics(uiCanvas, mapWidth, mapHeight, null);
-}
