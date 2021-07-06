@@ -5,6 +5,7 @@
 // To use this script :
 // - Define the procedure fetchNextState()
 // - Define the predicate hasGameEnded()
+// - Call startReplay() when the graphics are initialized
 
 // --- Globals ---
 // The replay is a collection of game states
@@ -137,3 +138,12 @@ function autoreplayLoop() {
 
 // Auto replay game state update
 function autoreplayStep() { onNextClick(); }
+
+// Function to be called when the graphics are initialized
+function startReplay() {
+    autoreplay = uiAutoReplay.checked;
+
+    if (autoreplay) {
+        autoreplayLoop();
+    }
+}

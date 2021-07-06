@@ -62,3 +62,5 @@ currentGameStateIndex = -1;
 
 uiCanvas.hidden = true;
 uiGameInfo.hidden = true;
+
+startReplay();

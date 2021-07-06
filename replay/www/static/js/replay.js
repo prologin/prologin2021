@@ -42,3 +42,5 @@ for (let gs of gameStates) {
 
 // Render view
 updateReplay();
+
+startReplay();

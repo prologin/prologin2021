@@ -23,6 +23,9 @@ function start_replay(container, dump) {
 
     // Load replay data
     loadDump(dump);
+
+    // Setup auto replay etc.
+    startReplay();
 }
 
 function loadDump(data) {
