@@ -52,6 +52,7 @@ $(function () {
         'static/js/prologin.js',
         'static/js/graphics.js',
         'static/js/gamestate.js',
+        'static/js/parser.js',
         'static/js/replay_viewer.js',
         'static/js/replay_utils.js',
     ];

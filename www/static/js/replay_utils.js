@@ -167,3 +167,28 @@ function startReplay() {
         autoreplayLoop();
     }
 }
+
+// Called when there is a dump to load
+// The dump is multiple game states dumps separated by a new line
+function loadDump(data) {
+    let lines = data.split('\n');
+
+    if (lines.length === 0) {
+        console.error('Empty dump, cannot parse');
+        return;
+    }
+
+    // Parse
+    for (let line of lines) {
+        gameStates.push(parseJSON(line));
+    }
+
+    // Render
+    mapWidth = gameStates[0].width;
+    mapHeight = gameStates[0].height;
+
+    updateViewSize();
+    app.renderer.resize(mapWidth, mapHeight);
+    updateReplay();
+    startReplay();
+}
