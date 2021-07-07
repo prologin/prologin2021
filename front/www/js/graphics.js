@@ -126,7 +126,7 @@ function drawMapLayer(layer, isForeground) {
             let tile = layer[i][j];
             let tileName;
 
-            // Both MapTile's and PandaMapTile's have this method
+            // Both MapTile's and PandaMapTile's have this method (derived from Tile class)
             if (tile.isEmpty()) continue;
 
             if (tile instanceof MapTile) {
