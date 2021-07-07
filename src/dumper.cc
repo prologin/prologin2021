@@ -303,7 +303,7 @@ static std::ostream& operator<<(std::ostream& ss, Vec<T> vec)
 
 static std::ostream& operator<<(std::ostream& ss, const Map& map)
 {
-    ss << KV{"{\"size\"", position(map.width(), map.height())};
+    ss << KV{"{\"size\"", position{map.width(), map.height()}};
 
     ss << R"(", cells": [)";
 
