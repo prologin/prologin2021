@@ -3,7 +3,7 @@
 SPDX-License-Identifier: GPL-2.0-or-later
 
 Copyright 2018 Alexandre Macabies
-Copyright 2019-2021 Kilian Guillaume
+Copyright 2019-2020 Kilian Guillaume
 Copyright 2020 Paul Guénézan
 
 */
@@ -16,19 +16,19 @@ body {
     --accent-color: #222;
     --button: #cb6526;
     --button-hover: #c4c50a;
-    --background-color: #000;
+    --background-color: #1d1d1b;
     --background-color-2: #151515;
     --background-darker: rgba(0,0,0,0.02);
-    --border-color: #ddd;
+    --border-color: #016b5b;
     --text-color: #ddd;
-    --text-color-accent: #fff;
+    --text-color-accent: #86cdd5;
     /* the size of the outlines for buttons and the nav */
-    --outline-size: 3px;
+    --outline-size: 2px;
     /* the padding for the nav pills (default values from bootstrap) */
     --pill-vert-padding: 10px;
     --pill-horiz-padding: 15px;
     /* when the screen is too small, parts of the logo are under the text, add a background to the text to make it readable */
-    --background-cover-fix: rgba(0, 0, 0, 0.83);
+    --background-cover-fix: transparent;
 }
 
 /**********/
@@ -36,12 +36,22 @@ body {
 /**********/
 
 body {
-    background-color: #000000;
+    background-color: #016b5b;
     color: #ffffff;
+    background: url("/static/img/background/drawing.svg") #016b5b;
+    background-size: cover;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
 }
 
 canvas {
     width: 100%;
+}
+
+body>.container {
+    background-color: #1b1b1b;
 }
 
 /*******/
@@ -86,9 +96,10 @@ canvas {
 body>div.container {
     background-position: top left;
     background-repeat: repeat;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+    /*! box-shadow: 0 10px 40px rgba(0,0,0,0.9); */
     padding-bottom: 20px;
     margin-bottom: 40px;
+    border-radius: calc(var(--outline-size) * 4);
 }
 
 /***************/
@@ -143,7 +154,7 @@ body>div.container {
 /********************/
 
 a, a:hover, a:active {
-    color: var(--text-color);
+    color: var(--text-color-accent);
 }
 
 .nav-pills > li.active > a, .nav-pills > li.active > a:focus, .nav-pills > li.active > a:hover {
@@ -159,9 +170,15 @@ a, a:hover, a:active {
     text-decoration: underline;
 }
 
+
 .nav-pills > li.active > a, .nav-pills > li.active > a:focus, .nav-pills > li.active > a:hover {
     color: var(--text-color-accent);
-    border-color: var(--text-color-accent);
+    border: none;
+    font-weight: 700;
+}
+
+.nav-pills > li.active > a, .nav-pills > li.active > a::before {
+    content: "» ";
 }
 
 /**********/
@@ -170,6 +187,8 @@ a, a:hover, a:active {
 
 table {
     border: var(--outline-size) solid var(--border-color);
+    border-radius: calc(var(--outline-size) * 2);
+    border-collapse: separate;
 }
 
 .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
