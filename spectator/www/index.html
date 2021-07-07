@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Spectateur Prologin 2021</title>
+    <link rel="stylesheet" href="front/css/theme.css">
+    <script src="front/lib/pixi.min.js"></script>
+    <script src="front/js/prologin.js"></script>
+    <script src="front/js/graphics.js"></script>
+    <script src="front/js/gamestate.js"></script>
+</head>
+
+<body onkeypress="onKey(event)">
+    <input type="button" value="AVANT" id="prev" onclick="onPrevClick()"></input>
+    <input type="button" value="APRES" id="next" onclick="onNextClick()"></input>
+    <input type="button" value="STOP" id="stop" onclick="onStopClick()"></input>
+    <span>
+        <p style="display: inline;">Replay automatique :</p>
+        <input type="checkbox" value="Replay automatique" id="autoreplay" onchange="onAutoReplayChange()"></input>
+    </span>
+
+    <ul id="game-info">
+        <li id="state-indicator"></li>
+        <li id="p1-points"></li>
+        <li id="p2-points"></li>
+        <li id="p1-babies"></li>
+        <li id="p2-babies"></li>
+    </ul>
+
+    <br />
+    <div id="canvas"></div>
+    <p id="spectator-start">Pour commencer, lancer la partie avec stechec2-run puis cliquer sur le bouton APRES</p>
+    <br />
+
+    <h3>Raccourcis :</h3>
+    <ul>
+        <li>B : Avant</li>
+        <li>N : Après</li>
+        <li>Espace : Replay automatique</li>
+    </ul>
+
+    <script src="front/js/replay_utils.js"></script>
+    <script src="static/js/spectator.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Replay Prologin 2021</title>
+    <link rel="stylesheet" href="front/css/theme.css">
+    <script src="front/lib/pixi.min.js"></script>
+    <script src="front/js/prologin.js"></script>
+    <script src="front/js/graphics.js"></script>
+    <script src="front/js/gamestate.js"></script>
+</head>
+
+<body onkeypress="onKey(event)">
+    <input type="button" value="AVANT" id="prev" onclick="onPrevClick()"></input>
+    <input type="button" value="APRES" id="next" onclick="onNextClick()"></input>
+    <span>
+        <p style="display: inline;">Replay automatique :</p>
+        <input type="checkbox" value="Replay automatique" id="autoreplay"
+            onchange="onAutoReplayChange()" checked="true"></input>
+    </span>
+
+    <ul>
+        <li id="state-indicator"></li>
+        <li id="p1-points"></li>
+        <li id="p2-points"></li>
+        <li id="p1-babies"></li>
+        <li id="p2-babies"></li>
+    </ul>
+
+    <br />
+    <div id="canvas"></div>
+    <br />
+
+    <h3>Raccourcis :</h3>
+    <ul>
+        <li>B : Avant</li>
+        <li>N : Après</li>
+        <li>Espace : Replay automatique</li>
+    </ul>
+
+    <script src="front/js/parser.js"></script>
+    <script src="front/js/replay_utils.js"></script>
+    <script src="static/js/replay.js"></script>
+</body>
+
+</html>
