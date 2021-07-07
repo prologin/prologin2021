@@ -126,6 +126,9 @@ function drawMapLayer(layer, isForeground) {
             let tile = layer[i][j];
             let tileName;
 
+            // Both MapTile's and PandaMapTile's have this method
+            if (tile.isEmpty()) continue;
+
             if (tile instanceof MapTile) {
                 if (tile.isBridge()) {
                     let direction = DIRECTIONS[tile.bridge.direction - 1];

@@ -1,11 +1,21 @@
 // The main game state
 let gameState = null;
 
-class MapTile {
-  // constructor
+class Tile {
   constructor(x, y) {
     this.x = x;
     this.y = y;
+  }
+  isEmpty() {
+    throw 'This method should be overwritten';
+    return false;
+  }
+}
+
+class MapTile extends Tile {
+  // constructor
+  constructor(x, y) {
+    super(x, y);
     this.bridge = null;
   }
   // methods
@@ -13,11 +23,10 @@ class MapTile {
   isBridge() { return !this.isEmpty(); }
 }
 
-class PandaMapTile {
+class PandaMapTile extends Tile {
   // constructor
   constructor(x, y) {
-    this.x = x;
-    this.y = y;
+    super(x, y);
     this.panda = null;
     this.baby_panda = null;
   }
