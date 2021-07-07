@@ -31,7 +31,16 @@ $(function () {
         <li id="p2-points"></li>
     </ul>
 
+    <br />
     <div id="canvas"></div>
+    <br />
+
+    <h3>Raccourcis :</h3>
+    <ul>
+        <li>B : Avant</li>
+        <li>N : Après</li>
+        <li>Espace : Replay automatique</li>
+    </ul>
     `);
 
     $replay.hide();

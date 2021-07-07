@@ -41,8 +41,12 @@ const TILES = [
     'panda1_bebe',
     'panda2',
     'panda2_bebe',
-    'eau',
+    'eau1',
+    'eau2',
+    'eau3',
 ].concat(bridgeTiles);
+
+const N_WATER_TEXTURES = 3;
 
 // Graphics
 const BG_COLOR = 0x4DA0E6;
