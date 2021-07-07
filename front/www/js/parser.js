@@ -30,7 +30,7 @@ function parseJSON(raw)
 				gameState.map[y][x].bridge = new BridgeTile(
 					cell['direction'],
 					cell['value'],
-					cell['is_start'] ? '-' : '+',
+					cell['is_start'] ? '+' : '-',
 					[x, y]
 				)
 				break;
