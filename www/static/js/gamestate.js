@@ -66,9 +66,6 @@ class BridgeTile {
   toCardinalDirStr() {
     return DIRECTIONS[this.direction - 1];
   }
-  /*getPartnerBridgeTile() {
-    //
-  }*/
 }
 
 

@@ -107,8 +107,15 @@ function addTile(tileName, x, y) {
 
 // Removes all sprites of the view
 function clearTiles() {
+    /*
     for (let tile of tiles)
         app.stage.removeChild(tile);
+    */
+
+    // delete all children
+    while (app.stage.children[0]) {
+        app.stage.removeChild(app.stage.children[0])
+    }
 
     tiles = [];
 }
@@ -127,7 +134,6 @@ function getWaterTileIndex(i, j) {
 // Draws a layer of the map
 // The map has two layers
 function drawMapLayer(layer, isForeground) {
-
     // i is the vertical index
     for (let i = 0; i < gameState.height; ++i) {
         // j is the horizontal index
@@ -137,22 +143,24 @@ function drawMapLayer(layer, isForeground) {
             let tile = layer[i][j];
             let tileName;
 
-            // Both MapTile's and PandaMapTile's have this method
-            if (tile.isEmpty()) continue;
+            // Both MapTile's and PandaMapTile's have this method (derived from
+            // Tile class)
+            if (isForeground && tile.isEmpty())
+                continue;
 
-            if (tile instanceof MapTile) {
+            if (tile instanceof PandaMapTile) {
+                if (tile.isBabyPanda()) {
+                    tileName = `panda${tile.baby_panda.player}_bebe`;
+                } else if (tile.isPanda()) {
+                    tileName = `panda${tile.panda.player}`;
+                }
+            } else if (tile instanceof Tile) {
                 if (tile.isBridge()) {
                     let direction = DIRECTIONS[tile.bridge.direction - 1];
                     tileName = `pont_${tile.bridge.value}_${direction}`;
                 } else {
                     let index = getWaterTileIndex(i, j) + 1;
                     tileName = `eau${index}`;
-                }
-            } else if (tile instanceof PandaMapTile) {
-                if (tile.isBabyPanda()) {
-                    tileName = `panda${tile.baby_panda.player}_bebe`;
-                } else if (tile.isPanda()) {
-                    tileName = `panda${tile.panda.player}`;
                 }
             } else {
                 console.warn('Invalid tile at position ' + i + ' ' + j + ' ' +
@@ -164,7 +172,7 @@ function drawMapLayer(layer, isForeground) {
                 addTile(tileName, x, y);
                 // if it is a bridge, draw the + or -
                 if (tileName.startsWith('pont_')) {
-                    drawBridgeSign(tile.bridge, [x,y]);
+                    drawBridgeSign(tile.bridge, [ x, y ]);
                 }
             }
         }
@@ -173,13 +181,16 @@ function drawMapLayer(layer, isForeground) {
 
 function drawBridgeSign(bridge, pos) {
     let x = pos[0], y = pos[1];
-    let text = new PIXI.Text(bridge.sign == 1 ? '+' : '-', {fontFamily : 'Arial', fontSize: 14, fill : 0, align : 'center'});
-    text.anchor.set(0.5, 0.5); // sets the anchor to the center, I think. Looks crap without it
+    let text = new PIXI.Text(
+        bridge.sign == 1 ? '+' : '-',
+        {fontFamily : 'Arial', fontSize : 14, fill : 0, align : 'center'});
+    text.anchor.set(
+        0.5,
+        0.5); // sets the anchor to the center, I think. Looks crap without it
     text.position.x = x + TILE_SIZE / 2 + 9;
     text.position.y = y + TILE_SIZE - 9;
     app.stage.addChild(text);
 }
-
 
 // Redraws the game state
 function updateView() {
