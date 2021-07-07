@@ -107,8 +107,15 @@ function addTile(tileName, x, y) {
 
 // Removes all sprites of the view
 function clearTiles() {
+    /*
     for (let tile of tiles)
         app.stage.removeChild(tile);
+    */
+
+    // delete all children
+    while(app.stage.children[0]) {
+        app.stage.removeChild(app.stage.children[0])
+    }
 
     tiles = [];
 }

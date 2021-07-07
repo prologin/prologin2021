@@ -68,4 +68,16 @@ fetch("/example-dump.json").then(res => {
     if (res.status === 200)
         res.text().then(parseJSON);
 });
+updateViewSize();
+updateView();
 */
+
+function test()
+{
+	fetch("/example-dump.json").then(res => {
+	    if (res.status === 200)
+	        res.text().then(parseJSON);
+	});
+	updateViewSize();
+	updateView();
+}
