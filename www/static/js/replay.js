@@ -29,6 +29,8 @@ $(function () {
         <li id="state-indicator"></li>
         <li id="p1-points"></li>
         <li id="p2-points"></li>
+        <li id="p1-babies"></li>
+        <li id="p2-babies"></li>
     </ul>
 
     <br />

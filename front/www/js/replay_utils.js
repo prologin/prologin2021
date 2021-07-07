@@ -41,6 +41,8 @@ let uiCanvas = document.getElementById("canvas");
 let uiStateIndicator = document.getElementById("state-indicator");
 let uiP1Points = document.getElementById("p1-points");
 let uiP2Points = document.getElementById("p2-points");
+let uiP1Babies = document.getElementById("p1-babies");
+let uiP2Babies = document.getElementById("p2-babies");
 let uiAutoReplay = document.getElementById("autoreplay");
 
 function onPrevClick() {
@@ -130,9 +132,10 @@ function updateReplay() {
         hasGameEnded()
             ? `Partie terminée (${gameStates.length} tours)`
             : `${currentGameStateIndex + 1} / ${gameStates.length} tours`
-    // TODO : Display player points
-    uiP1Points.textContent = "Joueur 1 : ??? points";
-    uiP2Points.textContent = "Joueur 2 : ??? points";
+    uiP1Points.textContent = `Joueur 1 : ${gameState.players['1'].points} points`;
+    uiP2Points.textContent = `Joueur 2 : ${gameState.players['2'].points} points`;
+    uiP1Babies.textContent = `Bébés du joueur 1 : ${gameState.players['1'].babies_on_back} sur le dos`;
+    uiP2Babies.textContent = `Bébés du joueur 2 : ${gameState.players['2'].babies_on_back} sur le dos`;
 
     updateView();
 }

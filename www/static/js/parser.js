@@ -11,7 +11,7 @@ function parseJSON(raw)
 	// create new GameState
 	let width = obj['map']['size']['x'],
 		height = obj['map']['size']['y'];
-	gameState = new GameState(width, height);
+	let gameState = new GameState(width, height);
 	// every cell
 	for (let cell of obj['map']['cells'])
 	{
@@ -45,6 +45,8 @@ function parseJSON(raw)
 				break;
 		}
 	}
+
+	return gameState;
 }
 
 function directionIntFromFullStr(direction_str)
@@ -76,7 +78,7 @@ function test()
 {
 	fetch("/example-dump.json").then(res => {
 	    if (res.status === 200)
-	        res.text().then(parseJSON);
+	        gameState = res.text().then(parseJSON);
 	});
 	updateViewSize();
 	updateView();
