@@ -132,10 +132,16 @@ function updateReplay() {
         hasGameEnded()
             ? `Partie terminée (${gameStates.length} tours)`
             : `${currentGameStateIndex + 1} / ${gameStates.length} tours`
-    uiP1Points.textContent = `Joueur 1 : ${gameState.players['1'].points} points`;
-    uiP2Points.textContent = `Joueur 2 : ${gameState.players['2'].points} points`;
-    uiP1Babies.textContent = `Bébés du joueur 1 : ${gameState.players['1'].babies_on_back} sur le dos`;
-    uiP2Babies.textContent = `Bébés du joueur 2 : ${gameState.players['2'].babies_on_back} sur le dos`;
+    uiP1Points.textContent =
+        `Joueur 1 : ${gameState.players['1'].points} points`;
+    uiP2Points.textContent =
+        `Joueur 2 : ${gameState.players['2'].points} points`;
+    uiP1Babies.textContent = `Bébés sauvés du joueur 1 : ${
+        gameState.players['1'].babies_on_back_1} (panda 1) / ${
+        gameState.players['1'].babies_on_back_2} (panda 2)`;
+    uiP2Babies.textContent = `Bébés sauvés du joueur 2 : ${
+        gameState.players['2'].babies_on_back_1} (panda 1) / ${
+        gameState.players['2'].babies_on_back_2} (panda 2)`;
 
     updateView();
 }

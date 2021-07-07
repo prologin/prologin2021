@@ -46,6 +46,13 @@ function parseJSON(raw)
 		}
 	}
 
+	gameState.players['1'].points = obj.players[0].score;
+	gameState.players['2'].points = obj.players[1].score;
+	gameState.players['1'].babies_on_back_1 = obj.players[0].pandas[0].saved_babies;
+	gameState.players['1'].babies_on_back_2 = obj.players[0].pandas[1].saved_babies;
+	gameState.players['2'].babies_on_back_1 = obj.players[1].pandas[0].saved_babies;
+	gameState.players['2'].babies_on_back_2 = obj.players[1].pandas[1].saved_babies;
+
 	return gameState;
 }
 

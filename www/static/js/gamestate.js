@@ -76,7 +76,8 @@ class Player {
     this.pandas = [];
     this.baby_pandas = [];
     this.points = 0;
-    this.babies_on_back = 0;
+    this.babies_on_back_1 = 0;
+    this.babies_on_back_2 = 0;
   }
 }
 
