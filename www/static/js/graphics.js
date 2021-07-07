@@ -10,6 +10,10 @@ let textures = {};
 // All sprite tiles to be able to remove and redraw them
 let tiles = [];
 
+// Array used to store the bridges that are hidden by pandas (see drawMapLayer)
+// The [i, j] indices in the map are stored
+let missing_bridges = [];
+
 // Map size (in tiles)
 let mapWidth = 0;
 let mapHeight = 0;
@@ -116,6 +120,8 @@ function clearTiles() {
 // Draws a layer of the map
 // The map has two layers
 function drawMapLayer(layer, isForeground) {
+    missing_bridges = [];
+
     // i is the vertical index
     for (let i = 0; i < gameState.height; ++i) {
         // j is the horizontal index
@@ -146,10 +152,34 @@ function drawMapLayer(layer, isForeground) {
 
             if (tileName !== undefined) {
                 addTile(tileName, x, y);
+                // add number of bridge undereath the panda
+                if (tileName.startsWith('panda') && !tileName.endsWith('_bebe')) {
+                    missing_bridges.push([i, j]);
+                }
             }
         }
     }
 }
+
+function drawMissingBridges() {
+    for (let index = 0; index < missing_bridges.length; index++) {
+        // get the tile
+        let i = missing_bridges[index][0], j = missing_bridges[index][1];
+        let tile = gameState.map[i][j];
+        if (tile.bridge == null) {
+            console.warn('Null bridge under panda at ', [i, j]);
+            continue;
+        }
+        // set & add the text
+        let [x, y] = getCoords(i, j);
+        let text = new PIXI.Text(tile.bridge.value,{fontFamily : 'Arial', fontSize: 14, fill : 0xff1010, align : 'center'});
+        text.anchor.set(0.5, 0.5); // ça redéfinit le center du texte je crois (plus ou moins)
+        text.position.x = x + TILE_SIZE - 21; // 21 & 14 are just constants. Can change those
+        text.position.y = y + TILE_SIZE - 14;
+        app.stage.addChild(text);
+    }
+}
+
 
 // Redraws the game state
 function updateView() {
@@ -159,4 +189,5 @@ function updateView() {
     // Draw layers in order (background then foreground)
     drawMapLayer(gameState.map, false);
     drawMapLayer(gameState.panda_map, true);
+    drawMissingBridges();
 }
