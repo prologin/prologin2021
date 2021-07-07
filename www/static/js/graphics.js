@@ -127,6 +127,7 @@ function getWaterTileIndex(i, j) {
 // Draws a layer of the map
 // The map has two layers
 function drawMapLayer(layer, isForeground) {
+
     // i is the vertical index
     for (let i = 0; i < gameState.height; ++i) {
         // j is the horizontal index
@@ -135,6 +136,9 @@ function drawMapLayer(layer, isForeground) {
 
             let tile = layer[i][j];
             let tileName;
+
+            // Both MapTile's and PandaMapTile's have this method
+            if (tile.isEmpty()) continue;
 
             if (tile instanceof MapTile) {
                 if (tile.isBridge()) {
@@ -158,10 +162,24 @@ function drawMapLayer(layer, isForeground) {
 
             if (tileName !== undefined) {
                 addTile(tileName, x, y);
+                // if it is a bridge, draw the + or -
+                if (tileName.startsWith('pont_')) {
+                    drawBridgeSign(tile.bridge, [x,y]);
+                }
             }
         }
     }
 }
+
+function drawBridgeSign(bridge, pos) {
+    let x = pos[0], y = pos[1];
+    let text = new PIXI.Text(bridge.sign == 1 ? '+' : '-', {fontFamily : 'Arial', fontSize: 14, fill : 0, align : 'center'});
+    text.anchor.set(0.5, 0.5); // sets the anchor to the center, I think. Looks crap without it
+    text.position.x = x + TILE_SIZE / 2 + 9;
+    text.position.y = y + TILE_SIZE - 9;
+    app.stage.addChild(text);
+}
+
 
 // Redraws the game state
 function updateView() {
