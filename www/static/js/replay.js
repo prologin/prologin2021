@@ -50,12 +50,12 @@ $(function () {
         'static/js/prologin.js',
         'static/js/graphics.js',
         'static/js/gamestate.js',
-        'static/js/replay_utils.js',
         'static/js/replay_viewer.js',
+        'static/js/replay_utils.js',
     ];
 
     loadScripts(scripts, function() {
-        start_replay($replay, $dump_content.text());
+        start_replay($dump_content.text());
 
         // reveal the UI
         $replay.fadeIn('fast');

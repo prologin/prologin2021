@@ -13,8 +13,8 @@ function hasGameEnded() {
 }
 
 // --- Main ---
-function start_replay(container, dump) {
-    container = container[0];
+function start_replay(dump) {
+    let container = document.getElementById('canvas');
 
     updateViewSize();
 
