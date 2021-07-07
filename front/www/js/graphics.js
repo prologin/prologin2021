@@ -113,6 +113,17 @@ function clearTiles() {
     tiles = [];
 }
 
+// Returns pseudo randomly the index of
+// the water tile for the position (i, j)
+// Pseudo random because we want to have
+// the same texture for the same position
+// at different moment (game step)
+function getWaterTileIndex(i, j) {
+    let h = (2 + i + (j + 1) * 3) % N_WATER_TEXTURES;
+
+    return h;
+}
+
 // Draws a layer of the map
 // The map has two layers
 function drawMapLayer(layer, isForeground) {
@@ -130,7 +141,8 @@ function drawMapLayer(layer, isForeground) {
                     let direction = DIRECTIONS[tile.bridge.direction - 1];
                     tileName = `pont_${tile.bridge.value}_${direction}`;
                 } else {
-                    tileName = 'eau';
+                    let index = getWaterTileIndex(i, j) + 1;
+                    tileName = `eau${index}`;
                 }
             } else if (tile instanceof PandaMapTile) {
                 if (tile.isBabyPanda()) {

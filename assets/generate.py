@@ -26,7 +26,9 @@ tiles = []
 
 # Environment
 tiles += [
-    (0, 1, 'eau'),
+    (8, 0, 'eau1'),
+    (8, 1, 'eau2'),
+    (8, 2, 'eau3'),
 ]
 
 # Players
