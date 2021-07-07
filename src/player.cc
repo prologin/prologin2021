@@ -95,7 +95,7 @@ Player::Player(std::shared_ptr<rules::Player> rules_player,
                const std::vector<position>& bebes_positions)
     : rules_player_(std::move(rules_player))
 {
-    int id = rules_player->id;
+    int id = rules_player_->id;
 
     pandas_.reserve(pandas_positions.size());
     bebes_.reserve(bebes_positions.size());

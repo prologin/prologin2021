@@ -236,6 +236,11 @@ static std::ostream& operator<<(std::ostream& ss, KV<V> kv)
     return ss << Str(kv.key) << ": " << kv.value;
 }
 
+template <> std::ostream& operator<<(std::ostream& ss, KV<bool> kv)
+{
+    return ss << Str(kv.key) << ": " << (kv.value ? "true" : "false");
+}
+
 template <typename T> struct Vec
 {
     Vec(const std::vector<T>& vec)
@@ -332,7 +337,8 @@ static std::ostream& operator<<(std::ostream& ss, const Map& map)
             else if (cell.is_pont(&value, &dir, &is_start))
             {
                 ss << KV{"type", PONT} << ", " << KV{"value", value} << ", "
-                   << KV{"direction", dir} << ", " << KV{"is_start", is_start};
+                   << KV{"direction", dir} << ", " << KV{"is_start", is_start}
+                   << ", ";
 
                 if (cell.has_panda(&player, &value))
                 {
@@ -363,7 +369,7 @@ static std::ostream& operator<<(std::ostream& ss, const Panda& panda)
 static std::ostream& operator<<(std::ostream& ss, const Player& player)
 {
     return ss << '{' << KV{"id", player.id()} << ", "
-              << KV{"name", player.rules_player().name} << ", "
+              << KV{"name", Str(player.rules_player().name)} << ", "
               << KV{"score", player.rules_player().score} << ", "
               << KV{"total_babies", player.bebes().size()} << ", "
               << KV{"pandas", Vec{player.pandas()}} << ", "

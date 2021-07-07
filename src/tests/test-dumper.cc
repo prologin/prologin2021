@@ -4,6 +4,7 @@
 #include "../dumper.hh"
 #include "../game_state.hh"
 
+extern Api* api;
 extern const char* dump_state_json();
 
 struct Player_api
@@ -28,16 +29,13 @@ TEST(DumpTest, Dump)
 
     std::istringstream map_stream(map);
     Map mp(map_stream, 2);
-    // auto st = std::make_unique<GameState>(players, mp);
-    std::cout << "HELP";
+    auto st = std::make_unique<GameState>(players, mp);
+    auto local_api = std::make_unique<Api>(std::move(st), players[0]);
 
-    // std::vector<Player_api> apis;
-    // apis.push_back(Player_api{
-    //     1337, std::make_unique<Api>(std::unique_ptr<GameState>(st->copy()),
-    //                                 players[0])});
-    // apis.push_back(Player_api{
-    //     42, std::make_unique<Api>(std::unique_ptr<GameState>(st->copy()),
-    //                               players[1])});
+    api = local_api.get();
 
-    // std::cout << dump_state_json();
+    std::cerr << dump_state_json() << std::endl;
+
+    // Uncomment to see output JSON.
+    // FAIL();
 }
