@@ -13,31 +13,31 @@ def main() -> int:
     # check num lines
     num_lines : int = map_str.split('\n', 1).__len__()
     if num_lines < 2:
-        print('Invalid line number:', num_lines)
+        print(f'Il y a moins de 2 lignes: {num_lines}')
         return 1
     # extract width & height
     splitted_map = map_str.split('\n', 1)
     first_line = splitted_map[0].split(' ')
     first_line = list(filter(None, first_line))
     if len(first_line) < 2:
-        print('Invalid width height format')
+        print('Format "largeur hauteur" invalid')
         return 1
     width, height = int(first_line[0]), int(first_line[1])
     # fill map
     raw_map_str = splitted_map[1]
     num_chars = len(raw_map_str)
     if num_chars < 4 * width * height - 1:
-        print(f'Not enough chars in the map string to form a map with width {width} and height {height}. {num_chars} < {4 * width * height - 1}')
+        print(f'Il n\'y a pas assez de caractères littéraux pour former une map de {width}x{height} dans le fichier: {num_chars} < {4 * width * height - 1}')
         return 1
     # check presence of basics
     for panda_char in _PANDA_CHARS:
         panda_char_count = raw_map_str.count(panda_char)
         if panda_char_count != 1:
             if panda_char_count == 0:
-                print('Missing panda:', panda_char)
+                print(f'Manque panda: {panda_char}:')
                 return 1
             else:
-                print(f'Too much pandas of same kind: {panda_char_count}x{panda_char}')
+                print(f'Trop de pandas du même type: {panda_char_count} fois {panda_char}')
                 return 1
     # init vars
     map_ : list[list[dict]] = [[None for _ in range(width)] for _ in range(height)]
@@ -56,7 +56,7 @@ def main() -> int:
         # add tile buffer to map
         success, tile_dict = _addtilebuffer(buffer, x, y)
         if not success:
-            print(f'Unsuccessful tile: {buffer} at {x},{y}')
+            print(f'Case invalide: {buffer} à {x},{y}')
             return 1
         map_[y][x] : dict = tile_dict
         buffer = ''
@@ -68,7 +68,7 @@ def main() -> int:
 
     # check map alltogether (bridge connections etc.)
     return_code = _checkmap(map_, width, height)
-    if return_code != 0: print(f'Map check failed: {return_code}')
+    if return_code != 0: print(f'Vérification de carte non réussie. Code de retour: {return_code}')
 
     # done.
     return return_code
@@ -77,7 +77,7 @@ def main() -> int:
 def _addtilebuffer(buffer : str, x : int, y : int) -> tuple[bool, dict]:
     # basic length check
     if len(buffer) != 3:
-        print(f'Invalid tile length: {buffer}')
+        print(f'Longueur de case invalide: {buffer}')
         return False, None
 
     # either panda/bridge, bridge or baby panda
@@ -95,14 +95,14 @@ def _addtilebuffer(buffer : str, x : int, y : int) -> tuple[bool, dict]:
     # water tile easy check
     if '_' in buffer:
         if buffer != '___':
-            print(f'Cannot have "_" in tile and it not being "___": {buffer}')
+            print(f'Ne peut pas avoir le caractère "_" dans une case si elle n\'est pas "___": {buffer}')
             return False, None
         else:
             tile_dict['water'] = True
             return True, tile_dict
     if '#' in buffer:
         if buffer != '###':
-            print(f'Cannot have "#" in tile and it not being "###": {buffer}')
+            print(f'Ne peut pas avoir le caractère "#" dans une case si elle n\'est pas "###": {buffer}')
             return False, None
         else:
             tile_dict['obstacle'] = True
@@ -120,14 +120,14 @@ def _addtilebuffer(buffer : str, x : int, y : int) -> tuple[bool, dict]:
             value = int(buffer[1])
             direction = int(buffer[2])
         except Exception as e:
-            print(f'Failed to convert value or direction for tile "{buffer}". Caused: {e}')
+            print(f'La conversion en nombre entier de {buffer[1]} ou de {buffer[2]} a échoué pour la case {buffer}. Erreur causée: {e}')
             return False, None
         # check value & direction values
         if not 0 < value < 7:
-            print(f'Invalid value (must be in [1-6]): {value}')
+            print(f'Valeur invalide (doit être dans [1-6]): {value}')
             return False, None
         if not 0 < direction < 7:
-            print(f'Invalid direction (must be in [1-6]): {direction}')
+            print(f'Direction invalide (doit être dans [1-6]): {direction}')
             return False, None
         # add bridge
         tile_dict['bridge'] = {'value': value, 'direction': direction, 'sign': '?', 'connected' : False}
@@ -141,14 +141,14 @@ def _addtilebuffer(buffer : str, x : int, y : int) -> tuple[bool, dict]:
             value = int(buffer[1])
             direction = int(buffer[2])
         except Exception as e:
-            print(f'Failed to convert value or direction for tile {buffer}. Caused: {e}')
+            print(f'La conversion en nombre entier de {buffer[1]} ou de {buffer[2]} a échoué pour la case {buffer}. Erreur causée: {e}')
             return False, None
         # check value & direction values
         if not 0 < value < 7:
-            print(f'Invalid value (must be in [1-6]): {value}')
+            print(f'Valeur invalide (doit être dans [1-6]): {value}')
             return False, None
         if not 0 < direction < 7:
-            print(f'Invalid direction (must be in [1-6]): {direction}')
+            print(f'Direction invalide (doit être dans [1-6]): {direction}')
             return False, None
         # add bridge
         tile_dict['bridge'] = {'value': value, 'direction': direction, 'sign': sign, 'connected' : False}
@@ -160,7 +160,7 @@ def _addtilebuffer(buffer : str, x : int, y : int) -> tuple[bool, dict]:
         # try and convert baby panda id
         try: id_ = int(buffer[1:])
         except Exception as e:
-            print(f'Failed to convert id "{buffer[1:]}". Caused: {e}')
+            print(f'Convertion de l\'id "{buffer[1:]}" en nombre entier a échoué. Erreur causée: {e}')
             return False, None
         # add baby panda
         tile_dict['player'] = player
@@ -168,14 +168,14 @@ def _addtilebuffer(buffer : str, x : int, y : int) -> tuple[bool, dict]:
         tile_dict['id'] = id_
         return True, tile_dict
 
-    print(f'Unknown first char of tile "{buffer[0]}". Tile is "{buffer}"')
+    print(f'Premier caractère de case inconnu: "{buffer[0]}". La case est "{buffer}"')
     return False, None
 
 
 def _checkmap(map_ : list[list[dict]], width : int, height : int) -> int:
     # check that all the tiles are dicts
     if not all([type(d) == dict for line in map_ for d in line]):
-        print(f'Some elements int the map are not dicts: {map_}')
+        print(f'Certains éléments ne sont pas des dicionnaires: {map_}')
         return 1
     # check all tiles individually
     for y in range(height):
@@ -203,11 +203,11 @@ def _checkmap(map_ : list[list[dict]], width : int, height : int) -> int:
                     # there should not be a panda belonging to same player as baby on surrounding tile
                     # reminder: pandas take babies when they are next to them
                     if map_[neighbour_pos[1]][neighbour_pos[0]]['panda'] and map_[neighbour_pos[1]][neighbour_pos[0]]['player'] == baby_panda_owner_plyer:
-                        print(f'There is a panda ({neighbour_pos}) of same team as baby panda ({(x,y)}). Baby panda should have been removed.')
+                        print(f'Il y a un panda ({neighbour_pos}) de la même race/équipe que le bébé panda ({(x,y)}) sur une case adjacente.\nLes bébés pandas environnants auraient dû être ramassés')
                         return 1
             else:
                 # it is not water, not a panda/bridge, not a bridge and not a baby pada. What is it ?
-                print(f'Unknown tile type {(x,y)}: {tile}')
+                print(f'Type de case inconnu à {(x,y)}: {tile}')
                 return 1
 
     if not all([tile['bridge']['connected'] \
@@ -221,7 +221,7 @@ def _checkmap(map_ : list[list[dict]], width : int, height : int) -> int:
 def _validate_bridge(tile : dict, pos : tuple[int], map_ : list[list[dict]], width : int, height : int) -> int:
     # there should be a bridge ...
     if tile['bridge'] == None:
-        print(f'Tried to verify None bridge: {tile}')
+        print(f'Vérification de pont: Il n\'y a pas de pont: {tile}')
         return 1
 
     # already checked
@@ -235,19 +235,19 @@ def _validate_bridge(tile : dict, pos : tuple[int], map_ : list[list[dict]], wid
     # position the bridge is pointing to
     neighbour_bridge_pos = _new_pos_by_direction(pos, _direction_str_from_int(tile['bridge']['direction']))
     if not _is_valid_position(neighbour_bridge_pos, width, height):
-        print(f'Bridge: {pos}. pointing to position outside map: {neighbour_bridge_pos}')
+        print(f'Le pont: {pos} pointe vers une position hors de la carte: {neighbour_bridge_pos}')
         return 1
 
     # get the partner bridge
     other = map_[neighbour_bridge_pos[1]][neighbour_bridge_pos[0]]
     if other['bridge'] == None:
-        print(f'Bridge tile: {pos} -> {tile}\nnot pointing to a bridge:\nother: {neighbour_bridge_pos} -> {other}')
+        print(f'Case de pont: {pos} -> {tile}\nne pointe pas vers un autre pont:\nautre: {neighbour_bridge_pos} -> {other}')
         return 1
 
     # check if other bridge pointing towards this bridge
     neighbour_bridge_pointing_to_pos = _new_pos_by_direction(neighbour_bridge_pos, _direction_str_from_int(other['bridge']['direction']))
     if neighbour_bridge_pointing_to_pos != pos:
-        print(f'Other bridge {other} not pointing towards the current bridge: {tile}. Actually pointing towards {neighbour_bridge_pointing_to_pos}')
+        print(f'Autre pont {other} ne pointe pas vers le pont présent: {tile}, mais il pointe vers {neighbour_bridge_pointing_to_pos}')
         return 1
 
     # connect both
@@ -257,13 +257,13 @@ def _validate_bridge(tile : dict, pos : tuple[int], map_ : list[list[dict]], wid
     # sign matching
     if tile['bridge']['sign'] != '?':
         if tile['bridge']['sign'] == other['bridge']['sign']:
-            print(f'Bridges are pointing towards each other, but have same signs:\ntile: {tile}\nother: {other}')
+            print(f'Ces ponts sont connectés entre eux mais ont le même signe:\ncase: {tile}\nautre: {other}')
             return 1
         elif other['bridge']['sign'] == '?':
             other['bridge']['sign'] = '+' if tile['bridge']['sign'] == '-' else '-'
     else:
         if other['bridge']['sign'] == '?':
-            print('Two bridges have unknown signs (pandas on them):\nbridge: {tile}\nother: {other}')
+            print('Deux ponts connectés ont des signes inconnus (un panda est sur eux):\npont: {tile}\nautre: {other}')
             return 1
         else:
             tile['bridge']['sign'] = '+' if other['bridge']['sign'] == '-' else '-'
@@ -294,7 +294,7 @@ def _new_pos_by_direction(pos : tuple[int], direction_str : str) -> tuple[int]:
         nx = x - 1
         ny = y if x % 2 == 1 else y + 1
     else:
-        print(f'Unrecognized direction str: {direction_str}')
+        print(f'Direction inconnue: {direction_str}')
         sys.exit(1) # TODO: rly return 1 and not something else fot this one ?
         return [-1, -1] # in case the sys.exit fails, this will trigger an error later
 
@@ -309,12 +309,12 @@ _direction_str_from_int = lambda direction: _DIRECTION_CHARS[direction - 1]
 if __name__ == '__main__':
     try: exit_code : int = main()
     except Exception as e:
-        print(f'Failed to check. Exception: {e}')
+        print(f'Validationde carte ratée. Erreur: {e}')
         traceback.print_exc()
         sys.exit(1)
     if type(exit_code) != int:
-        print(f'Invalid exit code type "{type(exit_code)}" with value "{exit_code}"')
+        print(f'Code de sortie de type invalide "{type(exit_code)}", avec comme valeur "{exit_code}"')
         sys.exit(1)
     if exit_code != 0:
-        print('error occured')
+        print('carte invalide')
     sys.exit(exit_code)
