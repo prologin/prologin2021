@@ -10,6 +10,14 @@ each AIs compete against each other.
 prologin2021 is meant to be used with [stechec2](
 https://github.com/prologin/stechec2), our custom made AI match maker.
 
+# Setup front end
+The script `setup.sh` has to be executed to setup the front end.
+
+Some useful scripts :
+- launch_editor.sh
+- launch_replay.sh *\<replay\>*
+- launch_spectator.sh
+
 # License
 Free use of this software is granted under the terms of the GNU General Public
 License version 2+ (GPLv2+). For details see the `COPYING` file.
