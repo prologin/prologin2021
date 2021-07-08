@@ -30,7 +30,7 @@ tiles += [
     (8, 1, 'eau2'),
     (8, 2, 'eau3'),
     (8, 3, 'eau4'),
-    (9, 0, 'obstacle'),
+    (8, 4, 'obstacle'),
 ]
 
 # Players

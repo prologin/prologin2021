@@ -27,10 +27,12 @@ class MapTile extends Tile {
   constructor(x, y) {
     super(x, y);
     this.bridge = null;
+    this.obstacle = null;
   }
   // methods
-  isEmpty() { return this.bridge === null; }
-  isBridge() { return !this.isEmpty(); }
+  isEmpty() { return !(isBridge() || isObstacle()) }
+  isBridge() { return this.bridge != null; }
+  isObstacle() { return this.obstacle != null; }
 }
 
 class PandaMapTile extends Tile {
@@ -75,6 +77,13 @@ class BridgeTile {
   // methods
   toCardinalDirStr() {
     return DIRECTIONS[this.direction - 1];
+  }
+}
+
+class Obstacle {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
   }
 }
 
@@ -168,9 +177,15 @@ class GameState {
   }
   processTileBuffer(buffer, x, y) {
     if (this.debug) console.log("process: " + buffer + "\n");
-    // ___ empty/water
+    // ___ water
     if (buffer == '___') {
       if (this.debug) console.log('water');
+      return;
+    }
+    // ### obstacle
+    if (buffer == '###') {
+      if (this.debug) console.log('obstacle');
+      this.map[y][x].obstacle = new Obstacle(x, y);
       return;
     }
 
@@ -361,7 +376,7 @@ function add_debug_flag(x, y) {
   debug_flag_map[y][x] = 1;
 }
 
-function remove_debug_flag(x, y) {
+function delete_debug_flag(x, y) {
   debug_flag_map[y][x] = 0;
 }
 
