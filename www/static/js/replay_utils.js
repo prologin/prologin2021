@@ -44,6 +44,9 @@ let uiP2Points = document.getElementById("p2-points");
 let uiP1Babies = document.getElementById("p1-babies");
 let uiP2Babies = document.getElementById("p2-babies");
 let uiAutoReplay = document.getElementById("autoreplay");
+let uiWinner = document.getElementById("winner");
+let uiWinnerTitle = document.getElementById("winner-title");
+let uiWinnerImg = document.getElementById("winner-img");
 
 function onPrevClick() {
     // Disable autoreplay
@@ -127,11 +130,10 @@ function updateReplay() {
     gameState = gameStates[currentGameStateIndex];
 
     // Update GUI
-    // TODO : Winner
+    let gameEnded = hasGameEnded();
     uiStateIndicator.textContent =
-        hasGameEnded()
-            ? `Partie terminée (${gameStates.length} tours)`
-            : `${currentGameStateIndex + 1} / ${gameStates.length} tours`
+        gameEnded ? `Partie terminée (${gameStates.length} tours)`
+                  : `${currentGameStateIndex + 1} / ${gameStates.length} tours`
     uiP1Points.textContent =
         `Joueur 1 : ${gameState.players['1'].points} points`;
     uiP2Points.textContent =
@@ -142,6 +144,12 @@ function updateReplay() {
     uiP2Babies.textContent = `Bébés sauvés du joueur 2 : ${
         gameState.players['2'].babies_on_back_1} (panda 1) / ${
         gameState.players['2'].babies_on_back_2} (panda 2)`;
+
+    if (gameEnded) {
+        showWinners();
+    } else {
+        hideWinners();
+    }
 
     updateView();
 }
@@ -191,4 +199,25 @@ function loadDump(data) {
     app.renderer.resize(mapWidth, mapHeight);
     updateReplay();
     startReplay();
+}
+
+function showWinners() {
+    uiWinner.hidden = false;
+    uiWinnerImg.classList.add('winner-img');
+    uiWinnerTitle.classList.add('winner-title');
+
+    let gs = gameStates[gameStates.length - 1];
+    let p1Wins = gs.players['1'].points >= gs.players['2'].points;
+    let winner =
+        `Joueur ${p1Wins ? '1' : '2'}`;
+    uiWinnerTitle.textContent = `Bravo ${winner}`;
+
+    let pref = isWww ? '/static/img/' : '/front/images/';
+    uiWinnerImg.src = pref + (p1Wins ? 'panda1.png' : 'panda2.png');
+}
+
+function hideWinners() {
+    uiWinner.hidden = true;
+    uiWinnerImg.classList.remove('winner-img');
+    uiWinnerTitle.classList.remove('winner-title');
 }

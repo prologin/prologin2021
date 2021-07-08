@@ -92,6 +92,7 @@ class GameState {
     this.panda_map = this.initPandaMap();
     this.players = {'1': new Player(1),
                     '2': new Player(2)};
+    if (this.debug) console.log('New GameState: w =', this.width, ' & h =', this.height);
   }
   // methods
   initMap() {
@@ -129,8 +130,14 @@ class GameState {
           continue;
         }
       }
+      if (buffer.length != 3) {
+        console.warn('Invalid buffer: "', buffer, '"');
+        buffer = '';
+        continue;
+      }
 
       // - buffer has ended ! -
+      if (this.debug) console.log('tile at', [x, y], ':', buffer);
 
       // process & reset buffer
       this.processTileBuffer(buffer, x, y);
@@ -315,7 +322,7 @@ function loadGameStateFromMapStr(str) {
   let width = parseInt(dim_array[0]);
   let height = parseInt(dim_array[1]);
   // create gamestate
-  let gs = new GameState(width, height, false);
+  let gs = new GameState(width, height, true);
   gs.loadMap(map);
 
   return gs;
