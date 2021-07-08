@@ -258,30 +258,30 @@ Map::Map(std::istream& input, int num_players)
     }
 
     // For every cell, make sure that bridge directions make sense.
-    for (int y = 0; y < height; y++)
-        for (int x = 0; x < width; x++)
-        {
-            const position pos = {x, y};
-            const Cell& cell = get(pos);
-
-            int value;
-            direction dir;
-            bool is_start;
-
-            if (cell.is_pont(&value, &dir, &is_start))
-            {
-                const position other_pos = get_relative_position(pos, dir);
-                const Cell& other_cell = get(other_pos);
-
-                direction other_dir;
-                bool other_is_start;
-
-                assert(
-                    other_cell.is_pont(nullptr, &other_dir, &other_is_start));
-                assert(get_relative_position(other_pos, other_dir) == pos);
-                assert(other_is_start != is_start);
-            }
-        }
+//    for (int y = 0; y < height; y++)
+//        for (int x = 0; x < width; x++)
+//        {
+//            const position pos = {x, y};
+//            const Cell& cell = get(pos);
+//
+//            int value;
+//            direction dir;
+//            bool is_start;
+//
+//            if (cell.is_pont(&value, &dir, &is_start))
+//            {
+//                const position other_pos = get_relative_position(pos, dir);
+//                const Cell& other_cell = get(other_pos);
+//
+//                direction other_dir;
+//                bool other_is_start;
+//
+//                assert(
+//                    other_cell.is_pont(nullptr, &other_dir, &other_is_start));
+//                assert(get_relative_position(other_pos, other_dir) == pos);
+//                assert(other_is_start != is_start);
+//            }
+//        }
 }
 
 int Map::width() const

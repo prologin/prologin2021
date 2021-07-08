@@ -76,6 +76,16 @@ extern "C" std::vector<position> api_positions_adjacentes(position pos)
     return api->positions_adjacentes(pos);
 }
 
+extern "C" position api_position_dans_direction(position pos, direction dir)
+{
+    return api->position_dans_direction(pos, dir);
+}
+
+extern "C" int api_direction_entre_positions(position origine, position cible)
+{
+    return api->direction_entre_positions(origine, cible);
+}
+
 extern "C" std::vector<action_hist> api_historique()
 {
     return api->historique();
@@ -99,6 +109,11 @@ extern "C" int api_adversaire()
 extern "C" tour_info api_info_tour()
 {
     return api->info_tour();
+}
+
+extern "C" carte_info api_info_carte()
+{
+    return api->info_carte();
 }
 
 std::ostream& operator<<(std::ostream& os, case_type v)
