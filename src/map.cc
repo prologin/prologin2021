@@ -149,7 +149,7 @@ Map::Map(std::istream& input, int num_players)
     assert(num_players > 0);
 
     // Read dimensions.
-    int width, height;
+    size_t width, height;
 
     input >> width;
     input >> height;
@@ -162,12 +162,12 @@ Map::Map(std::istream& input, int num_players)
     // Read cells.
     char data[4] = {0};
 
-    for (int y = 0; y < height; y++)
+    for (size_t y = 0; y < height; y++)
     {
         std::vector<Cell> line;
         line.reserve(width);
 
-        for (int x = 0; x < width; x++)
+        for (size_t x = 0; x < width; x++)
         {
             // Every cell is represented by three characters followed by either
             // a line break or a single space character.
@@ -253,13 +253,15 @@ Map::Map(std::istream& input, int num_players)
                 break;
             }
         }
+        assert(line.size() == width);
 
         cells_.push_back(std::move(line));
     }
+    assert(cells_.size() == height);
 
     // For every cell, make sure that bridge directions make sense.
-    for (int y = 0; y < height; y++)
-        for (int x = 0; x < width; x++)
+    for (size_t y = 0; y < height; y++)
+        for (size_t x = 0; x < width; x++)
         {
             const position pos = {x, y};
             const Cell& cell = get(pos);
@@ -271,6 +273,7 @@ Map::Map(std::istream& input, int num_players)
             if (cell.is_pont(&value, &dir, &is_start))
             {
                 const position other_pos = get_relative_position(pos, dir);
+                assert(is_valid(other_pos));
                 const Cell& other_cell = get(other_pos);
 
                 direction other_dir;
