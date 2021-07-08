@@ -25,6 +25,9 @@ $(function() {
         '/static/js/viewer.js',
     ];
 
+    // Link css
+    $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', '/static/css/theme.css'));
+
     loadScripts(scripts, function() {
         start_preview($preview, $map_content);
 

@@ -7,10 +7,7 @@ isWww = true;
 function fetchNextState() {
 }
 
-// Not used by the replay but by the spectator
-function hasGameEnded() {
-    return false;
-}
+function hasGameEnded() { return currentGameStateIndex >= gameStates.length - 1; }
 
 // --- Main ---
 function start_replay(dump) {

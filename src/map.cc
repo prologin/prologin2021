@@ -282,7 +282,9 @@ Map::Map(std::istream& input, int num_players)
                 assert(
                     other_cell.is_pont(nullptr, &other_dir, &other_is_start));
                 assert(get_relative_position(other_pos, other_dir) == pos);
-                assert(other_is_start != is_start);
+                assert((other_cell.has_panda(nullptr, nullptr) ||
+                        cell.has_panda(nullptr, nullptr)) ||
+                       (other_is_start != is_start));
             }
         }
 }

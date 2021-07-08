@@ -51,7 +51,7 @@ GameState::GameState(const rules::Players& players, Map map)
             else
             {
                 // Make sure that panda / player hasn't already been specified.
-                assert(positions[num] != (position{-1, -1}));
+                assert(positions[num] == (position{-1, -1}));
             }
 
             positions[num] = {x, y};
