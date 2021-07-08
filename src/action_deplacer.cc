@@ -19,7 +19,7 @@ int ActionDeplacer::check(const GameState& st) const
     // Ensure the target cell is an empty bridge.
     int target_value;
 
-    if (!target_cell.is_pont(&target_value, nullptr, nullptr) ||
+    if (!target_cell.is_pont(&target_value, nullptr) ||
         target_cell.has_panda(nullptr, nullptr))
         return MOUVEMENT_INVALIDE;
 
@@ -29,7 +29,7 @@ int ActionDeplacer::check(const GameState& st) const
     int source_value;
     direction source_dir;
 
-    assert(source_cell.is_pont(&source_value, &source_dir, nullptr));
+    assert(source_cell.is_pont(&source_value, &source_dir));
 
     const bool is_same_brige = source_dir == dir_;
 
@@ -51,13 +51,13 @@ void ActionDeplacer::apply_on(GameState* st) const
     // Compute new value of the cell that was left.
     const Cell previous_cell = map.get(previous_position);
     int previous_cell_value;
-    bool previous_cell_is_start;
+    PontPolarity previous_cell_polarity = previous_cell.get_polarity();
     direction previous_cell_direction;
 
-    assert(previous_cell.is_pont(&previous_cell_value, &previous_cell_direction,
-                                 &previous_cell_is_start));
+    assert(previous_cell.is_pont(&previous_cell_value, &previous_cell_direction));
+    assert(previous_cell_polarity != PontPolarity::Undefined);
 
-    if (previous_cell_is_start)
+    if (previous_cell_polarity == PontPolarity::Start)
     {
         // Increase cell value.
         previous_cell_value =
@@ -71,7 +71,7 @@ void ActionDeplacer::apply_on(GameState* st) const
     }
 
     Cell updated_previous_cell = Cell::pont(
-        previous_cell_value, previous_cell_direction, previous_cell_is_start);
+        previous_cell_value, previous_cell_direction, previous_cell_polarity);
 
     // Update map and positions.
     map.set(desired_position,

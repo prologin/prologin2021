@@ -323,7 +323,7 @@ static std::ostream& operator<<(std::ostream& ss, const Map& map)
 
             int value, player;
             direction dir;
-            bool is_start;
+            PontPolarity polarity;
 
             if (cell.is_empty())
             {
@@ -334,11 +334,12 @@ static std::ostream& operator<<(std::ostream& ss, const Map& map)
                 ss << KV{"type", BEBE} << ", " << KV{"player", player} << ", "
                    << KV{"id", value};
             }
-            else if (cell.is_pont(&value, &dir, &is_start))
+            else if (cell.is_pont(&value, &dir))
             {
+                assert(polarity != PontPolarity::Undefined);
                 ss << KV{"type", PONT} << ", " << KV{"value", value} << ", "
-                   << KV{"direction", dir} << ", " << KV{"is_start", is_start}
-                   << ", ";
+                   << KV{"direction", dir} << ", "
+                   << KV{"is_start", (polarity == PontPolarity::Start)} << ", ";
 
                 if (cell.has_panda(&player, &value))
                 {

@@ -20,6 +20,13 @@ enum class CellKind
     Pont,
 };
 
+enum class PontPolarity
+{
+    Undefined,
+    Start,
+    End,
+};
+
 class Cell
 {
 public:
@@ -31,23 +38,27 @@ public:
     bool is_invalid() const;
     bool is_empty() const;
     bool is_bebe(int* joueur, int* num) const;
-    bool is_pont(int* valeur, direction* direction, bool* is_start) const;
+    bool is_pont(int* valeur, direction* direction) const;
     bool has_panda(int* joueur, int* num) const;
+    PontPolarity get_polarity() const;
 
     static Cell invalid();
     static Cell empty();
     static Cell bebe(int joueur, int num);
-    static Cell pont(int valeur, direction direction, bool is_start);
+    static Cell pont(int valeur, direction direction, PontPolarity polarity);
 
     Cell with_panda(int joueur, int num) const;
     Cell without_panda() const;
+    Cell set_polarity(PontPolarity polarity) const;
 
     bool operator==(Cell other) const;
 
 private:
-    Cell(CellKind kind, uint32_t data, uint32_t panda_data);
+    Cell(CellKind kind, PontPolarity polarity, uint32_t data,
+         uint32_t panda_data);
 
     CellKind kind_;
+    PontPolarity polarity_;
     uint32_t data_;
     uint32_t panda_data_;
 };

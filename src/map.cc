@@ -29,8 +29,9 @@ Cell::Cell()
     , panda_data_(0)
 {
 }
-Cell::Cell(CellKind kind, uint32_t data, uint32_t panda_data = kNoPanda)
+Cell::Cell(CellKind kind, PontPolarity polarity, uint32_t data, uint32_t panda_data = kNoPanda)
     : kind_(kind)
+    , polarity_(polarity)
     , data_(data)
     , panda_data_(panda_data)
 {
@@ -39,26 +40,27 @@ Cell::Cell(CellKind kind, uint32_t data, uint32_t panda_data = kNoPanda)
 // static
 Cell Cell::invalid()
 {
-    return Cell(CellKind::Invalid, 0);
+    return Cell(CellKind::Invalid, PontPolarity::Undefined, 0);
 }
 
 // static
 Cell Cell::empty()
 {
-    return Cell(CellKind::Empty, 0);
+    return Cell(CellKind::Empty, PontPolarity::Undefined, 0);
 }
 
 // static
-Cell Cell::pont(int valeur, direction direction, bool is_start)
+Cell Cell::pont(int valeur, direction direction, PontPolarity polarity)
 {
-    return Cell(CellKind::Pont,
-                (int32_t)valeur << 16 | direction << 1 | is_start);
+    return Cell(CellKind::Pont, polarity,
+                (int32_t)valeur << 16 | direction << 1);
 }
 
 // static
 Cell Cell::bebe(int joueur, int num)
 {
-    return Cell(CellKind::Bebe, (int32_t)joueur << 16 | num);
+    return Cell(CellKind::Bebe, PontPolarity::Undefined,
+                (int32_t)joueur << 16 | num);
 }
 
 CellKind Cell::kind() const
@@ -76,13 +78,16 @@ bool Cell::is_empty() const
     return kind_ == CellKind::Empty;
 }
 
-bool Cell::is_pont(int* valeur, direction* direction, bool* is_start) const
+PontPolarity Cell::get_polarity() const
+{
+    return polarity_;
+}
+
+bool Cell::is_pont(int* valeur, direction* direction) const
 {
     if (kind_ != CellKind::Pont)
         return false;
 
-    if (is_start)
-        *is_start = data_ & 1;
     if (valeur)
         *valeur = data_ >> 16;
     if (direction)
@@ -121,13 +126,19 @@ bool Cell::has_panda(int* joueur, int* num) const
 
 Cell Cell::with_panda(int joueur, int num) const
 {
-    return Cell(kind_, data_, joueur << 16 | num);
+    return Cell(kind_, polarity_, data_, joueur << 16 | num);
 }
 
 Cell Cell::without_panda() const
 {
-    return Cell(kind_, data_, kNoPanda);
+    return Cell(kind_, polarity_, data_, kNoPanda);
 }
+
+Cell Cell::set_polarity(PontPolarity polarity) const
+{
+    return Cell(kind_, polarity, data_, panda_data_);
+}
+
 
 bool Cell::operator==(Cell other) const
 {
@@ -142,6 +153,15 @@ Map::Map(int width, int height)
     std::vector<Cell> empty_line(width, Cell::empty());
 
     cells_.resize(height, empty_line);
+}
+
+Cell match_polarity(const Cell& cell_a, const Cell& cell_b)
+{
+    if (cell_a.get_polarity() == PontPolarity::Undefined
+        && cell_b.get_polarity() != PontPolarity::Undefined)
+        return cell_a.set_polarity(cell_b.get_polarity() == PontPolarity::Start
+                                   ? PontPolarity::End : PontPolarity::Start);
+    return cell_a;
 }
 
 Map::Map(std::istream& input, int num_players)
@@ -234,9 +254,13 @@ Map::Map(std::istream& input, int num_players)
 
                 const int n = data[1] - '0';
                 const int direction = data[2] - '1';
-                const bool is_start = data[0] != '-';
+                PontPolarity polarity = PontPolarity::Undefined;
+                if (data[0] == '+')
+                    polarity = PontPolarity::Start;
+                if (data[0] == '-')
+                    polarity = PontPolarity::End;
 
-                Cell cell = Cell::pont(n, (enum direction)direction, is_start);
+                Cell cell = Cell::pont(n, (enum direction)direction, polarity);
 
                 if (panda != -1 && player != -1)
                 {
@@ -268,23 +292,24 @@ Map::Map(std::istream& input, int num_players)
 
             int value;
             direction dir;
-            bool is_start;
 
-            if (cell.is_pont(&value, &dir, &is_start))
+            if (cell.is_pont(&value, &dir))
             {
                 const position other_pos = get_relative_position(pos, dir);
                 assert(is_valid(other_pos));
                 const Cell& other_cell = get(other_pos);
 
                 direction other_dir;
-                bool other_is_start;
 
-                assert(
-                    other_cell.is_pont(nullptr, &other_dir, &other_is_start));
+                assert(other_cell.is_pont(nullptr, &other_dir));
                 assert(get_relative_position(other_pos, other_dir) == pos);
-                assert((other_cell.has_panda(nullptr, nullptr) ||
-                        cell.has_panda(nullptr, nullptr)) ||
-                       (other_is_start != is_start));
+
+                set(pos, match_polarity(cell, other_cell));
+                set(other_pos, match_polarity(other_cell, cell));
+
+                assert(get(pos).get_polarity() != PontPolarity::Undefined);
+                assert(get(other_pos).get_polarity() != PontPolarity::Undefined);
+                assert(get(pos).get_polarity() != get(other_pos).get_polarity());
             }
         }
 }
