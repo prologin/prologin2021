@@ -30,7 +30,18 @@ function onNextStateFetched(nextStateJson) {
     }
 
     // Parse and push new state
-    gameStates.push(parseJSON(nextStateJson));
+    let gameState = parseJSON(nextStateJson);
+    if (gameState === undefined) {
+        console.error("Failed to parse game state");
+        return;
+    }
+
+    gameStates.push(gameState);
+
+    // End of game
+    if (gameState.round >= 199) {
+        endGame();
+    }
 
     // Update render
     onNextClick();

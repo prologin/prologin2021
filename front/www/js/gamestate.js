@@ -88,6 +88,7 @@ class GameState {
     this.debug = debug;
     this.width = width;
     this.height = height;
+    this.round = 0;
     this.map = this.initMap();
     this.panda_map = this.initPandaMap();
     this.players = {'1': new Player(1),
