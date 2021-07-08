@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import sys
+import sys, traceback
 
 _DIRECTION_CHARS = ['ne', 'se', 's', 'so', 'no', 'n']
 _PANDA_CHARS = ['A', 'B', 'X', 'Y']
@@ -246,9 +246,19 @@ def _validate_bridge(tile : dict, pos : tuple[int], map_ : list[list[dict]], wid
 	tile['bridge']['connected'] = True
 	other['bridge']['connected'] = True
 
-	if tile['bridge']['sign'] != '?' and tile['bridge']['sign'] == other['bridge']['sign']:
-		print('Bridges are pointing towards each other, but have same sign:\ntile: {}\nother: {}'.format(tile, other))
-		return 1
+	# sign matching
+	if tile['bridge']['sign'] != '?':
+		if tile['bridge']['sign'] == other['bridge']['sign']:
+			print('Bridges are pointing towards each other, but have same signs:\ntile: {}\nother: {}'.format(tile, other))
+			return 1
+		elif other['bridge']['sign'] == '?':
+			other['bridge']['sign'] = '+' if tile['bridge']['sign'] == '-' else '-'
+	else:
+		if other['bridge']['sign'] == '?':
+			print('Two bridges have unknown signs (pandas on them):\nbridge: {}\nother: {}'.format(tile, other))
+			return 1
+		else:
+			tile['bridge']['sign'] = '+' if other['bridge']['sign'] == '-' else '-'
 
 	return 0
 
@@ -289,9 +299,13 @@ _direction_str_from_int = lambda direction: _DIRECTION_CHARS[direction - 1]
 
 
 if __name__ == '__main__':
-	try: exit_code = main()
+	try: exit_code : int = main()
 	except Exception as e:
 		print('Failed to check. Exception: {}'.format(e))
+		traceback.print_exc()
+		sys.exit(1)
+	if type(exit_code) != int:
+		print('Invalid exit code type "{}" with value "{}"'.format(type(exit_code), exit_code))
 		sys.exit(1)
 	sys.exit(exit_code)
 
