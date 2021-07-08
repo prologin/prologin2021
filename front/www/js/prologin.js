@@ -44,9 +44,10 @@ const TILES = [
     'eau1',
     'eau2',
     'eau3',
+    'eau4',
 ].concat(bridgeTiles);
 
-const N_WATER_TEXTURES = 3;
+const N_WATER_TEXTURES = 4;
 
 // Graphics
 const BG_COLOR = 0x4DA0E6;
