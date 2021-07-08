@@ -241,6 +241,12 @@ void Api::afficher_action_type(action_type v)
     std::cerr << v << std::endl;
 }
 
+std::ostream& operator<<(std::ostream& os, debug_drapeau v);
+void Api::afficher_debug_drapeau(debug_drapeau v)
+{
+    std::cerr << v << std::endl;
+}
+
 std::ostream& operator<<(std::ostream& os, position v);
 void Api::afficher_position(position v)
 {

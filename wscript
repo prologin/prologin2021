@@ -21,6 +21,7 @@ def build(bld):
         source='''
             src/action_deplacer.cc
             src/action_poser.cc
+            src/action_debug_afficher_drapeau.cc
             src/api.cc
             src/dumper.cc
             src/entry.cc
