@@ -322,7 +322,7 @@ function loadGameStateFromMapStr(str) {
   let width = parseInt(dim_array[0]);
   let height = parseInt(dim_array[1]);
   // create gamestate
-  let gs = new GameState(width, height, true);
+  let gs = new GameState(width, height, false);
   gs.loadMap(map);
 
   return gs;
