@@ -86,15 +86,18 @@ void ActionDeplacer::apply_on(GameState* st) const
     for (const position adjacent_pos :
          map.get_adjacent_positions(desired_position))
     {
-        int player, num;
+        int player_id, num;
 
-        if (map.get(adjacent_pos).is_bebe(&player, &num) &&
-            player == player_id_)
+        if (map.get(adjacent_pos).is_bebe(&player_id, &num) &&
+            player_id == player.id())
         {
-            Bebe& bebe = *st->player_at(player_id_)->bebe_at(num);
+            Bebe& bebe = *player.bebe_at(num);
 
             map.set(adjacent_pos, Cell::empty());
             panda.save_bebe(bebe);
+
+            // Also update player score.
+            player.rules_player().score += NB_POINTS_CAPTURE_BEBE;
         }
     }
 

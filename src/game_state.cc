@@ -163,13 +163,13 @@ void GameState::next_round()
 
     if (round_player_id() == 0)
     {
-        // Update scores when both players have played.
         const int points_per_saved_bebe = 5;
 
-        for (const Player& player : players())
+        for (Player& player : own_players_)
         {
             int32_t& player_score = player.rules_player().score;
 
+            // Update scores for each saved baby.
             for (const Panda& panda : player.pandas())
             {
                 player_score +=

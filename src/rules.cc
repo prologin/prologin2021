@@ -115,9 +115,9 @@ void Rules::spectator_turn()
     champion_jouer_tour_();
 }
 
-void Rules::start_of_player_turn(uint32_t)
+void Rules::start_of_player_turn(uint32_t player_id)
 {
-    // TODO
+    api_->game_state().player_at(player_id)->reset_last_actions();
 }
 
 void Rules::end_of_player_turn(uint32_t)
