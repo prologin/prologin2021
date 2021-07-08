@@ -56,9 +56,9 @@ class BabyPanda {
 
 class BridgeTile {
   // constructor
-  constructor(direction, value, sign, pos) {
-    this.direction = direction; // 1-6
+  constructor(value, direction, sign, pos) {
     this.value = value; // 1-6
+    this.direction = direction; // 1-6
     this.sign = sign; // -1 or +1 (int value)
     this.pos = pos; // [x, y]
   }
@@ -180,10 +180,10 @@ class GameState {
 
     // bridge
     if (this.debug) console.log('Bridge: ' + buffer);
-    let direction = parseInt(buffer[1]);
-    let value = parseInt(buffer[2]);
+    let value = parseInt(buffer[1]);
+    let direction = parseInt(buffer[2]);
     // only save the buffer[0], because we will look at the signs later
-    this.map[y][x].bridge = [direction, value, buffer[0], [x, y]];
+    this.map[y][x].bridge = [value, direction, buffer[0], [x, y]];
 
     return;
   }
@@ -192,8 +192,8 @@ class GameState {
       for (let x = 0; x < this.width; x++) {
         let array = this.map[y][x].bridge;
         if (array == null) continue;
-        let direction = array[0],
-            value     = array[1],
+        let value     = array[0],
+            direction = array[1],
             sign      = array[2],
             pos       = array[3];
         let sign_value = 0;
@@ -216,7 +216,7 @@ class GameState {
             }
           }
         }
-        this.map[y][x].bridge = new BridgeTile(direction, value, sign_value, pos);
+        this.map[y][x].bridge = new BridgeTile(value, direction, sign_value, pos);
       }
     }
   }
@@ -272,8 +272,8 @@ class GameState {
         // bridge
         if (this.map[i][j].isBridge()) {
           buffer0 = this.map[i][j].bridge.sign == 1 ? '+' : '-';
-          buffer1 = this.map[i][j].bridge.direction.toString();
-          buffer2 = this.map[i][j].bridge.value.toString();
+          buffer1 = this.map[i][j].bridge.value.toString();
+          buffer2 = this.map[i][j].bridge.direction.toString();
         }
         // panda
         if (this.panda_map[i][j].isPanda()) {
@@ -315,17 +315,8 @@ function loadGameStateFromMapStr(str) {
   let width = parseInt(dim_array[0]);
   let height = parseInt(dim_array[1]);
   // create gamestate
-  let gs = new GameState(width, height, false);
+  let gs = new GameState(width, height, true);
   gs.loadMap(map);
 
   return gs;
 }
-
-var test_str = '4 3\n\
-A11 ___ ___ Z01\n\
-C99 ___ Z00 ___\n\
-B23 X45 Y61 ___';
-
-// let gs = loadGameStateFromMapStr(test_str);
-
-//

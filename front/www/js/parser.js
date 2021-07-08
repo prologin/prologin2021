@@ -34,8 +34,8 @@ function parseJSON(raw)
 						cell['id']
 					);
 				gameState.map[y][x].bridge = new BridgeTile(
-					directionIntFromFullStr(cell['direction']),
 					cell['value'],
+					directionIntFromFullStr(cell['direction']),
 					cell['is_start'] ? '+' : '-',
 					[x, y]
 				)
@@ -60,12 +60,12 @@ function directionIntFromFullStr(direction_str)
 {
 	switch(direction_str)
 	{
-		case 'NORD': return 1;
-		case 'NORD_EST': return 2;
-		case 'NORD_OUEST': return 3;
-		case 'SUD': return 4;
-		case 'SUD_EST': return 5;
-		case 'SUD_OUEST': return 6;
+		case 'NORD_EST': return 1;
+		case 'SUD_EST': return 2;
+		case 'SUD': return 3;
+		case 'SUD_OUEST': return 4;
+		case 'NORD_OUEST': return 5;
+		case 'NORD': return 6;
 		default:
 			console.warn('Unknown direction str: ', direction_str);
 			return -1;

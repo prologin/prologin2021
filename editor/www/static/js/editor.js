@@ -4,12 +4,12 @@
 
 // --- Globals ---
 let allDirections = [
-    "Nord",
     "Nord-Est",
-    "Nord-Ouest",
-    "Sud",
     "Sud-Est",
+    "Sud",
     "Sud-Ouest",
+    "Nord-Ouest",
+    "Nord",
 ];
 
 function newGameState(width, height) {
