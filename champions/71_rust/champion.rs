@@ -86,14 +86,14 @@ fn direction((x1, y1): (i32, i32), (x2, y2): (i32, i32)) -> Direction {
         (Equal, Less   , _) => Direction::Sud,
         (Equal, Greater, _) => Direction::Nord,
 
-        (Less, Equal  , true ) => Direction::NordOuest,
-        (Less, Equal  , false) => Direction::SudOuest,
-        (Less, Less   , _) => Direction::SudOuest,
-        (Less, Greater, _) => Direction::NordOuest,
+        (Less, Equal  , true ) => Direction::NordEst,
+        (Less, Equal  , false) => Direction::SudEst,
+        (Less, Less   , _) => Direction::SudEst,
+        (Less, Greater, _) => Direction::NordEst,
 
-        (Greater, Equal  , true ) => Direction::NordEst,
-        (Greater, Equal  , false) => Direction::SudEst,
-        (Greater, Less   , _) => Direction::SudEst,
-        (Greater, Greater, _) => Direction::NordEst,
+        (Greater, Equal  , true ) => Direction::NordOuest,
+        (Greater, Equal  , false) => Direction::SudOuest,
+        (Greater, Less   , _) => Direction::SudOuest,
+        (Greater, Greater, _) => Direction::NordOuest,
     }
 }
