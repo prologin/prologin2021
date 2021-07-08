@@ -44,7 +44,7 @@ function initGraphics(viewParent, width, height,
 
 // Called in initGraphics, loads all textures
 function loadTextures() {
-    let prefix = isWww ? '/static/img' : '/front/images';
+    let prefix = '/static/img';
 
     for (let tile in TILES) {
         textures[TILES[tile]] =
@@ -214,9 +214,9 @@ function updateView() {
 }
 
 function getTileWidth() {
-    return isWww ? wwwTileWidth : TILE_SIZE;
+    return wwwTileWidth;
 }
 
 function getTileHeight() {
-    return isWww ? wwwTileWidth : TILE_SIZE;
+    return wwwTileWidth;
 }

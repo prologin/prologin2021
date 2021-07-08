@@ -16,6 +16,7 @@ $(function() {
     let $preview = $('#map-preview'), $map_content = $('#map-contents');
 
     let width = 1920;
+    const mapWidth = width;
 
     $preview.hide();
 

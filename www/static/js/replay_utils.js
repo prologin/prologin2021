@@ -115,14 +115,6 @@ function onKey(e) {
         e.preventDefault();
 }
 
-// --- Graphics ---
-if (!isWww) {
-    updateViewSize();
-
-    // Init
-    initGraphics(uiCanvas, mapWidth, mapHeight, null);
-}
-
 function updateReplay() {
     if (gameStates.length == 0)
         return;
@@ -199,9 +191,7 @@ function loadDump(data) {
     mapWidth = gameStates[0].width;
     mapHeight = gameStates[0].height;
 
-    if (isWww) {
-        wwwTileWidth = wwwWidth / mapWidth;
-    }
+    wwwTileWidth = wwwWidth / mapWidth;
 
     updateViewSize();
 
@@ -227,7 +217,7 @@ function showWinners() {
             `Joueur ${p1Wins ? '1' : '2'}`;
         uiWinnerTitle.textContent = `Bravo ${winner}`;
 
-        let pref = isWww ? '/static/img/' : '/front/images/';
+        let pref = '/static/img/';
         uiWinnerImg.src = pref + (p1Wins ? 'panda1.png' : 'panda2.png');
     }
 }
