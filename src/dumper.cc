@@ -381,7 +381,7 @@ static std::ostream& operator<<(std::ostream& ss, const GameState& st)
 {
     return ss << '{' << KV{"round", api->info_tour()} << ", "
               << KV{"map", st.map()} << ", " << KV{"players", Vec{st.players()}}
-              << '}';
+              << "}\n";
 }
 
 void Rules::dump_state(std::ostream& ss)
