@@ -189,7 +189,8 @@ function loadDump(data) {
     // Parse
     for (let line of lines) {
         let gs = parseJSON(line);
-        if (gs == null) continue;
+        if (gs == null)
+            continue;
         gameStates.push(gs);
     }
 
@@ -205,13 +206,15 @@ function loadDump(data) {
 
 function showWinners() {
     uiWinner.hidden = false;
-    uiWinnerImg.classList.add('winner-img');
-    uiWinnerTitle.classList.add('winner-title');
+
+    if (!uiWinnerImg.classList.contains('winner-img')) {
+        uiWinnerImg.classList.add('winner-img');
+        uiWinnerTitle.classList.add('winner-title');
+    }
 
     let gs = gameStates[gameStates.length - 1];
     let p1Wins = gs.players['1'].points >= gs.players['2'].points;
-    let winner =
-        `Joueur ${p1Wins ? '1' : '2'}`;
+    let winner = `Joueur ${p1Wins ? '1' : '2'}`;
     uiWinnerTitle.textContent = `Bravo ${winner}`;
 
     let pref = isWww ? '/static/img/' : '/front/images/';

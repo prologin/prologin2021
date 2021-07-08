@@ -16,6 +16,7 @@ function parseJSON(raw)
     let width = obj['map']['size']['x'],
         height = obj['map']['size']['y'];
     let gameState = new GameState(width, height);
+    gameState.round = obj['round']['round_id'];
     // every cell
     for (let cell of obj['map']['cells'])
     {

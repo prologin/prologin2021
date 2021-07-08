@@ -13,6 +13,8 @@ function hasGameEnded() { return currentGameStateIndex >= gameStates.length - 1;
 function start_replay(dump) {
     let container = document.getElementById('canvas');
 
+    document.body.addEventListener('keypress', onKey);
+
     updateViewSize();
 
     // Init
