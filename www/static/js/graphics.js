@@ -166,7 +166,7 @@ function drawMapLayer(layer, mode) {
                     let direction = DIRECTIONS[tile.bridge.direction - 1];
                     tileName = `pont_${tile.bridge.value}_${direction}`;
                 } else if (tile.isObstacle()) {
-                    // TODO: enlever ce commentaire. -> tileName = 'obstacle';
+                    tileName = 'obstacle';
                 } else {
                     let index = getWaterTileIndex(i, j) + 1;
                     tileName = `eau${index}`;
