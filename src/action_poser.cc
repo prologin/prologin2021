@@ -11,7 +11,7 @@ int ActionPoser::check(const GameState& st) const
     if (pont_fin_ < 1 || pont_fin_ > 6)
         return POSE_INVALIDE;
 
-    // Ensure the player hasn't done anything else this round.
+    // Ensure the player hasn't put another bridge this round.
     const Player& player = *st.player_at(player_id_);
 
     for (internal_action action : player.get_internal_history())
