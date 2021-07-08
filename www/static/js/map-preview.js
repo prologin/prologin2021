@@ -15,6 +15,9 @@ function loadScripts(scripts, onLoaded) {
 $(function() {
     let $preview = $('#map-preview'), $map_content = $('#map-contents');
 
+    // TODO : Update
+    let width = 400;
+
     $preview.hide();
 
     let scripts = [
@@ -29,7 +32,7 @@ $(function() {
     $('head').append($('<link rel="stylesheet" type="text/css" />').attr('href', '/static/css/theme.css'));
 
     loadScripts(scripts, function() {
-        start_preview($preview, $map_content);
+        start_preview($preview, $map_content, width);
 
         // reveal the UI
         $preview.fadeIn('fast');

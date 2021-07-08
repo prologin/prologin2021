@@ -16,6 +16,9 @@ $(function () {
     let $replay = $('#replay'),
         $dump_content = $('#dump');
 
+    // TODO : Update
+    let width = 400;
+
     $replay.html(`
     <link rel="stylesheet" href="static/css/theme.css">
 
@@ -65,7 +68,7 @@ $(function () {
     ];
 
     loadScripts(scripts, function() {
-        start_replay($dump_content.text());
+        start_replay($dump_content.text(), width);
 
         // reveal the UI
         $replay.fadeIn('fast');

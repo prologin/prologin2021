@@ -18,7 +18,7 @@ let mapHeight = 0;
 // - viewParent : An html element (usually a div) where the view is added
 // - onClick : If not null, function(x: int, y: int) called when the
 // mouse is pressed
-function initGraphics(viewParent, width = VIEW_WIDTH, height = VIEW_HEIGHT,
+function initGraphics(viewParent, width, height,
                       onClick = null) {
     // Load application
     app = new PIXI.Application({
@@ -63,8 +63,8 @@ function newTile(id, x = 0, y = 0) {
 
     sprite.position.x = x;
     sprite.position.y = y;
-    sprite.height = TILE_SIZE;
-    sprite.width = TILE_SIZE;
+    sprite.width = getTileWidth();
+    sprite.height = getTileHeight();
 
     return sprite;
 }
@@ -75,26 +75,26 @@ function newTile(id, x = 0, y = 0) {
 // Returns [x, y]
 // * Use let [x, y] = getCoords(...);
 function getCoords(i, j) { // hexa -> pixel
-    let yOffset = j % 2 == 0 ? TILE_SIZE / 2 : 0;
+    let yOffset = j % 2 == 0 ? getTileHeight() / 2 : 0;
 
-    return [ j * TILE_SIZE * 3 / 4, yOffset + i * TILE_SIZE ];
+    return [ j * getTileWidth() * 3 / 4, yOffset + i * getTileHeight() ];
 }
 
 // Get 2d indices of a tile from its coordinates
 // - Returns [i, j] (may be negative / invalid if click outside of grid)
 // * Use let [i, j] = getCoords(...);
 function getPos(x, y) { // pixel -> hexa
-    let j = Math.floor(x / (TILE_SIZE * 3 / 4));
-    let yOffset = j % 2 == 0 ? TILE_SIZE / 2 : 0;
-    let i = Math.floor((y - yOffset) / TILE_SIZE);
+    let j = Math.floor(x / (getTileWidth() * 3 / 4));
+    let yOffset = j % 2 == 0 ? getTileHeight() / 2 : 0;
+    let i = Math.floor((y - yOffset) / getTileHeight());
 
     return [ i, j ];
 }
 
 // Computes the view size and update it
 function updateViewSize() {
-    mapWidth = TILE_SIZE * (mapWidth * 3 / 4 + 1 / 4);
-    mapHeight = TILE_SIZE * (mapHeight + 1 / 2);
+    mapWidth = getTileWidth() * (mapWidth * 3 / 4 + 1 / 4);
+    mapHeight = getTileHeight() * (mapHeight + 1 / 2);
 }
 
 // Adds and registers a new tile sprite to the view
@@ -187,8 +187,8 @@ function drawBridgeSign(bridge, pos) {
     text.anchor.set(
         0.5,
         0.5); // sets the anchor to the center, I think. Looks crap without it
-    text.position.x = x + TILE_SIZE / 2 + 9;
-    text.position.y = y + TILE_SIZE - 9;
+    text.position.x = x + getTileWidth() / 2 + 9;
+    text.position.y = y + getTileHeight() - 9;
     app.stage.addChild(text);
 }
 
@@ -200,4 +200,12 @@ function updateView() {
     // Draw layers in order (background then foreground)
     drawMapLayer(gameState.map, false);
     drawMapLayer(gameState.panda_map, true);
+}
+
+function getTileWidth() {
+    return isWww ? wwwTileWidth : TILE_SIZE;
+}
+
+function getTileHeight() {
+    return isWww ? wwwTileWidth : TILE_SIZE;
 }

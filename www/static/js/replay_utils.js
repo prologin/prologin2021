@@ -23,6 +23,7 @@ function newGameState(width, height) {
     // Update dimension values
     mapWidth = width;
     mapHeight = height;
+
     updateViewSize();
 
     // Update view dimensions
@@ -198,7 +199,12 @@ function loadDump(data) {
     mapWidth = gameStates[0].width;
     mapHeight = gameStates[0].height;
 
+    if (isWww) {
+        wwwTileWidth = wwwWidth / mapWidth;
+    }
+
     updateViewSize();
+
     app.renderer.resize(mapWidth, mapHeight);
     updateReplay();
     startReplay();
@@ -225,4 +231,9 @@ function hideWinners() {
     uiWinner.hidden = true;
     uiWinnerImg.classList.remove('winner-img');
     uiWinnerTitle.classList.remove('winner-title');
+}
+
+function getTargetHeight() {
+    // return getTileHeight() * (mapHeight + 1 / 2);
+    return 500; // / mapWidth * (mapHeight + 1 / 2);
 }

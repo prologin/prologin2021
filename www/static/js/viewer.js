@@ -2,8 +2,12 @@
 
 isWww = true;
 
+let wwwWidth = 0;
+let wwwTileWidth = 0;
+
 // Loads the preview
-function start_preview(container, map) {
+function start_preview(container, map, width) {
+    wwwWidth = width;
     let mapData = map.text().replace(/\n +/g, '\n').trim();
     container = container[0];
 
@@ -89,6 +93,9 @@ function onMapOpen(data) {
     // change width + height
     mapWidth = gameState.width;
     mapHeight = gameState.height;
+
+    wwwTileWidth = wwwWidth / mapWidth;
+
     updateViewSize();
     // Update view dimensions
     app.renderer.resize(mapWidth, mapHeight);
