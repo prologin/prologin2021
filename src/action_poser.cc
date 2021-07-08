@@ -14,8 +14,9 @@ int ActionPoser::check(const GameState& st) const
     // Ensure the player hasn't done anything else this round.
     const Player& player = *st.player_at(player_id_);
 
-    if (!player.last_actions().empty())
-        return ACTION_DEJA_EFFECTUEE;
+    for (internal_action action : player.get_internal_history())
+        if (action.type == standard_action && action.action.type_action == ACTION_POSER)
+            return ACTION_DEJA_EFFECTUEE;
 
     // Ensure start position is around the panda.
     const Panda& panda = *player.panda_at(st.round_panda_id());
@@ -61,14 +62,15 @@ void ActionPoser::apply_on(GameState* st) const
     map.set(end_pos, Cell::pont(pont_fin_, end_dir, PontPolarity::End));
 
     // Log action.
-    action_hist action;
-    action.type_action = ACTION_POSER;
-    action.id_panda = st->round_panda_id();
-    action.dir = dir_;
-    action.valeur_debut = pont_debut_;
-    action.valeur_fin = pont_fin_;
-    action.pos_debut = start_pos;
-    action.pos_fin = end_pos;
+    internal_action action;
+    action.type = standard_action;
+    action.action.type_action = ACTION_POSER;
+    action.action.id_panda = st->round_panda_id();
+    action.action.dir = dir_;
+    action.action.valeur_debut = pont_debut_;
+    action.action.valeur_fin = pont_fin_;
+    action.action.pos_debut = start_pos;
+    action.action.pos_fin = end_pos;
 
-    st->player_at(player_id_)->log_action(action);
+    st->player_at(player_id_)->add_internal_action(action);
 }

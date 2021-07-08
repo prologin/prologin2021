@@ -176,7 +176,15 @@ int Api::direction_entre_positions(position origine, position cible)
 
 std::vector<action_hist> Api::historique()
 {
-    return game_state_->player_at(adversaire())->last_actions();
+    std::vector<action_hist> hist;
+    std::vector<internal_action> internal_hist =
+        game_state_->player_at(adversaire())->get_internal_history();
+
+    for (auto action : internal_hist)
+        if (action.type == standard_action)
+            hist.push_back(action.action);
+
+    return hist;
 }
 
 int Api::score(int id_joueur)

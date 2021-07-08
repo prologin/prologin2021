@@ -102,10 +102,11 @@ void ActionDeplacer::apply_on(GameState* st) const
     }
 
     // Log action.
-    action_hist action;
-    action.type_action = ACTION_DEPLACER;
-    action.id_panda = st->round_panda_id();
-    action.dir = dir_;
+    internal_action action;
+    action.type = standard_action;
+    action.action.type_action = ACTION_DEPLACER;
+    action.action.id_panda = st->round_panda_id();
+    action.action.dir = dir_;
 
-    player.log_action(action);
+    player.add_internal_action(action);
 }

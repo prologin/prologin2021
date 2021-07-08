@@ -67,6 +67,7 @@ enum:
       - [action_deja_effectuee, "Une action a déjà été effectuée ce tour."]
       - [rien_a_pousser, "Aucun panda à pousser dans la direction indiquée."]
       - [drapeau_invalide, "Le drapeau spécifié n'existe pas."]
+      - [deplacement_en_arriere, "La panda c'est déjà déplacé sur cette case."]
   -
     enum_name: action_type
     enum_summary: Types d'actions

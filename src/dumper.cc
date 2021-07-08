@@ -367,6 +367,16 @@ static std::ostream& operator<<(std::ostream& ss, const Panda& panda)
               << ", " << KV{"saved_babies", panda.saved_bebes().size()} << '}';
 }
 
+static std::ostream& operator<<(std::ostream& ss, internal_action action)
+{
+    if (action.type == standard_action)
+        return ss << action.action;
+    assert(action.type == flag);
+    return ss << '{' << KV{"action_type", "afficher_debug_chien"}
+              << KV{"pos", action.flag.pos}
+              << KV{"debug_drapeau", action.flag.ctype} << '}';
+}
+
 static std::ostream& operator<<(std::ostream& ss, const Player& player)
 {
     return ss << '{' << KV{"id", player.id()} << ", "
@@ -374,7 +384,7 @@ static std::ostream& operator<<(std::ostream& ss, const Player& player)
               << KV{"score", player.rules_player().score} << ", "
               << KV{"total_babies", player.bebes().size()} << ", "
               << KV{"pandas", Vec{player.pandas()}} << ", "
-              << KV{"last_actions", Vec{player.last_actions()}} << '}';
+              << KV{"last_actions", Vec{player.get_internal_history()}} << '}';
 }
 
 static std::ostream& operator<<(std::ostream& ss, const GameState& st)

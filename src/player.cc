@@ -171,17 +171,17 @@ Bebe* Player::bebe_at(int id)
     return nullptr;
 }
 
-const std::vector<action_hist>& Player::last_actions() const
+const std::vector<internal_action>& Player::get_internal_history() const
 {
-    return last_actions_;
+    return internal_hist_;
 }
 
-void Player::reset_last_actions()
+void Player::reset_internal_history()
 {
-    last_actions_.clear();
+    internal_hist_.clear();
 }
 
-void Player::log_action(action_hist action)
+void Player::add_internal_action(internal_action action)
 {
-    last_actions_.push_back(action);
+    internal_hist_.push_back(action);
 }

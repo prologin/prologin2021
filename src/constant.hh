@@ -57,6 +57,7 @@ typedef enum erreur
     ACTION_DEJA_EFFECTUEE, ///< Une action a déjà été effectuée ce tour.
     RIEN_A_POUSSER,   ///< Aucun panda à pousser dans la direction indiquée.
     DRAPEAU_INVALIDE, ///< Le drapeau spécifié n'existe pas.
+    DEPLACEMENT_EN_ARRIERE, ///< La panda c'est déjà déplacé sur cette case.
 } erreur;
 
 /// Types d'actions

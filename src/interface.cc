@@ -205,6 +205,9 @@ std::ostream& operator<<(std::ostream& os, erreur v)
     case DRAPEAU_INVALIDE:
         os << "DRAPEAU_INVALIDE";
         break;
+    case DEPLACEMENT_EN_ARRIERE:
+        os << "DEPLACEMENT_EN_ARRIERE";
+        break;
     }
     return os;
 }

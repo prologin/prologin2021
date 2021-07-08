@@ -2,6 +2,7 @@
 // Copyright (c) 2012-2020 Association Prologin <association@prologin.org>
 
 #include "actions.hh"
+#include "history.hh"
 
 int ActionDebugAfficherDrapeau::check(const GameState& st) const
 {
@@ -12,7 +13,10 @@ int ActionDebugAfficherDrapeau::check(const GameState& st) const
     return OK;
 }
 
-void ActionDebugAfficherDrapeau::apply_on(GameState* st) const
+void ActionDebugAfficherDrapeau::apply_on(GameState* /* st */) const
 {
-    // FIXME
+    internal_action action;
+    action.type = flag;
+    action.flag.pos = pos_;
+    action.flag.ctype = drapeau_;
 }

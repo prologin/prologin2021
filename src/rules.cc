@@ -119,7 +119,7 @@ void Rules::spectator_turn()
 
 void Rules::start_of_player_turn(uint32_t player_id)
 {
-    api_->game_state().player_at(player_id)->reset_last_actions();
+    api_->game_state().player_at(player_id)->reset_internal_history();
 }
 
 void Rules::end_of_player_turn(uint32_t)

@@ -8,6 +8,7 @@
 
 #include "constant.hh"
 #include "map.hh"
+#include "history.hh"
 
 class Panda;
 
@@ -96,16 +97,17 @@ public:
     const Bebe* bebe_at(int id) const;
     Bebe* bebe_at(int id);
 
-    const std::vector<action_hist>& last_actions() const;
-    void reset_last_actions();
-    void log_action(action_hist action);
+    // History
+    const std::vector<internal_action>& get_internal_history() const;
+    void add_internal_action(internal_action action);
+    void reset_internal_history();
 
 private:
     std::shared_ptr<rules::Player> rules_player_;
     std::vector<Panda> pandas_;
     std::vector<Bebe> bebes_;
     int turns_blocked_ = 0;
-    std::vector<action_hist> last_actions_;
+    std::vector<internal_action> internal_hist_;
 
     // A ajouter en plus ??? score, inventory...
 };
