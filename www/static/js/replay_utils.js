@@ -209,13 +209,17 @@ function showWinners() {
     uiWinnerTitle.classList.add('winner-title');
 
     let gs = gameStates[gameStates.length - 1];
-    let p1Wins = gs.players['1'].points >= gs.players['2'].points;
-    let winner =
-        `Joueur ${p1Wins ? '1' : '2'}`;
-    uiWinnerTitle.textContent = `Bravo ${winner}`;
+    if (gs.players['1'].points == gs.players['2'].points) {
+        uiWinnerTitle.textContent = 'Match nul !';
+    } else {
+        let p1Wins = gs.players['1'].points > gs.players['2'].points;
+        let winner =
+            `Joueur ${p1Wins ? '1' : '2'}`;
+        uiWinnerTitle.textContent = `Bravo ${winner}`;
 
-    let pref = isWww ? '/static/img/' : '/front/images/';
-    uiWinnerImg.src = pref + (p1Wins ? 'panda1.png' : 'panda2.png');
+        let pref = isWww ? '/static/img/' : '/front/images/';
+        uiWinnerImg.src = pref + (p1Wins ? 'panda1.png' : 'panda2.png');
+    }
 }
 
 function hideWinners() {

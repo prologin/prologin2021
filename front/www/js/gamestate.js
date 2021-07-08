@@ -1,5 +1,15 @@
 // The main game state
 let gameState = null;
+let debug_flag_map = null;
+
+function initDebugFlagMap(gs) {
+  debug_flag_map = Array.from(Array(gs.height), () => new Array(gs.width));
+  for (let i = 0; i < gs.height; i++) {
+    for (let j = 0; j < gs.width; j++) {
+      debug_flag_map[i][j] = 0;
+    }
+  }
+}
 
 class Tile {
   constructor(x, y) {
@@ -93,6 +103,9 @@ class GameState {
     this.players = {'1': new Player(1),
                     '2': new Player(2)};
     if (this.debug) console.log('New GameState: w =', this.width, ' & h =', this.height);
+    if (debug_flag_map == null) {
+      initDebugFlagMap(this);
+    }
   }
   // methods
   initMap() {
@@ -327,3 +340,27 @@ function loadGameStateFromMapStr(str) {
 
   return gs;
 }
+
+
+
+function draw_debug_flag(x, y) {
+  let [fx, fy] = getCoords(x, y);
+  let text = new PIXI.Text(
+        'FLAG',
+        {fontFamily : 'Arial', fontSize : 18, fill : 0, align : 'center', fill: 0xff5050});
+    text.anchor.set(
+        0.5,
+        0.5); // sets the anchor to the center, I think. Looks crap without it
+    text.position.x = fx + TILE_SIZE / 2;
+    text.position.y = fy + TILE_SIZE / 2;
+    app.stage.addChild(text);
+}
+
+function add_debug_flag(x, y) {
+  debug_flag_map[y][x] = 1;
+}
+
+function remove_debug_flag(x, y) {
+  debug_flag_map[y][x] = 0;
+}
+

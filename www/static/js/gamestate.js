@@ -327,3 +327,19 @@ function loadGameStateFromMapStr(str) {
 
   return gs;
 }
+
+
+
+function debug_flag(x, y) {
+  let [fx, fy] = getCoords(x, y);
+  let text = new PIXI.Text(
+        'FLAG',
+        {fontFamily : 'Arial', fontSize : 14, fill : 0, align : 'center', color: 'bbbbbb'});
+    text.anchor.set(
+        0.5,
+        0.5); // sets the anchor to the center, I think. Looks crap without it
+    text.position.x = fx + TILE_SIZE / 2 + 9;
+    text.position.y = fy + TILE_SIZE - 9;
+    app.stage.addChild(text);
+}
+
