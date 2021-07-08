@@ -144,7 +144,7 @@ function drawMapLayer(layer, mode) {
 
             if (mode == 2) {
                 if (tile != 0)
-                    draw_debug_flag(i, j);
+                    draw_debug_flag(i, j, tile);
                 continue;
             }
 
@@ -166,7 +166,7 @@ function drawMapLayer(layer, mode) {
                     let direction = DIRECTIONS[tile.bridge.direction - 1];
                     tileName = `pont_${tile.bridge.value}_${direction}`;
                 } else if (tile.isObstacle()) {
-                    // TODO: enlever ce commentaire. -> tileName = 'obstacle';
+                    tileName = 'obstacle';
                 } else {
                     let index = getWaterTileIndex(i, j) + 1;
                     tileName = `eau${index}`;
@@ -207,6 +207,7 @@ function updateView() {
     clearTiles();
 
     // Draw layers in order (background then foreground)
+    gameState.execute_actions();
     drawMapLayer(gameState.map, 0);
     drawMapLayer(gameState.panda_map, 1);
     drawMapLayer(debug_flag_map, 2);
