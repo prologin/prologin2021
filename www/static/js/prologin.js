@@ -50,4 +50,4 @@ const TILES = [
 const N_WATER_TEXTURES = 4;
 
 // Graphics
-const BG_COLOR = 0x4DA0E6;
+const BG_COLOR = 0x5689E5;
