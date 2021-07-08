@@ -24,7 +24,7 @@ $(function() {
     $('[role=complementary] h1').text('').html('<object data="/static/img/logo_prologin_2021.png" style="width:100% !important; margin-top: 0.5em;" type="image/png" />');
 
     const p1 = $('<img src="/static/img/easter_1.apng" class="easter-egg" />'),
-        p2 = $('<img src="/static/img/easter_1.apng" class="easter-egg" />');
+        p2 = $('<img src="/static/img/easter_2.apng" class="easter-egg" />');
 
     $('body').append(p1).append(p2);
     $('.easter-egg').on('click', function() {
