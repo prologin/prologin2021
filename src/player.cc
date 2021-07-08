@@ -176,12 +176,23 @@ const std::vector<internal_action>& Player::get_internal_history() const
     return internal_hist_;
 }
 
+const std::set<std::pair<int, position>>& Player::get_visited_position() const
+{
+    return visited_pos_;
+}
+
 void Player::reset_internal_history()
 {
     internal_hist_.clear();
+    visited_pos_.clear();
 }
 
 void Player::add_internal_action(internal_action action)
 {
     internal_hist_.push_back(action);
+}
+
+void Player::add_visited_position(int panda_id, position pos)
+{
+    visited_pos_.insert(std::make_pair(panda_id, pos));
 }
