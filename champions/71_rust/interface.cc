@@ -125,6 +125,7 @@ typedef struct __internal__cxx__panda_info
 {
     __internal__cxx__position panda_pos; ///< Position du panda
     int id_joueur; ///< Identifiant du joueur qui contrôle le panda
+    int id_panda; ///< Identifiant du panda relatif au joueur
     int num_bebes; ///< Nombre de bébés qui sont portés par le panda parent
 } __internal__cxx__panda_info;
 
@@ -134,6 +135,7 @@ __internal__cxx__panda_info c_to_cxx<panda_info, __internal__cxx__panda_info>(pa
     __internal__cxx__panda_info out;
     out.panda_pos = c_to_cxx<position, __internal__cxx__position>(in.panda_pos);
     out.id_joueur = c_to_cxx<int, int>(in.id_joueur);
+    out.id_panda = c_to_cxx<int, int>(in.id_panda);
     out.num_bebes = c_to_cxx<int, int>(in.num_bebes);
     return out;
 }
@@ -144,6 +146,7 @@ panda_info cxx_to_c<panda_info, __internal__cxx__panda_info>(__internal__cxx__pa
     panda_info out;
     out.panda_pos = cxx_to_c<position, __internal__cxx__position>(in.panda_pos);
     out.id_joueur = cxx_to_c<int, int>(in.id_joueur);
+    out.id_panda = cxx_to_c<int, int>(in.id_panda);
     out.num_bebes = cxx_to_c<int, int>(in.num_bebes);
     return out;
 }
@@ -154,7 +157,6 @@ typedef struct __internal__cxx__bebe_info
 {
     __internal__cxx__position bebe_pos; ///< Position du bébé panda
     int id_bebe_joueur; ///< Identifiant du joueur qui peut saver le bébé
-    int points_capture; ///< Nombre de points obtenus pour la capture de ce panda
 } __internal__cxx__bebe_info;
 
 template <>
@@ -163,7 +165,6 @@ __internal__cxx__bebe_info c_to_cxx<bebe_info, __internal__cxx__bebe_info>(bebe_
     __internal__cxx__bebe_info out;
     out.bebe_pos = c_to_cxx<position, __internal__cxx__position>(in.bebe_pos);
     out.id_bebe_joueur = c_to_cxx<int, int>(in.id_bebe_joueur);
-    out.points_capture = c_to_cxx<int, int>(in.points_capture);
     return out;
 }
 
@@ -173,7 +174,6 @@ bebe_info cxx_to_c<bebe_info, __internal__cxx__bebe_info>(__internal__cxx__bebe_
     bebe_info out;
     out.bebe_pos = cxx_to_c<position, __internal__cxx__position>(in.bebe_pos);
     out.id_bebe_joueur = cxx_to_c<int, int>(in.id_bebe_joueur);
-    out.points_capture = cxx_to_c<int, int>(in.points_capture);
     return out;
 }
 
@@ -181,7 +181,6 @@ bebe_info cxx_to_c<bebe_info, __internal__cxx__bebe_info>(__internal__cxx__bebe_
 
 typedef struct __internal__cxx__tour_info
 {
-    int id_joueur_joue; ///< Identifiant du joueur qui joue
     int id_panda_joue; ///< Identifiant du panda qui joue
     int id_tour; ///< Identifiant unique du tour (compteur)
 } __internal__cxx__tour_info;
@@ -190,7 +189,6 @@ template <>
 __internal__cxx__tour_info c_to_cxx<tour_info, __internal__cxx__tour_info>(tour_info in)
 {
     __internal__cxx__tour_info out;
-    out.id_joueur_joue = c_to_cxx<int, int>(in.id_joueur_joue);
     out.id_panda_joue = c_to_cxx<int, int>(in.id_panda_joue);
     out.id_tour = c_to_cxx<int, int>(in.id_tour);
     return out;
@@ -200,7 +198,6 @@ template <>
 tour_info cxx_to_c<tour_info, __internal__cxx__tour_info>(__internal__cxx__tour_info in)
 {
     tour_info out;
-    out.id_joueur_joue = cxx_to_c<int, int>(in.id_joueur_joue);
     out.id_panda_joue = cxx_to_c<int, int>(in.id_panda_joue);
     out.id_tour = cxx_to_c<int, int>(in.id_tour);
     return out;
@@ -237,7 +234,7 @@ carte_info cxx_to_c<carte_info, __internal__cxx__carte_info>(__internal__cxx__ca
 typedef struct __internal__cxx__action_hist
 {
     action_type type_action; ///< Type de l'action
-    int id_panda; ///< Identifiant du panda concerné par l'action
+    int action_id_panda; ///< Identifiant du panda concerné par l'action
     direction dir; ///< Direction visée par le panda durant le déplacement
     int valeur_debut; ///< Valeur au début du pont posé (de 1 à 6 inclus)
     int valeur_fin; ///< Valeur à la fin du pont posé (de 1 à 6 inclus)
@@ -250,7 +247,7 @@ __internal__cxx__action_hist c_to_cxx<action_hist, __internal__cxx__action_hist>
 {
     __internal__cxx__action_hist out;
     out.type_action = c_to_cxx<action_type, action_type>(in.type_action);
-    out.id_panda = c_to_cxx<int, int>(in.id_panda);
+    out.action_id_panda = c_to_cxx<int, int>(in.action_id_panda);
     out.dir = c_to_cxx<direction, direction>(in.dir);
     out.valeur_debut = c_to_cxx<int, int>(in.valeur_debut);
     out.valeur_fin = c_to_cxx<int, int>(in.valeur_fin);
@@ -264,7 +261,7 @@ action_hist cxx_to_c<action_hist, __internal__cxx__action_hist>(__internal__cxx_
 {
     action_hist out;
     out.type_action = cxx_to_c<action_type, action_type>(in.type_action);
-    out.id_panda = cxx_to_c<int, int>(in.id_panda);
+    out.action_id_panda = cxx_to_c<int, int>(in.action_id_panda);
     out.dir = cxx_to_c<direction, direction>(in.dir);
     out.valeur_debut = cxx_to_c<int, int>(in.valeur_debut);
     out.valeur_fin = cxx_to_c<int, int>(in.valeur_fin);
@@ -286,6 +283,13 @@ extern "C" erreur api_poser(__internal__cxx__position position_debut, direction 
 extern "C" erreur poser(position position_debut, direction dir, int pont_debut, int pont_fin)
 {
     return cxx_to_c<erreur, erreur>(api_poser(c_to_cxx<position, __internal__cxx__position>(position_debut), c_to_cxx<direction, direction>(dir), c_to_cxx<int, int>(pont_debut), c_to_cxx<int, int>(pont_fin)));
+}
+
+extern "C" erreur api_debug_afficher_drapeau(__internal__cxx__position pos, debug_drapeau drapeau);
+
+extern "C" erreur debug_afficher_drapeau(position pos, debug_drapeau drapeau)
+{
+    return cxx_to_c<erreur, erreur>(api_debug_afficher_drapeau(c_to_cxx<position, __internal__cxx__position>(pos), c_to_cxx<debug_drapeau, debug_drapeau>(drapeau)));
 }
 
 extern "C" case_type api_type_case(__internal__cxx__position pos);
@@ -433,6 +437,13 @@ extern "C" void api_afficher_action_type(action_type v);
 extern "C" void afficher_action_type(action_type v)
 {
 api_afficher_action_type(c_to_cxx<action_type, action_type>(v));
+}
+
+extern "C" void api_afficher_debug_drapeau(debug_drapeau v);
+
+extern "C" void afficher_debug_drapeau(debug_drapeau v)
+{
+api_afficher_debug_drapeau(c_to_cxx<debug_drapeau, debug_drapeau>(v));
 }
 
 extern "C" void api_afficher_position(__internal__cxx__position v);
