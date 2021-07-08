@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import sys, traceback
+sys.stdout = sys.stderr
 
 _DIRECTION_CHARS = ['ne', 'se', 's', 'so', 'no', 'n']
 _PANDA_CHARS = ['A', 'B', 'X', 'Y']
@@ -314,4 +315,6 @@ if __name__ == '__main__':
     if type(exit_code) != int:
         print(f'Invalid exit code type "{type(exit_code)}" with value "{exit_code}"')
         sys.exit(1)
+    if exit_code != 0:
+        print('error occured')
     sys.exit(exit_code)
