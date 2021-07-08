@@ -21,6 +21,6 @@ for (let script in scriptsUrl)
 }
 
 $(function() {
-    $('h1').text('').html('<object data="/static/img/logo_prologin_2021.png" style="width:100%; margin-top: 0.5em;" type="image/png" />');
+    $('[role=complementary] h1').text('').html('<object data="/static/img/logo_prologin_2021.png" style="width:100% !important; margin-top: 0.5em;" type="image/png" />');
 });
 
