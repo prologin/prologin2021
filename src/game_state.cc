@@ -137,6 +137,15 @@ Player* GameState::player_at(int id)
 
 bool GameState::is_finished() const
 {
+    for (const auto& player : players())
+    {
+        int count = 0;
+        for (const auto& bebe : player.bebes())
+            if (bebe.is_saved())
+                count++;
+        if (count == player.bebes().size())
+            return true;
+    }
     return round_ >= NB_TOURS;
 }
 
