@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import sys
 
+_DIRECTION_CHARS = ['ne', 'se', 's', 'so', 'no', 'n']
 _PANDA_CHARS = ['A', 'B', 'X', 'Y']
 _BABY_PANDA_CHARS = ['C', 'Z']
 _BRIDGE_SIGN_CHARS = ['+', '-']
@@ -16,7 +17,7 @@ def main() -> int:
 	# extract width & height
 	splitted_map = map_str.split('\n', 1)
 	first_line = splitted_map[0].split(' ')
-	first_line = filter(None, first_line)
+	first_line = list(filter(None, first_line))
 	if len(first_line) < 2:
 		print('Invalid width height format')
 		return 1
@@ -39,11 +40,11 @@ def main() -> int:
 				print('Too much pandas of kind:', panda_char)
 				return 1
 	# init vars
-	map_ : list[list[dict]] = []
+	map_ : list[list[dict]] = [[None for _ in range(width)] for _ in range(height)]
 	buffer : str = ''
 	x, y = 0, 0
 	# get all tiles
-	for c in raw_map_str:
+	for i,c in enumerate(raw_map_str):
 		# buffer finished ?
 		if c != ' ' and c != '\n':
 			buffer += c
@@ -65,7 +66,12 @@ def main() -> int:
 			x = 0
 			y += 1
 
-	return _checkmap(map_)
+	# check map alltogether (bridge connections etc.)
+	return_code = _checkmap(map_, width, height)
+	if return_code != 0: print('Map check failed:', return_code)
+
+	# done.
+	return return_code
 
 
 def _addtilebuffer(buffer : str, x : int, y : int) -> tuple[bool, dict]:
@@ -115,7 +121,7 @@ def _addtilebuffer(buffer : str, x : int, y : int) -> tuple[bool, dict]:
 			print('Invalid direction (must be in [1-6]): {}'.format(direction))
 			return False, None
 		# add bridge
-		tile_dict['bridge'] = {'value': value, 'direction': direction, 'sign': '?'}
+		tile_dict['bridge'] = {'value': value, 'direction': direction, 'sign': '?', 'connected' : False}
 		return True, tile_dict
 
 	# bridge
@@ -136,7 +142,7 @@ def _addtilebuffer(buffer : str, x : int, y : int) -> tuple[bool, dict]:
 			print('Invalid direction (must be in [1-6]): {}'.format(direction))
 			return False, None
 		# add bridge
-		tile_dict['bridge'] = {'value': value, 'direction': direction, 'sign': sign}
+		tile_dict['bridge'] = {'value': value, 'direction': direction, 'sign': sign, 'connected' : False}
 		return True, tile_dict
 
 	# baby
@@ -153,21 +159,101 @@ def _addtilebuffer(buffer : str, x : int, y : int) -> tuple[bool, dict]:
 		tile_dict['id'] = id_
 		return True, tile_dict
 
-	print('Unkown first char of tile "{}". Tile is "{}"'.format(buffer[0], buffer))
+	print('Unknown first char of tile "{}". Tile is "{}"'.format(buffer[0], buffer))
 	return False, None
 
 
-def _checkmap(map_ : list[list[dict]]) -> int:
+def _checkmap(map_ : list[list[dict]], width : int, height : int) -> int:
 	# check that all the tiles are dicts
 	if not all([type(d) == dict for line in map_ for d in line]):
 		print('Some elements int the map are not dicts: {}'.format(map_))
 		return 1
 	# check all tiles individually
-	print(map_)
+	for y in range(height):
+		for x in range(width):
+			tile = map_[y][x]
+			# water
+			if tile['water']:
+				continue
+			# panda/bridge
+			elif tile['panda']:
+				# check that bridge is not pointing towards water
+				return_code : int = _validate_bridge(tile, (x, y), map_, width, height)
+				if return_code != 0: return return_code
+			elif tile['bridge']:
+				# check that bridge is not pointing towards water
+				return_code : int = _validate_bridge(tile, (x, y), map_, width, height)
+				if return_code != 0: return return_code
+			elif tile['baby panda']:
+				baby_panda_owner_plyer = tile['player']
+				for direction_str in _DIRECTION_CHARS:
+					# one of the surrounding positions
+					neighbour_pos = _new_pos_by_direction((x,y), direction_str)
+					# next iteration if invalid position
+					if not _is_valid_position(neighbour_pos, width, height): continue
+					# there should not be a panda belonging to same player as baby on surrounding tile
+					# reminder: pandas take babies when they are next to them
+					if map_[neighbour_pos[1]][neighbour_pos[0]]['panda'] and map_[neighbour_pos[1]][neighbour_pos[0]]['player'] == baby_panda_owner_plyer:
+						print('There is a panda ({}) of same team as baby panda ({}). Baby panda should have been removed.'.format(neighbour_pos, [x,y]))
+						return 1
+			else:
+				# it is not water, not a panda/bridge, not a bridge and not a baby pada. What is it ?
+				print('Unknown tile type ', x, y, tile)
+				return 1
+
+	if not all([tile['bridge']['connected'] \
+			for line in map_ for tile in \
+			filter(lambda tile: tile['bridge'], line)]):
+		print('failed :(')
+		return 1
+
 	return 0
 
 
-def _partner_bridge_position_by_direction(pos : tuple[int, int], direction_str : str) -> tuple[int, int]:
+def _validate_bridge(tile : dict, pos : tuple[int], map_ : list[list[dict]], width : int, height : int) -> int:
+	# there should be a bridge ...
+	if tile['bridge'] == None:
+		print('Tried to verify None bridge: {}'.format(tile))
+		return 1
+
+	# already checked
+	if tile['bridge']['connected']:
+		return 0
+
+	# unlinked sign
+	if tile['bridge']['sign'] == '?':
+		return 0
+
+	# position the bridge is pointing to
+	neighbour_bridge_pos = _new_pos_by_direction(pos, _direction_str_from_int(tile['bridge']['direction']))
+	if not _is_valid_position(neighbour_bridge_pos, width, height):
+		print('Bridge: {}. pointing to position outside map: {}'.format(pos, neighbour_bridge_pos))
+		return 1
+
+	# get the partner bridge
+	other = map_[neighbour_bridge_pos[1]][neighbour_bridge_pos[0]]
+	if other['bridge'] == None:
+		print('Bridge tile: {} -> {}\nnot pointing to a bridge:\nother: {} -> {}'.format(pos, tile, neighbour_bridge_pos, other))
+		return 1
+
+	# check if other bridge pointing towards this bridge
+	neighbour_bridge_pointing_to_pos = _new_pos_by_direction(neighbour_bridge_pos, _direction_str_from_int(other['bridge']['direction']))
+	if neighbour_bridge_pointing_to_pos != pos:
+		print('Other bridge {} not pointing towards the current bridge: {}. Actually pointing towards {}'.format(other, tile, neighbour_bridge_pointing_to_pos))
+		return 1
+
+	# connect both
+	tile['bridge']['connected'] = True
+	other['bridge']['connected'] = True
+
+	if tile['bridge']['sign'] != '?' and tile['bridge']['sign'] == other['bridge']['sign']:
+		print('Bridges are pointing towards each other, but have same sign:\ntile: {}\nother: {}'.format(tile, other))
+		return 1
+
+	return 0
+
+
+def _new_pos_by_direction(pos : tuple[int], direction_str : str) -> tuple[int]:
 	x, y = pos
 	nx, ny = -1, -1 # 'nx' is 'new x' & 'ny' is 'new y'
 
@@ -197,7 +283,15 @@ def _partner_bridge_position_by_direction(pos : tuple[int, int], direction_str :
 	return nx, ny
 
 
+_is_valid_position = lambda pos, width, height: 0 <= pos[0] < width and 0 <= pos[1] < height
+
+_direction_str_from_int = lambda direction: _DIRECTION_CHARS[direction - 1]
+
+
 if __name__ == '__main__':
-	exit_code = main()
+	try: exit_code = main()
+	except Exception as e:
+		print('Failed to check. Exception: {}'.format(e))
+		sys.exit(1)
 	sys.exit(exit_code)
 
