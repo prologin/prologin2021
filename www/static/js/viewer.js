@@ -1,11 +1,10 @@
 "use strict";
 
-let wwwWidth = 0;
+const wwwWidth = 420;
 let wwwTileWidth = 0;
 
 // Loads the preview
 function start_preview(container, map, width) {
-    wwwWidth = width;
     let mapData = map.text().replace(/\n +/g, '\n').trim();
     container = container[0];
 
