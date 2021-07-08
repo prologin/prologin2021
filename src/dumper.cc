@@ -256,17 +256,10 @@ static std::ostream& operator<<(std::ostream& ss, position pos)
     return ss << '{' << KV{"x", pos.x} << ", " << KV{"y", pos.y} << '}';
 }
 
-static std::ostream& operator<<(std::ostream& ss, tour_info tour)
-{
-    return ss << '{' << KV{"round_id", tour.id_tour} << ", "
-              << KV{"player_id", tour.id_joueur_joue} << ", "
-              << KV{"panda_id", tour.id_panda_joue} << '}';
-}
-
 static std::ostream& operator<<(std::ostream& ss, action_hist action)
 {
     ss << '{' << KV{"type", action.type_action} << ", "
-       << KV{"panda_id", action.id_panda} << ", ";
+       << KV{"panda_id", action.action_id_panda} << ", ";
 
     switch (action.type_action)
     {
@@ -372,8 +365,8 @@ static std::ostream& operator<<(std::ostream& ss, internal_action action)
     if (action.type == standard_action)
         return ss << action.action;
     assert(action.type == flag);
-    return ss << '{' << KV{"action_type", "afficher_debug_chien"}
-              << KV{"pos", action.flag.pos}
+    return ss << '{' << KV{"action_type", "\"afficher_debug_drapeau\""} << ", "
+              << KV{"pos", action.flag.pos} << ", "
               << KV{"debug_drapeau", action.flag.ctype} << '}';
 }
 
@@ -389,9 +382,12 @@ static std::ostream& operator<<(std::ostream& ss, const Player& player)
 
 static std::ostream& operator<<(std::ostream& ss, const GameState& st)
 {
-    return ss << '{' << KV{"round", api->info_tour()} << ", "
-              << KV{"map", st.map()} << ", " << KV{"players", Vec{st.players()}}
-              << ", " << KV{"is_finished", st.is_finished()} << "}\n";
+    return ss << '{' << KV{"round", "{"} << KV{"round_id", st.round_id()}
+              << ", " << KV{"panda_id", st.round_panda_id()} << ", "
+              << KV{"player_id", st.round_player_id()} << "}, "
+              << KV{"map", st.map()} << ", "
+              << KV{"players", Vec{st.players()}} << ", "
+              << KV{"is_finished", st.is_finished()} << "}\n";
 }
 
 void Rules::dump_state(std::ostream& ss)

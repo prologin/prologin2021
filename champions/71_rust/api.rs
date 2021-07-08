@@ -82,10 +82,10 @@ pub enum Erreur {
     IdPandaInvalide,
     /// Une action a déjà été effectuée ce tour.
     ActionDejaEffectuee,
-    /// Aucun panda à pousser dans la direction indiquée.
-    RienAPousser,
     /// Le drapeau spécifié n'existe pas.
     DrapeauInvalide,
+    /// La panda c'est déjà déplacé sur cette case.
+    DeplacementEnArriere,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
@@ -94,6 +94,18 @@ pub enum ActionType {
     ActionDeplacer,
     /// Action ``poser``.
     ActionPoser,
+}
+
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
+pub enum DebugDrapeau {
+    /// Aucun drapeau, enlève le drapeau présent
+    AucunDrapeau,
+    /// Drapeau bleu
+    DrapeauBleu,
+    /// Drapeau vert
+    DrapeauVert,
+    /// Drapeau rouge
+    DrapeauRouge,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -114,6 +126,8 @@ pub struct PandaInfo {
     pub panda_pos: (i32, i32),
     /// Identifiant du joueur qui contrôle le panda
     pub id_joueur: i32,
+    /// Identifiant du panda relatif au joueur
+    pub id_panda: i32,
     /// Nombre de bébés qui sont portés par le panda parent
     pub num_bebes: i32,
 }
@@ -124,14 +138,10 @@ pub struct BebeInfo {
     pub bebe_pos: (i32, i32),
     /// Identifiant du joueur qui peut saver le bébé
     pub id_bebe_joueur: i32,
-    /// Nombre de points obtenus pour la capture de ce panda
-    pub points_capture: i32,
 }
 
 #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct TourInfo {
-    /// Identifiant du joueur qui joue
-    pub id_joueur_joue: i32,
     /// Identifiant du panda qui joue
     pub id_panda_joue: i32,
     /// Identifiant unique du tour (compteur)
@@ -151,7 +161,7 @@ pub struct ActionHist {
     /// Type de l'action
     pub type_action: ActionType,
     /// Identifiant du panda concerné par l'action
-    pub id_panda: i32,
+    pub action_id_panda: i32,
     /// Direction visée par le panda durant le déplacement
     pub dir: Direction,
     /// Valeur au début du pont posé (de 1 à 6 inclus)
@@ -190,6 +200,19 @@ pub fn poser(position_debut: (i32, i32), dir: Direction, pont_debut: i32, pont_f
         let pont_debut = pont_debut.to_c();
         let pont_fin = pont_fin.to_c();
         ffi::poser(position_debut, dir, pont_debut, pont_fin).to_rust()
+    }
+}
+
+/// Affiche le drapeau spécifié sur la case indiquée
+///
+/// ### Parameters
+///  - `pos`: Case ciblée
+///  - `drapeau`: Drapeau à afficher sur la case
+pub fn debug_afficher_drapeau(pos: (i32, i32), drapeau: DebugDrapeau) -> Erreur {
+    unsafe {
+        let pos = pos.to_c();
+        let drapeau = drapeau.to_c();
+        ffi::debug_afficher_drapeau(pos, drapeau).to_rust()
     }
 }
 
@@ -416,6 +439,17 @@ pub fn afficher_action_type(v: ActionType) {
     unsafe {
         let v = v.to_c();
         ffi::afficher_action_type(v).to_rust()
+    }
+}
+
+/// Affiche le contenu d'une valeur de type debug_drapeau
+///
+/// ### Parameters
+///  - `v`: The value to display
+pub fn afficher_debug_drapeau(v: DebugDrapeau) {
+    unsafe {
+        let v = v.to_c();
+        ffi::afficher_debug_drapeau(v).to_rust()
     }
 }
 

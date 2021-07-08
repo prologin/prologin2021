@@ -59,8 +59,8 @@ typedef enum erreur
     POSE_INVALIDE, ///< Le pont ne peut pas être placé a cette position et dans cette direction.
     ID_PANDA_INVALIDE, ///< Le panda spécifié n'existe pas.
     ACTION_DEJA_EFFECTUEE, ///< Une action a déjà été effectuée ce tour.
-    RIEN_A_POUSSER, ///< Aucun panda à pousser dans la direction indiquée.
     DRAPEAU_INVALIDE, ///< Le drapeau spécifié n'existe pas.
+    DEPLACEMENT_EN_ARRIERE, ///< La panda c'est déjà déplacé sur cette case.
 } erreur;
 
 /// Types d'actions
@@ -69,6 +69,15 @@ typedef enum action_type
     ACTION_DEPLACER, ///< Action ``deplacer``.
     ACTION_POSER, ///< Action ``poser``.
 } action_type;
+
+/// Types de drapeau de débug
+typedef enum debug_drapeau
+{
+    AUCUN_DRAPEAU, ///< Aucun drapeau, enlève le drapeau présent
+    DRAPEAU_BLEU, ///< Drapeau bleu
+    DRAPEAU_VERT, ///< Drapeau vert
+    DRAPEAU_ROUGE, ///< Drapeau rouge
+} debug_drapeau;
 
 struct position;
 struct pont_type;
@@ -124,6 +133,7 @@ typedef struct panda_info
 {
     position panda_pos; ///< Position du panda
     int id_joueur; ///< Identifiant du joueur qui contrôle le panda
+    int id_panda; ///< Identifiant du panda relatif au joueur
     int num_bebes; ///< Nombre de bébés qui sont portés par le panda parent
 } panda_info;
 
@@ -132,13 +142,11 @@ typedef struct bebe_info
 {
     position bebe_pos; ///< Position du bébé panda
     int id_bebe_joueur; ///< Identifiant du joueur qui peut saver le bébé
-    int points_capture; ///< Nombre de points obtenus pour la capture de ce panda
 } bebe_info;
 
 /// Information sur un tour particulier.
 typedef struct tour_info
 {
-    int id_joueur_joue; ///< Identifiant du joueur qui joue
     int id_panda_joue; ///< Identifiant du panda qui joue
     int id_tour; ///< Identifiant unique du tour (compteur)
 } tour_info;
@@ -154,7 +162,7 @@ typedef struct carte_info
 typedef struct action_hist
 {
     action_type type_action; ///< Type de l'action
-    int id_panda; ///< Identifiant du panda concerné par l'action
+    int action_id_panda; ///< Identifiant du panda concerné par l'action
     direction dir; ///< Direction visée par le panda durant le déplacement
     int valeur_debut; ///< Valeur au début du pont posé (de 1 à 6 inclus)
     int valeur_fin; ///< Valeur à la fin du pont posé (de 1 à 6 inclus)
@@ -167,6 +175,9 @@ erreur deplacer(direction dir);
 
 // Pose un pont dans la direction choisie à partir du panda ``id_panda``.
 erreur poser(position position_debut, direction dir, int pont_debut, int pont_fin);
+
+// Affiche le drapeau spécifié sur la case indiquée
+erreur debug_afficher_drapeau(position pos, debug_drapeau drapeau);
 
 // Renvoie le type d'une case donnée.
 case_type type_case(position pos);
@@ -247,6 +258,9 @@ void afficher_erreur(erreur v);
 
 // Affiche le contenu d'une valeur de type action_type
 void afficher_action_type(action_type v);
+
+// Affiche le contenu d'une valeur de type debug_drapeau
+void afficher_debug_drapeau(debug_drapeau v);
 
 // Affiche le contenu d'une valeur de type position
 void afficher_position(position v);

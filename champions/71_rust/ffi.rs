@@ -87,8 +87,8 @@ pub enum Erreur {
     PoseInvalide,
     IdPandaInvalide,
     ActionDejaEffectuee,
-    RienAPousser,
     DrapeauInvalide,
+    DeplacementEnArriere,
 }
 
 #[repr(C)]
@@ -96,6 +96,15 @@ pub enum Erreur {
 pub enum ActionType {
     ActionDeplacer,
     ActionPoser,
+}
+
+#[repr(C)]
+#[derive(Clone, Copy)]
+pub enum DebugDrapeau {
+    AucunDrapeau,
+    DrapeauBleu,
+    DrapeauVert,
+    DrapeauRouge,
 }
 
 // Structures
@@ -118,6 +127,7 @@ pub struct PontType {
 pub struct PandaInfo {
     panda_pos: Position,
     id_joueur: c_int,
+    id_panda: c_int,
     num_bebes: c_int,
 }
 
@@ -125,12 +135,10 @@ pub struct PandaInfo {
 pub struct BebeInfo {
     bebe_pos: Position,
     id_bebe_joueur: c_int,
-    points_capture: c_int,
 }
 
 #[repr(C)]
 pub struct TourInfo {
-    id_joueur_joue: c_int,
     id_panda_joue: c_int,
     id_tour: c_int,
 }
@@ -144,7 +152,7 @@ pub struct CarteInfo {
 #[repr(C)]
 pub struct ActionHist {
     type_action: ActionType,
-    id_panda: c_int,
+    action_id_panda: c_int,
     dir: Direction,
     valeur_debut: c_int,
     valeur_fin: c_int,
@@ -365,8 +373,8 @@ impl CToRust<api::Erreur> for Erreur {
             Erreur::PoseInvalide => api::Erreur::PoseInvalide,
             Erreur::IdPandaInvalide => api::Erreur::IdPandaInvalide,
             Erreur::ActionDejaEffectuee => api::Erreur::ActionDejaEffectuee,
-            Erreur::RienAPousser => api::Erreur::RienAPousser,
             Erreur::DrapeauInvalide => api::Erreur::DrapeauInvalide,
+            Erreur::DeplacementEnArriere => api::Erreur::DeplacementEnArriere,
         }
     }
 }
@@ -384,8 +392,8 @@ impl RustToC<Erreur> for api::Erreur {
             api::Erreur::PoseInvalide => Erreur::PoseInvalide,
             api::Erreur::IdPandaInvalide => Erreur::IdPandaInvalide,
             api::Erreur::ActionDejaEffectuee => Erreur::ActionDejaEffectuee,
-            api::Erreur::RienAPousser => Erreur::RienAPousser,
             api::Erreur::DrapeauInvalide => Erreur::DrapeauInvalide,
+            api::Erreur::DeplacementEnArriere => Erreur::DeplacementEnArriere,
         }
     }
 }
@@ -406,6 +414,30 @@ impl RustToC<ActionType> for api::ActionType {
         match self {
             api::ActionType::ActionDeplacer => ActionType::ActionDeplacer,
             api::ActionType::ActionPoser => ActionType::ActionPoser,
+        }
+    }
+}
+
+// Conversions for debug_drapeau
+
+impl CToRust<api::DebugDrapeau> for DebugDrapeau {
+    unsafe fn to_rust(self) -> api::DebugDrapeau {
+        match self {
+            DebugDrapeau::AucunDrapeau => api::DebugDrapeau::AucunDrapeau,
+            DebugDrapeau::DrapeauBleu => api::DebugDrapeau::DrapeauBleu,
+            DebugDrapeau::DrapeauVert => api::DebugDrapeau::DrapeauVert,
+            DebugDrapeau::DrapeauRouge => api::DebugDrapeau::DrapeauRouge,
+        }
+    }
+}
+
+impl RustToC<DebugDrapeau> for api::DebugDrapeau {
+    unsafe fn to_c(&self) -> DebugDrapeau {
+        match self {
+            api::DebugDrapeau::AucunDrapeau => DebugDrapeau::AucunDrapeau,
+            api::DebugDrapeau::DrapeauBleu => DebugDrapeau::DrapeauBleu,
+            api::DebugDrapeau::DrapeauVert => DebugDrapeau::DrapeauVert,
+            api::DebugDrapeau::DrapeauRouge => DebugDrapeau::DrapeauRouge,
         }
     }
 }
@@ -460,6 +492,7 @@ impl CToRust<api::PandaInfo> for PandaInfo {
         api::PandaInfo {
             panda_pos: self.panda_pos.to_rust(),
             id_joueur: self.id_joueur.to_rust(),
+            id_panda: self.id_panda.to_rust(),
             num_bebes: self.num_bebes.to_rust(),
         }
     }
@@ -470,6 +503,7 @@ impl RustToC<PandaInfo> for api::PandaInfo {
         PandaInfo {
             panda_pos: self.panda_pos.to_c(),
             id_joueur: self.id_joueur.to_c(),
+            id_panda: self.id_panda.to_c(),
             num_bebes: self.num_bebes.to_c(),
         }
     }
@@ -482,7 +516,6 @@ impl CToRust<api::BebeInfo> for BebeInfo {
         api::BebeInfo {
             bebe_pos: self.bebe_pos.to_rust(),
             id_bebe_joueur: self.id_bebe_joueur.to_rust(),
-            points_capture: self.points_capture.to_rust(),
         }
     }
 }
@@ -492,7 +525,6 @@ impl RustToC<BebeInfo> for api::BebeInfo {
         BebeInfo {
             bebe_pos: self.bebe_pos.to_c(),
             id_bebe_joueur: self.id_bebe_joueur.to_c(),
-            points_capture: self.points_capture.to_c(),
         }
     }
 }
@@ -502,7 +534,6 @@ impl RustToC<BebeInfo> for api::BebeInfo {
 impl CToRust<api::TourInfo> for TourInfo {
     unsafe fn to_rust(self) -> api::TourInfo {
         api::TourInfo {
-            id_joueur_joue: self.id_joueur_joue.to_rust(),
             id_panda_joue: self.id_panda_joue.to_rust(),
             id_tour: self.id_tour.to_rust(),
         }
@@ -512,7 +543,6 @@ impl CToRust<api::TourInfo> for TourInfo {
 impl RustToC<TourInfo> for api::TourInfo {
     unsafe fn to_c(&self) -> TourInfo {
         TourInfo {
-            id_joueur_joue: self.id_joueur_joue.to_c(),
             id_panda_joue: self.id_panda_joue.to_c(),
             id_tour: self.id_tour.to_c(),
         }
@@ -545,7 +575,7 @@ impl CToRust<api::ActionHist> for ActionHist {
     unsafe fn to_rust(self) -> api::ActionHist {
         api::ActionHist {
             type_action: self.type_action.to_rust(),
-            id_panda: self.id_panda.to_rust(),
+            action_id_panda: self.action_id_panda.to_rust(),
             dir: self.dir.to_rust(),
             valeur_debut: self.valeur_debut.to_rust(),
             valeur_fin: self.valeur_fin.to_rust(),
@@ -559,7 +589,7 @@ impl RustToC<ActionHist> for api::ActionHist {
     unsafe fn to_c(&self) -> ActionHist {
         ActionHist {
             type_action: self.type_action.to_c(),
-            id_panda: self.id_panda.to_c(),
+            action_id_panda: self.action_id_panda.to_c(),
             dir: self.dir.to_c(),
             valeur_debut: self.valeur_debut.to_c(),
             valeur_fin: self.valeur_fin.to_c(),
@@ -578,6 +608,7 @@ extern {
 
     pub fn deplacer(dir: Direction) -> Erreur;
     pub fn poser(position_debut: Position, dir: Direction, pont_debut: c_int, pont_fin: c_int) -> Erreur;
+    pub fn debug_afficher_drapeau(pos: Position, drapeau: DebugDrapeau) -> Erreur;
     pub fn type_case(pos: Position) -> CaseType;
     pub fn panda_sur_case(pos: Position) -> c_int;
     pub fn bebe_panda_sur_case(pos: Position) -> c_int;
@@ -599,6 +630,7 @@ extern {
     pub fn afficher_direction(v: Direction);
     pub fn afficher_erreur(v: Erreur);
     pub fn afficher_action_type(v: ActionType);
+    pub fn afficher_debug_drapeau(v: DebugDrapeau);
     pub fn afficher_position(v: Position);
     pub fn afficher_pont_type(v: PontType);
     pub fn afficher_panda_info(v: PandaInfo);

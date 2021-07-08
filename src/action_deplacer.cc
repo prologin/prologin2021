@@ -105,7 +105,7 @@ void ActionDeplacer::apply_on(GameState* st) const
     internal_action action;
     action.type = standard_action;
     action.action.type_action = ACTION_DEPLACER;
-    action.action.id_panda = st->round_panda_id();
+    action.action.action_id_panda = st->round_panda_id();
     action.action.dir = dir_;
 
     player.add_internal_action(action);
