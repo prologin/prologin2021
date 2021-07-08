@@ -9,6 +9,7 @@ function parseJSON(raw)
     // Parse the Json data
     try {
         var obj = JSON.parse(raw);
+        //console.log(obj);
     } catch {
         return null;
     }
@@ -51,6 +52,7 @@ function parseJSON(raw)
         }
     }
 
+    // points & babies
     gameState.players['1'].points = obj.players[0].score;
     gameState.players['2'].points = obj.players[1].score;
     gameState.players['1'].babies_on_back_1 = obj.players[0].pandas[0].saved_babies;
@@ -58,7 +60,28 @@ function parseJSON(raw)
     gameState.players['2'].babies_on_back_1 = obj.players[1].pandas[0].saved_babies;
     gameState.players['2'].babies_on_back_2 = obj.players[1].pandas[1].saved_babies;
 
+    // actions
+    for (let action of obj['players'][0]['last_actions']) {
+        gameState.actions.push(action);
+    }
+    for (let action of obj['players'][1]['last_actions']) {
+        gameState.actions.push(action);
+    }
+
     return gameState;
+}
+
+function handle_action(action) {
+    switch(action['action_type']) {
+        case 'afficher_debug_drapeau':
+            let debug_drapeau = action['debug_drapeau'];
+            let pos = [action['pos'].x, action['pos'].y];
+            change_debug_flag(debug_drapeau, pos);
+            break;
+        default:
+            console.warn('Unknown action type:', action['action_type']);
+            break;
+    }
 }
 
 function directionIntFromFullStr(direction_str)
