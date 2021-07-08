@@ -372,7 +372,7 @@ static std::ostream& operator<<(std::ostream& ss, internal_action action)
     if (action.type == standard_action)
         return ss << action.action;
     assert(action.type == flag);
-    return ss << '{' << KV{"action_type", "afficher_debug_drapeau"} << ", "
+    return ss << '{' << KV{"action_type", "\"afficher_debug_drapeau\""} << ", "
               << KV{"pos", action.flag.pos} << ", "
               << KV{"debug_drapeau", action.flag.ctype} << '}';
 }
