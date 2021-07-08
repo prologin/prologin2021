@@ -13,10 +13,13 @@ int ActionDebugAfficherDrapeau::check(const GameState& st) const
     return OK;
 }
 
-void ActionDebugAfficherDrapeau::apply_on(GameState* /* st */) const
+void ActionDebugAfficherDrapeau::apply_on(GameState* st) const
 {
+    Player& player = *st->player_at(player_id_);
+
     internal_action action;
     action.type = flag;
     action.flag.pos = pos_;
     action.flag.ctype = drapeau_;
+    player.add_internal_action(action);
 }
