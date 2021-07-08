@@ -144,8 +144,9 @@ std::vector<bebe_info> Api::liste_bebes()
     for (const Player& player : players)
         for (const Bebe& bebe : player.bebes())
         {
-            result.push_back(
-                {bebe.pos(), player.id(), NB_POINTS_CAPTURE_BEBE});
+            if (!bebe.is_saved())
+                result.push_back(
+                    {bebe.pos(), player.id(), NB_POINTS_CAPTURE_BEBE});
         }
 
     return result;
