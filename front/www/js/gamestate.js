@@ -266,10 +266,10 @@ class GameState {
         if (x % 2 == 0) {
           ny++;
         }
-      }
-
-      return [nx, ny];
     }
+
+    return [nx, ny];
+  }
   //
   exportToMapStr() {
     let s = this.width + ' ' + this.height + '\n';
