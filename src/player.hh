@@ -5,6 +5,7 @@
 
 #include <rules/player.hh>
 #include <vector>
+#include <set>
 
 #include "constant.hh"
 #include "map.hh"
@@ -99,7 +100,9 @@ public:
 
     // History
     const std::vector<internal_action>& get_internal_history() const;
+    const std::set<std::pair<int, position>>& get_visited_position() const;
     void add_internal_action(internal_action action);
+    void add_visited_position(int panda_id, position pos);
     void reset_internal_history();
 
 private:
@@ -108,6 +111,7 @@ private:
     std::vector<Bebe> bebes_;
     int turns_blocked_ = 0;
     std::vector<internal_action> internal_hist_;
+    std::set<std::pair<int, position>> visited_pos_;
 
     // A ajouter en plus ??? score, inventory...
 };

@@ -37,6 +37,10 @@ int ActionDeplacer::check(const GameState& st) const
 
     if (!is_same_brige && target_value != source_value)
         return MOUVEMENT_INVALIDE;
+    
+    auto visited = st.player_at(player_id_)->get_visited_position();
+    if (visited.find(std::make_pair(panda.id(), target_position)) != visited.end())
+        return DEPLACEMENT_EN_ARRIERE;
 
     return OK;
 }
@@ -109,4 +113,5 @@ void ActionDeplacer::apply_on(GameState* st) const
     action.action.dir = dir_;
 
     player.add_internal_action(action);
+    player.add_visited_position(panda.id(), previous_position);
 }
