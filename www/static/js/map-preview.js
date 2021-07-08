@@ -17,8 +17,6 @@ $(function() {
 
     let width = 1920;
 
-    const isWww = true;
-
     $preview.hide();
 
     let scripts = [

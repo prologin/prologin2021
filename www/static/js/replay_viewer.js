@@ -1,7 +1,5 @@
 "use strict";
 
-isWww = true;
-
 let wwwWidth = 0;
 let wwwTileWidth = 0;
 
