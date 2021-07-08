@@ -361,3 +361,18 @@ extern "C" void api_afficher_action_hist(action_hist v)
 {
     std::cerr << v << std::endl;
 }
+
+extern "C" carte_info api_info_carte()
+{
+    return api->info_carte();
+}
+
+extern "C" position api_position_dans_direction(position pos, direction dir)
+{
+    return api->position_dans_direction(pos, dir);
+}
+
+extern "C" int api_direction_entre_positions(position origine, position cible)
+{
+    return api->direction_entre_positions(origine, cible);
+}
