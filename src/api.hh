@@ -64,6 +64,10 @@ public:
     /// Renvoie la liste de tous les pandas présents durant la partie.
     std::vector<panda_info> liste_pandas();
 
+    /// Renvoie la liste de tous les bébés présents sur la carte, et et pas
+    /// encore sauvés.
+    std::vector<bebe_info> liste_bebes();
+
     /// Renvoie la liste de toutes les positions adjacentes à la position
     /// donnée.
     std::vector<position> positions_adjacentes(position pos);

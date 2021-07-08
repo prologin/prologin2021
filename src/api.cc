@@ -135,6 +135,22 @@ std::vector<panda_info> Api::liste_pandas()
     return result;
 }
 
+std::vector<bebe_info> Api::liste_bebes()
+{
+    const std::vector<Player>& players = game_state_->players();
+    std::vector<bebe_info> result;
+    result.reserve(players.size() * players[0].bebes().size());
+
+    for (const Player& player : players)
+        for (const Bebe& bebe : player.bebes())
+        {
+            result.push_back(
+                {bebe.pos(), player.id(), NB_POINTS_CAPTURE_BEBE});
+        }
+
+    return result;
+}
+
 std::vector<position> Api::positions_adjacentes(position pos)
 {
     return game_state_->map().get_adjacent_positions(pos);
