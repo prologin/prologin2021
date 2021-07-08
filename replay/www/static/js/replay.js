@@ -22,4 +22,3 @@ fetch("/dump.json").then(res => {
         loadDump(dump);
     }
 });
-

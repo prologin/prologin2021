@@ -5,8 +5,7 @@ import threading
 import ctypes
 
 
-# TODO : prologin2021.so
-LIBPROLOGIN = "libprologin2020_plante.so"
+LIBPROLOGIN = "libprologin2021.so"
 librules = ctypes.cdll.LoadLibrary(LIBPROLOGIN)
 get_dump = librules.dump_state_json
 get_dump.argtypes = []

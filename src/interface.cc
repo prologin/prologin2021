@@ -36,6 +36,11 @@ extern "C" erreur api_poser(position position_debut, direction dir,
     return api->poser(position_debut, dir, pont_debut, pont_fin);
 }
 
+extern "C" erreur api_debug_afficher_drapeau(position pos, debug_drapeau drapeau)
+{
+    return api->debug_afficher_drapeau(pos, drapeau);
+}
+
 extern "C" case_type api_type_case(position pos)
 {
     return api->type_case(pos);

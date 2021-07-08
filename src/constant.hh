@@ -66,6 +66,15 @@ typedef enum action_type
     ACTION_POSER,    ///< Action ``poser``.
 } action_type;
 
+/// Types de drapeau de débug
+typedef enum debug_drapeau
+{
+    AUCUN_DRAPEAU, ///< Aucun drapeau, enlève le drapeau présent
+    DRAPEAU_BLEU, ///< Drapeau bleu
+    DRAPEAU_VERT, ///< Drapeau vert
+    DRAPEAU_ROUGE, ///< Drapeau rouge
+} debug_drapeau;
+
 /// Position du panda.
 typedef struct position
 {

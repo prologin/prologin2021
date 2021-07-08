@@ -23,8 +23,8 @@ constexpr std::string_view kValidMap = "4 5\n"
                                        "___ B55 ___ ___\n"
                                        "+62 ___ X13 Z01\n"
                                        "___ -25 -46 ___\n";
-constexpr bool kIsStart = true;
-constexpr bool kIsEnd = false;
+constexpr PontPolarity kIsStart = PontPolarity::Start;
+constexpr PontPolarity kIsEnd = PontPolarity::End;
 constexpr int kPlayer1 = 0;
 constexpr int kPlayer2 = 1;
 constexpr int kPanda1 = 0;
@@ -79,9 +79,15 @@ TEST(MapTest, ParseInvalidMap)
     };
     auto replace = [](std::string_view str, std::string_view pat,
                       std::string_view rep) {
-        std::string rep_str(str);
-        rep_str.replace(rep_str.find(pat), pat.size(), rep);
-        return rep_str;
+        for (std::string rep_str(str);;)
+        {
+            size_t i = rep_str.find(pat);
+
+            if (i == std::string::npos)
+                return rep_str;
+
+            rep_str.replace(i, pat.size(), rep);
+        }
     };
 
     // Correct example.

@@ -144,8 +144,9 @@ std::vector<bebe_info> Api::liste_bebes()
     for (const Player& player : players)
         for (const Bebe& bebe : player.bebes())
         {
-            result.push_back(
-                {bebe.pos(), player.id(), NB_POINTS_CAPTURE_BEBE});
+            if (!bebe.is_saved())
+                result.push_back(
+                    {bebe.pos(), player.id(), NB_POINTS_CAPTURE_BEBE});
         }
 
     return result;
@@ -236,6 +237,12 @@ void Api::afficher_erreur(erreur v)
 
 std::ostream& operator<<(std::ostream& os, action_type v);
 void Api::afficher_action_type(action_type v)
+{
+    std::cerr << v << std::endl;
+}
+
+std::ostream& operator<<(std::ostream& os, debug_drapeau v);
+void Api::afficher_debug_drapeau(debug_drapeau v)
 {
     std::cerr << v << std::endl;
 }

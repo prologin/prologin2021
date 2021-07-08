@@ -13,156 +13,191 @@ static PyObject* py_module;
 static PyObject* champ_module;
 
 
+/// Types de cases
+typedef enum case_type
+{
+    LIBRE, ///< Case libre
+    OBSTACLE, ///< Obstacle
+    PONT, ///< Pont
+    BEBE, ///< Bébé panda
+} case_type;
+
+/// Directions cardinales
+typedef enum direction
+{
+    NORD_EST, ///< Direction : nord-est
+    SUD_EST, ///< Direction : sud-est
+    SUD, ///< Direction : sud
+    SUD_OUEST, ///< Direction : sud-ouest
+    NORD_OUEST, ///< Direction : nord-ouest
+    NORD, ///< Direction : nord
+} direction;
+
 /// Erreurs possibles
 typedef enum erreur
 {
-    OK, ///< L'action s'est effectuée avec succès
-    HORS_TOUR, ///< Il est interdit de faire des actions hors de jouer_tour
-    HORS_POTAGER, ///< La case désignée n'est pas dans le potager
-    CASE_OCCUPEE, ///< Il y a déjà une plante sur la case ciblée
-    PAS_DE_PLANTE, ///< Il n'y a pas de plante sur la case ciblée
-    MAUVAIS_JARDINIER, ///< La plante n'appartient pas au bon jardinier
-    SANS_POT, ///< La plante est déjà dépotée
-    DEJA_ARROSEE, ///< La plante a déjà été arrosée
-    DEJA_BAFFEE, ///< La plante a déjà baffé ce tour ci
-    PAS_ENCORE_ARROSEE, ///< La plante n'a pas encore été arrosée
-    PAS_ENCORE_ADULTE, ///< La plante ne peut pas encore être arrosée
-    PLANTE_INVALIDE, ///< Les caractéristiques de la plante sont invalides
-    TROP_LOIN, ///< La plante n'a pas un assez grand rayon de dépotage
-    CARACTERISTIQUE_INVALIDE, ///< Valeur de `Caracteristique` inconnue
-    CHIEN_INVALIDE, ///< Valeur de `Chien` inconnue
+    OK, ///< L'action s'est effectuée avec succès.
+    POSITION_INVALIDE, ///< La position spécifiée n'est pas sur la rivière.
+    POSITION_OBSTACLE, ///< La position spécifiée est un obstacle.
+    MAUVAIS_NOMBRE, ///< La hauteur de la position spécifiée ne correspond pas.
+    DEPLACEMENT_HORS_LIMITES, ///< Ce déplacement fait sortir un panda des limites de la rivière.
+    DIRECTION_INVALIDE, ///< La direction spécifiée n'existe pas.
+    MOUVEMENT_INVALIDE, ///< Le panda ne peut pas se déplacer dans cette direction.
+    POSE_INVALIDE, ///< Le pont ne peut pas être placé a cette position et dans cette direction.
+    ID_PANDA_INVALIDE, ///< Le panda spécifié n'existe pas.
+    ACTION_DEJA_EFFECTUEE, ///< Une action a déjà été effectuée ce tour.
+    RIEN_A_POUSSER, ///< Aucun panda à pousser dans la direction indiquée.
+    DRAPEAU_INVALIDE, ///< Le drapeau spécifié n'existe pas.
 } erreur;
 
 /// Types d'actions
 typedef enum action_type
 {
-    ACTION_DEPOTER, ///< Action ``depoter``
-    ACTION_BAFFER, ///< Action ``baffer``
-    ACTION_ARROSER, ///< Action ``arroser``
+    ACTION_DEPLACER, ///< Action ``deplacer``.
+    ACTION_POSER, ///< Action ``poser``.
 } action_type;
 
-/// Caractéristiques améliorables d'une plante
-typedef enum caracteristique
-{
-    CARACTERISTIQUE_FORCE, ///< Force
-    CARACTERISTIQUE_VIE, ///< Vie 
-    CARACTERISTIQUE_ELEGANCE, ///< Élégance
-    CARACTERISTIQUE_RAYON_DEPOTAGE, ///< Portée de dépotage
-} caracteristique;
-
-/// Types de chien de débug
-typedef enum debug_chien
-{
-    AUCUN_CHIEN, ///< Aucun chien, enlève le chien présent
-    CHIEN_BLEU, ///< Chien bleu
-    CHIEN_VERT, ///< Chien vert
-    CHIEN_ROUGE, ///< Chien rouge
-} debug_chien;
-
-/// Position dans le jardin, donnée par deux coordonnées.
+/// Position du panda.
 typedef struct position
 {
     int x; ///< Coordonnée : x
     int y; ///< Coordonnée : y
 } position;
 
-/// Une plante
-typedef struct plante
+/// Case type pont, contient la case de début et de fin. La case de début a une
+/// valeur se décrémentant, celle de fin s'incrémente.
+typedef struct pont_type
 {
-    position pos; ///< Position de la plante
-    int jardinier; ///< Jardinier ayant planté la plante
-    bool adulte; ///< La plante est adulte
-    bool enracinee; ///< La plante a déjà été dépotée
-    int vie; ///< Point(s) de vie restant(s) de la plante
-    int vie_max; ///< Point(s) de vie maximum de la plante
-    int force; ///< Force de la baffe de la plante
-    int elegance; ///< Élégance de la plante
-    int rayon_deplacement; ///< Distance maximale parcourable par la plante en creusant
-    int rayon_collecte; ///< Rayon de collecte des ressources pour la plante
-    std::vector<int> consommation; ///< Quantité de ressources consommées par la plante
-    int age; ///< Âge de la plante
-} plante;
+    position debut_pos; ///< Position de la case de début
+    position fin_pos; ///< Position de la case de fin
+    int debut_val; ///< Valeur de la case de début
+    int fin_val; ///< Valeur de la case de début
+} pont_type;
 
-/// Représentation d'une action dans l'historique
+/// Panda et son joueur
+typedef struct panda_info
+{
+    position panda_pos; ///< Position du panda
+    int id_joueur; ///< Identifiant du joueur qui contrôle le panda
+    int num_bebes; ///< Nombre de bébés qui sont portés par le panda parent
+} panda_info;
+
+/// Bébé panda à ramener.
+typedef struct bebe_info
+{
+    position bebe_pos; ///< Position du bébé panda
+    int id_bebe_joueur; ///< Identifiant du joueur qui peut saver le bébé
+    int points_capture; ///< Nombre de points obtenus pour la capture de ce panda
+} bebe_info;
+
+/// Information sur un tour particulier.
+typedef struct tour_info
+{
+    int id_joueur_joue; ///< Identifiant du joueur qui joue
+    int id_panda_joue; ///< Identifiant du panda qui joue
+    int id_tour; ///< Identifiant unique du tour (compteur)
+} tour_info;
+
+/// Information sur la carte de la partie en cours.
+typedef struct carte_info
+{
+    int taille_x; ///< La taille de la carte pour les coordonnées x [0; taille_x[
+    int taille_y; ///< La taille de la carte pour les coordonnées y [0; taille_y[
+} carte_info;
+
+/// Action représentée dans l'historique.
 typedef struct action_hist
 {
-    action_type atype; ///< Type de l'action
-    position position_baffante; ///< Position de la plante baffante (si type d'action ``action_baffer``)
-    position position_baffee; ///< Position de la plante baffée (si type d'action ``action_baffer``)
-    position position_depart; ///< Position de la plante à déplacer (si type d'action ``action_depoter``)
-    position position_arrivee; ///< Position où déplacer la plante (si type d'action ``action_depoter``)
-    position position_plante; ///< Position de la plante  (si type d'action ``action_arroser``)
-    caracteristique amelioration; ///< Caractéristique à améliorer (si type d'action ``action_arroser``)
+    action_type type_action; ///< Type de l'action
+    int id_panda; ///< Identifiant du panda concerné par l'action
+    direction dir; ///< Direction visée par le panda durant le déplacement
+    int valeur_debut; ///< Valeur au début du pont posé (de 1 à 6 inclus)
+    int valeur_fin; ///< Valeur à la fin du pont posé (de 1 à 6 inclus)
+    position pos_debut; ///< Position du début du pont posé
+    position pos_fin; ///< Position de la fin du pont posé
 } action_hist;
 
 extern "C" {
 
-/// La plante creuse vers une destination donnée
-erreur api_depoter(position position_depart, position position_arrivee);
+/// Déplace le panda ``id_panda`` sur le pont choisi.
+erreur api_deplacer(direction dir);
 
-/// Arrose une plante
-erreur api_arroser(position position_plante, caracteristique amelioration);
+/// Pose un pont dans la direction choisie à partir du panda ``id_panda``.
+erreur api_poser(position position_debut, direction dir, int pont_debut, int pont_fin);
 
-/// Une plante en gifle une autre
-erreur api_baffer(position position_baffante, position position_baffee);
+/// Renvoie le type d'une case donnée.
+case_type api_type_case(position pos);
 
-/// Affiche le chien spécifié sur la case indiquée
-erreur api_debug_afficher_chien(position pos, debug_chien chien);
+/// Renvoie le numéro du joueur à qui appartient panda sur la case indiquée.
+/// Renvoie -1 s'il n'y a pas de panda ou si la position est invalide.
+int api_panda_sur_case(position pos);
 
-/// Renvoie la liste des plantes du jardinier
-std::vector<plante> api_plantes_jardinier(int jardinier);
+/// Renvoie le numéro du joueur à qui appartient le bébé panda sur la case
+/// indiquée. Renvoie -1 s'il n'y a pas de bébé panda ou si la position est
+/// invalide.
+int api_bebe_panda_sur_case(position pos);
 
-/// Renvoie la plante sur la position donnée, s'il n'y en a pas tous les champs
-/// sont initialisés à -1
-plante api_plante_sur_case(position pos);
+/// Indique la position du panda sur la rivière désigné par le numéro
+/// ``id_panda`` appartenant au joueur ``id_joueur``. Si la description du
+/// panda est incorrecte, la position (-1, -1) est renvoyée.
+position api_position_panda(int id_joueur, int id_panda);
 
-/// Renvoie la liste des plantes du jardinier qui peuvent être arrosées
-std::vector<plante> api_plantes_arrosables(int jardinier);
+/// Renvoie les informations relatives au pont situé à cette position. Le pont
+/// est constitué de deux cases. Si aucun pont n'est placé à cette position ou
+/// si la position est invalide, les membres debut_val et fin_val de la
+/// structure ``pont_type`` renvoyée sont initialisés à -1.
+pont_type api_info_pont(position pos);
 
-/// Renvoie la liste des plantes du jardinier qui sont adultes
-std::vector<plante> api_plantes_adultes(int jardinier);
+/// Renvoie la description d'un panda en fonction d'une position donnée. Si le
+/// panda n'est pas présent sur la carte, ou si la position est invalide, tous
+/// les membres de la structure ``panda_info`` renvoyée sont initialisés à -1.
+panda_info api_info_panda(position pos);
 
-/// Renvoie la liste des plantes du jardinier qui peuvent être dépotées
-std::vector<plante> api_plantes_depotables(int jardinier);
+/// Renvoie la liste de tous les pandas présents durant la partie.
+std::vector<panda_info> api_liste_pandas();
 
-/// Renvoie les ressources disponibles sur une case donnée
-std::vector<int> api_ressources_sur_case(position pos);
+/// Renvoie la liste de tous les bébés présents sur la carte, et et pas encore
+/// sauvés.
+std::vector<bebe_info> api_liste_bebes();
 
-/// Vérifie si une plante à la position donnée aura suffisamment de ressources
-/// pour se reproduire. S'il y a déjà une plante à cette position, le calcul
-/// suposera qu'elle a été remplacée
-bool api_reproduction_possible(position pos, int rayon_collecte, std::vector<int> consommation);
+/// Renvoie la liste de toutes les positions adjacentes à la position donnée.
+std::vector<position> api_positions_adjacentes(position pos);
 
-/// Vérifie si une plante à la position donnée peut se reproduire, retourne
-/// faux s'il n'y pas de plante à la position donnée
-bool api_plante_reproductible(position pos);
+/// Renvoie la position relative à la direction donnée par rapport à une
+/// position d'origine. Si une telle position serait invalide, la position {-1,
+/// -1} est renvoyée.
+position api_position_dans_direction(position pos, direction dir);
 
-/// Caractéristiques d'une plante résultant du croisement de plusieurs parents
-/// donnés. Les champs sont initialisés à -1 si aucune plante n'est donnée en
-/// paramètre
-plante api_croisement(std::vector<plante> parents);
+/// Renvoie la direction telle que position_dans_direction(origine, cible) ==
+/// direction. Si aucune telle direction n'existe, -1 est renvoyée.
+int api_direction_entre_positions(position origine, position cible);
 
 /// Renvoie la liste des actions effectuées par l’adversaire durant son tour,
 /// dans l'ordre chronologique. Les actions de débug n'apparaissent pas dans
 /// cette liste.
 std::vector<action_hist> api_historique();
 
-/// Renvoie le score du jardinier ``id_jardinier``. Renvoie -1 si le jardinier
-/// est invalide.
-int api_score(int id_jardinier);
+/// Renvoie le score du joueur ``id_joueur``. Renvoie -1 si le joueur est
+/// invalide.
+int api_score(int id_joueur);
 
-/// Renvoie votre numéro de jardinier.
+/// Renvoie votre numéro de joueur.
 int api_moi();
 
-/// Renvoie le numéro du jardinier adverse.
+/// Renvoie le numéro de joueur de votre adversaire.
 int api_adversaire();
 
-/// Annule la dernière action. Renvoie faux quand il n'y a pas d'action à
-/// annuler ce tour ci.
-bool api_annuler();
+/// Renvoie le tour actuel.
+tour_info api_info_tour();
 
-/// Retourne le numéro du tour actuel.
-int api_tour_actuel();
+/// Renvoie la carte pour la partie en cours.
+carte_info api_info_carte();
+
+/// Affiche le contenu d'une valeur de type case_type
+void api_afficher_case_type(case_type v);
+
+/// Affiche le contenu d'une valeur de type direction
+void api_afficher_direction(direction v);
 
 /// Affiche le contenu d'une valeur de type erreur
 void api_afficher_erreur(erreur v);
@@ -170,17 +205,23 @@ void api_afficher_erreur(erreur v);
 /// Affiche le contenu d'une valeur de type action_type
 void api_afficher_action_type(action_type v);
 
-/// Affiche le contenu d'une valeur de type caracteristique
-void api_afficher_caracteristique(caracteristique v);
-
-/// Affiche le contenu d'une valeur de type debug_chien
-void api_afficher_debug_chien(debug_chien v);
-
 /// Affiche le contenu d'une valeur de type position
 void api_afficher_position(position v);
 
-/// Affiche le contenu d'une valeur de type plante
-void api_afficher_plante(plante v);
+/// Affiche le contenu d'une valeur de type pont_type
+void api_afficher_pont_type(pont_type v);
+
+/// Affiche le contenu d'une valeur de type panda_info
+void api_afficher_panda_info(panda_info v);
+
+/// Affiche le contenu d'une valeur de type bebe_info
+void api_afficher_bebe_info(bebe_info v);
+
+/// Affiche le contenu d'une valeur de type tour_info
+void api_afficher_tour_info(tour_info v);
+
+/// Affiche le contenu d'une valeur de type carte_info
+void api_afficher_carte_info(carte_info v);
 
 /// Affiche le contenu d'une valeur de type action_hist
 void api_afficher_action_hist(action_hist v);
@@ -289,6 +330,52 @@ std::vector<CxxType> python_to_cxx_array(PyObject* in)
     return out;
 }
 
+// Types de cases
+
+template<>
+PyObject* cxx_to_python<PyObject*, case_type>(case_type in)
+{
+    PyObject* name = PyUnicode_FromString("case_type");
+    PyObject* enm = PyObject_GetAttr(py_module, name);
+    Py_DECREF(name);
+    if (enm == nullptr)
+        throw 42;
+    PyObject* arglist = Py_BuildValue("(i)", static_cast<int>(in));
+    PyObject* ret = PyObject_CallObject(enm, arglist);
+    Py_DECREF(enm);
+    Py_DECREF(arglist);
+    return ret;
+}
+
+template <>
+case_type python_to_cxx<PyObject*, case_type>(PyObject* in)
+{
+    return static_cast<case_type>(python_to_cxx<PyObject*, int>(in));
+}
+
+// Directions cardinales
+
+template<>
+PyObject* cxx_to_python<PyObject*, direction>(direction in)
+{
+    PyObject* name = PyUnicode_FromString("direction");
+    PyObject* enm = PyObject_GetAttr(py_module, name);
+    Py_DECREF(name);
+    if (enm == nullptr)
+        throw 42;
+    PyObject* arglist = Py_BuildValue("(i)", static_cast<int>(in));
+    PyObject* ret = PyObject_CallObject(enm, arglist);
+    Py_DECREF(enm);
+    Py_DECREF(arglist);
+    return ret;
+}
+
+template <>
+direction python_to_cxx<PyObject*, direction>(PyObject* in)
+{
+    return static_cast<direction>(python_to_cxx<PyObject*, int>(in));
+}
+
 // Erreurs possibles
 
 template<>
@@ -335,53 +422,7 @@ action_type python_to_cxx<PyObject*, action_type>(PyObject* in)
     return static_cast<action_type>(python_to_cxx<PyObject*, int>(in));
 }
 
-// Caractéristiques améliorables d'une plante
-
-template<>
-PyObject* cxx_to_python<PyObject*, caracteristique>(caracteristique in)
-{
-    PyObject* name = PyUnicode_FromString("caracteristique");
-    PyObject* enm = PyObject_GetAttr(py_module, name);
-    Py_DECREF(name);
-    if (enm == nullptr)
-        throw 42;
-    PyObject* arglist = Py_BuildValue("(i)", static_cast<int>(in));
-    PyObject* ret = PyObject_CallObject(enm, arglist);
-    Py_DECREF(enm);
-    Py_DECREF(arglist);
-    return ret;
-}
-
-template <>
-caracteristique python_to_cxx<PyObject*, caracteristique>(PyObject* in)
-{
-    return static_cast<caracteristique>(python_to_cxx<PyObject*, int>(in));
-}
-
-// Types de chien de débug
-
-template<>
-PyObject* cxx_to_python<PyObject*, debug_chien>(debug_chien in)
-{
-    PyObject* name = PyUnicode_FromString("debug_chien");
-    PyObject* enm = PyObject_GetAttr(py_module, name);
-    Py_DECREF(name);
-    if (enm == nullptr)
-        throw 42;
-    PyObject* arglist = Py_BuildValue("(i)", static_cast<int>(in));
-    PyObject* ret = PyObject_CallObject(enm, arglist);
-    Py_DECREF(enm);
-    Py_DECREF(arglist);
-    return ret;
-}
-
-template <>
-debug_chien python_to_cxx<PyObject*, debug_chien>(PyObject* in)
-{
-    return static_cast<debug_chien>(python_to_cxx<PyObject*, int>(in));
-}
-
-// Position dans le jardin, donnée par deux coordonnées.
+// Position du panda.
 
 template <>
 PyObject* cxx_to_python<PyObject*, position>(position in)
@@ -413,25 +454,18 @@ position python_to_cxx<PyObject*, position>(PyObject* in)
     return out;
 }
 
-// Une plante
+// Case type pont, contient la case de début et de fin. La case de début a une
+// valeur se décrémentant, celle de fin s'incrémente.
 
 template <>
-PyObject* cxx_to_python<PyObject*, plante>(plante in)
+PyObject* cxx_to_python<PyObject*, pont_type>(pont_type in)
 {
-    PyObject* tuple = PyTuple_New(12);
-    PyTuple_SET_ITEM(tuple, 0, (cxx_to_python<PyObject*, position>(in.pos)));
-    PyTuple_SET_ITEM(tuple, 1, (cxx_to_python<PyObject*, int>(in.jardinier)));
-    PyTuple_SET_ITEM(tuple, 2, (cxx_to_python<PyObject*, bool>(in.adulte)));
-    PyTuple_SET_ITEM(tuple, 3, (cxx_to_python<PyObject*, bool>(in.enracinee)));
-    PyTuple_SET_ITEM(tuple, 4, (cxx_to_python<PyObject*, int>(in.vie)));
-    PyTuple_SET_ITEM(tuple, 5, (cxx_to_python<PyObject*, int>(in.vie_max)));
-    PyTuple_SET_ITEM(tuple, 6, (cxx_to_python<PyObject*, int>(in.force)));
-    PyTuple_SET_ITEM(tuple, 7, (cxx_to_python<PyObject*, int>(in.elegance)));
-    PyTuple_SET_ITEM(tuple, 8, (cxx_to_python<PyObject*, int>(in.rayon_deplacement)));
-    PyTuple_SET_ITEM(tuple, 9, (cxx_to_python<PyObject*, int>(in.rayon_collecte)));
-    PyTuple_SET_ITEM(tuple, 10, (cxx_to_python_array(in.consommation)));
-    PyTuple_SET_ITEM(tuple, 11, (cxx_to_python<PyObject*, int>(in.age)));
-    PyObject* name = PyUnicode_FromString("plante");
+    PyObject* tuple = PyTuple_New(4);
+    PyTuple_SET_ITEM(tuple, 0, (cxx_to_python<PyObject*, position>(in.debut_pos)));
+    PyTuple_SET_ITEM(tuple, 1, (cxx_to_python<PyObject*, position>(in.fin_pos)));
+    PyTuple_SET_ITEM(tuple, 2, (cxx_to_python<PyObject*, int>(in.debut_val)));
+    PyTuple_SET_ITEM(tuple, 3, (cxx_to_python<PyObject*, int>(in.fin_val)));
+    PyObject* name = PyUnicode_FromString("pont_type");
     PyObject* cstr = PyObject_GetAttr(py_module, name);
     Py_DECREF(name);
     if (cstr == nullptr)
@@ -445,123 +479,270 @@ PyObject* cxx_to_python<PyObject*, plante>(plante in)
 }
 
 template <>
-plante python_to_cxx<PyObject*, plante>(PyObject* in)
+pont_type python_to_cxx<PyObject*, pont_type>(PyObject* in)
 {
-    plante out;
+    pont_type out;
     PyObject* i;
 
-    // Position de la plante
+    // Position de la case de début
     i = cxx_to_python<PyObject*, int>(0);
     i = PyObject_GetItem(in, i);
     if (i == nullptr)
         throw 42;
-    out.pos = python_to_cxx<PyObject*, position>(i);
+    out.debut_pos = python_to_cxx<PyObject*, position>(i);
     Py_DECREF(i);
 
-    // Jardinier ayant planté la plante
+    // Position de la case de fin
     i = cxx_to_python<PyObject*, int>(1);
     i = PyObject_GetItem(in, i);
     if (i == nullptr)
         throw 42;
-    out.jardinier = python_to_cxx<PyObject*, int>(i);
+    out.fin_pos = python_to_cxx<PyObject*, position>(i);
     Py_DECREF(i);
 
-    // La plante est adulte
+    // Valeur de la case de début
     i = cxx_to_python<PyObject*, int>(2);
     i = PyObject_GetItem(in, i);
     if (i == nullptr)
         throw 42;
-    out.adulte = python_to_cxx<PyObject*, bool>(i);
+    out.debut_val = python_to_cxx<PyObject*, int>(i);
     Py_DECREF(i);
 
-    // La plante a déjà été dépotée
+    // Valeur de la case de début
     i = cxx_to_python<PyObject*, int>(3);
     i = PyObject_GetItem(in, i);
     if (i == nullptr)
         throw 42;
-    out.enracinee = python_to_cxx<PyObject*, bool>(i);
-    Py_DECREF(i);
-
-    // Point(s) de vie restant(s) de la plante
-    i = cxx_to_python<PyObject*, int>(4);
-    i = PyObject_GetItem(in, i);
-    if (i == nullptr)
-        throw 42;
-    out.vie = python_to_cxx<PyObject*, int>(i);
-    Py_DECREF(i);
-
-    // Point(s) de vie maximum de la plante
-    i = cxx_to_python<PyObject*, int>(5);
-    i = PyObject_GetItem(in, i);
-    if (i == nullptr)
-        throw 42;
-    out.vie_max = python_to_cxx<PyObject*, int>(i);
-    Py_DECREF(i);
-
-    // Force de la baffe de la plante
-    i = cxx_to_python<PyObject*, int>(6);
-    i = PyObject_GetItem(in, i);
-    if (i == nullptr)
-        throw 42;
-    out.force = python_to_cxx<PyObject*, int>(i);
-    Py_DECREF(i);
-
-    // Élégance de la plante
-    i = cxx_to_python<PyObject*, int>(7);
-    i = PyObject_GetItem(in, i);
-    if (i == nullptr)
-        throw 42;
-    out.elegance = python_to_cxx<PyObject*, int>(i);
-    Py_DECREF(i);
-
-    // Distance maximale parcourable par la plante en creusant
-    i = cxx_to_python<PyObject*, int>(8);
-    i = PyObject_GetItem(in, i);
-    if (i == nullptr)
-        throw 42;
-    out.rayon_deplacement = python_to_cxx<PyObject*, int>(i);
-    Py_DECREF(i);
-
-    // Rayon de collecte des ressources pour la plante
-    i = cxx_to_python<PyObject*, int>(9);
-    i = PyObject_GetItem(in, i);
-    if (i == nullptr)
-        throw 42;
-    out.rayon_collecte = python_to_cxx<PyObject*, int>(i);
-    Py_DECREF(i);
-
-    // Quantité de ressources consommées par la plante
-    i = cxx_to_python<PyObject*, int>(10);
-    i = PyObject_GetItem(in, i);
-    if (i == nullptr)
-        throw 42;
-    out.consommation = python_to_cxx_array<int>(i);
-    Py_DECREF(i);
-
-    // Âge de la plante
-    i = cxx_to_python<PyObject*, int>(11);
-    i = PyObject_GetItem(in, i);
-    if (i == nullptr)
-        throw 42;
-    out.age = python_to_cxx<PyObject*, int>(i);
+    out.fin_val = python_to_cxx<PyObject*, int>(i);
     Py_DECREF(i);
 
     return out;
 }
 
-// Représentation d'une action dans l'historique
+// Panda et son joueur
+
+template <>
+PyObject* cxx_to_python<PyObject*, panda_info>(panda_info in)
+{
+    PyObject* tuple = PyTuple_New(3);
+    PyTuple_SET_ITEM(tuple, 0, (cxx_to_python<PyObject*, position>(in.panda_pos)));
+    PyTuple_SET_ITEM(tuple, 1, (cxx_to_python<PyObject*, int>(in.id_joueur)));
+    PyTuple_SET_ITEM(tuple, 2, (cxx_to_python<PyObject*, int>(in.num_bebes)));
+    PyObject* name = PyUnicode_FromString("panda_info");
+    PyObject* cstr = PyObject_GetAttr(py_module, name);
+    Py_DECREF(name);
+    if (cstr == nullptr)
+        throw 42;
+    PyObject* ret = PyObject_CallObject(cstr, tuple);
+    Py_DECREF(cstr);
+    Py_DECREF(tuple);
+    if (ret == nullptr)
+        throw 42;
+    return ret;
+}
+
+template <>
+panda_info python_to_cxx<PyObject*, panda_info>(PyObject* in)
+{
+    panda_info out;
+    PyObject* i;
+
+    // Position du panda
+    i = cxx_to_python<PyObject*, int>(0);
+    i = PyObject_GetItem(in, i);
+    if (i == nullptr)
+        throw 42;
+    out.panda_pos = python_to_cxx<PyObject*, position>(i);
+    Py_DECREF(i);
+
+    // Identifiant du joueur qui contrôle le panda
+    i = cxx_to_python<PyObject*, int>(1);
+    i = PyObject_GetItem(in, i);
+    if (i == nullptr)
+        throw 42;
+    out.id_joueur = python_to_cxx<PyObject*, int>(i);
+    Py_DECREF(i);
+
+    // Nombre de bébés qui sont portés par le panda parent
+    i = cxx_to_python<PyObject*, int>(2);
+    i = PyObject_GetItem(in, i);
+    if (i == nullptr)
+        throw 42;
+    out.num_bebes = python_to_cxx<PyObject*, int>(i);
+    Py_DECREF(i);
+
+    return out;
+}
+
+// Bébé panda à ramener.
+
+template <>
+PyObject* cxx_to_python<PyObject*, bebe_info>(bebe_info in)
+{
+    PyObject* tuple = PyTuple_New(3);
+    PyTuple_SET_ITEM(tuple, 0, (cxx_to_python<PyObject*, position>(in.bebe_pos)));
+    PyTuple_SET_ITEM(tuple, 1, (cxx_to_python<PyObject*, int>(in.id_bebe_joueur)));
+    PyTuple_SET_ITEM(tuple, 2, (cxx_to_python<PyObject*, int>(in.points_capture)));
+    PyObject* name = PyUnicode_FromString("bebe_info");
+    PyObject* cstr = PyObject_GetAttr(py_module, name);
+    Py_DECREF(name);
+    if (cstr == nullptr)
+        throw 42;
+    PyObject* ret = PyObject_CallObject(cstr, tuple);
+    Py_DECREF(cstr);
+    Py_DECREF(tuple);
+    if (ret == nullptr)
+        throw 42;
+    return ret;
+}
+
+template <>
+bebe_info python_to_cxx<PyObject*, bebe_info>(PyObject* in)
+{
+    bebe_info out;
+    PyObject* i;
+
+    // Position du bébé panda
+    i = cxx_to_python<PyObject*, int>(0);
+    i = PyObject_GetItem(in, i);
+    if (i == nullptr)
+        throw 42;
+    out.bebe_pos = python_to_cxx<PyObject*, position>(i);
+    Py_DECREF(i);
+
+    // Identifiant du joueur qui peut saver le bébé
+    i = cxx_to_python<PyObject*, int>(1);
+    i = PyObject_GetItem(in, i);
+    if (i == nullptr)
+        throw 42;
+    out.id_bebe_joueur = python_to_cxx<PyObject*, int>(i);
+    Py_DECREF(i);
+
+    // Nombre de points obtenus pour la capture de ce panda
+    i = cxx_to_python<PyObject*, int>(2);
+    i = PyObject_GetItem(in, i);
+    if (i == nullptr)
+        throw 42;
+    out.points_capture = python_to_cxx<PyObject*, int>(i);
+    Py_DECREF(i);
+
+    return out;
+}
+
+// Information sur un tour particulier.
+
+template <>
+PyObject* cxx_to_python<PyObject*, tour_info>(tour_info in)
+{
+    PyObject* tuple = PyTuple_New(3);
+    PyTuple_SET_ITEM(tuple, 0, (cxx_to_python<PyObject*, int>(in.id_joueur_joue)));
+    PyTuple_SET_ITEM(tuple, 1, (cxx_to_python<PyObject*, int>(in.id_panda_joue)));
+    PyTuple_SET_ITEM(tuple, 2, (cxx_to_python<PyObject*, int>(in.id_tour)));
+    PyObject* name = PyUnicode_FromString("tour_info");
+    PyObject* cstr = PyObject_GetAttr(py_module, name);
+    Py_DECREF(name);
+    if (cstr == nullptr)
+        throw 42;
+    PyObject* ret = PyObject_CallObject(cstr, tuple);
+    Py_DECREF(cstr);
+    Py_DECREF(tuple);
+    if (ret == nullptr)
+        throw 42;
+    return ret;
+}
+
+template <>
+tour_info python_to_cxx<PyObject*, tour_info>(PyObject* in)
+{
+    tour_info out;
+    PyObject* i;
+
+    // Identifiant du joueur qui joue
+    i = cxx_to_python<PyObject*, int>(0);
+    i = PyObject_GetItem(in, i);
+    if (i == nullptr)
+        throw 42;
+    out.id_joueur_joue = python_to_cxx<PyObject*, int>(i);
+    Py_DECREF(i);
+
+    // Identifiant du panda qui joue
+    i = cxx_to_python<PyObject*, int>(1);
+    i = PyObject_GetItem(in, i);
+    if (i == nullptr)
+        throw 42;
+    out.id_panda_joue = python_to_cxx<PyObject*, int>(i);
+    Py_DECREF(i);
+
+    // Identifiant unique du tour (compteur)
+    i = cxx_to_python<PyObject*, int>(2);
+    i = PyObject_GetItem(in, i);
+    if (i == nullptr)
+        throw 42;
+    out.id_tour = python_to_cxx<PyObject*, int>(i);
+    Py_DECREF(i);
+
+    return out;
+}
+
+// Information sur la carte de la partie en cours.
+
+template <>
+PyObject* cxx_to_python<PyObject*, carte_info>(carte_info in)
+{
+    PyObject* tuple = PyTuple_New(2);
+    PyTuple_SET_ITEM(tuple, 0, (cxx_to_python<PyObject*, int>(in.taille_x)));
+    PyTuple_SET_ITEM(tuple, 1, (cxx_to_python<PyObject*, int>(in.taille_y)));
+    PyObject* name = PyUnicode_FromString("carte_info");
+    PyObject* cstr = PyObject_GetAttr(py_module, name);
+    Py_DECREF(name);
+    if (cstr == nullptr)
+        throw 42;
+    PyObject* ret = PyObject_CallObject(cstr, tuple);
+    Py_DECREF(cstr);
+    Py_DECREF(tuple);
+    if (ret == nullptr)
+        throw 42;
+    return ret;
+}
+
+template <>
+carte_info python_to_cxx<PyObject*, carte_info>(PyObject* in)
+{
+    carte_info out;
+    PyObject* i;
+
+    // La taille de la carte pour les coordonnées x [0; taille_x[
+    i = cxx_to_python<PyObject*, int>(0);
+    i = PyObject_GetItem(in, i);
+    if (i == nullptr)
+        throw 42;
+    out.taille_x = python_to_cxx<PyObject*, int>(i);
+    Py_DECREF(i);
+
+    // La taille de la carte pour les coordonnées y [0; taille_y[
+    i = cxx_to_python<PyObject*, int>(1);
+    i = PyObject_GetItem(in, i);
+    if (i == nullptr)
+        throw 42;
+    out.taille_y = python_to_cxx<PyObject*, int>(i);
+    Py_DECREF(i);
+
+    return out;
+}
+
+// Action représentée dans l'historique.
 
 template <>
 PyObject* cxx_to_python<PyObject*, action_hist>(action_hist in)
 {
     PyObject* tuple = PyTuple_New(7);
-    PyTuple_SET_ITEM(tuple, 0, (cxx_to_python<PyObject*, action_type>(in.atype)));
-    PyTuple_SET_ITEM(tuple, 1, (cxx_to_python<PyObject*, position>(in.position_baffante)));
-    PyTuple_SET_ITEM(tuple, 2, (cxx_to_python<PyObject*, position>(in.position_baffee)));
-    PyTuple_SET_ITEM(tuple, 3, (cxx_to_python<PyObject*, position>(in.position_depart)));
-    PyTuple_SET_ITEM(tuple, 4, (cxx_to_python<PyObject*, position>(in.position_arrivee)));
-    PyTuple_SET_ITEM(tuple, 5, (cxx_to_python<PyObject*, position>(in.position_plante)));
-    PyTuple_SET_ITEM(tuple, 6, (cxx_to_python<PyObject*, caracteristique>(in.amelioration)));
+    PyTuple_SET_ITEM(tuple, 0, (cxx_to_python<PyObject*, action_type>(in.type_action)));
+    PyTuple_SET_ITEM(tuple, 1, (cxx_to_python<PyObject*, int>(in.id_panda)));
+    PyTuple_SET_ITEM(tuple, 2, (cxx_to_python<PyObject*, direction>(in.dir)));
+    PyTuple_SET_ITEM(tuple, 3, (cxx_to_python<PyObject*, int>(in.valeur_debut)));
+    PyTuple_SET_ITEM(tuple, 4, (cxx_to_python<PyObject*, int>(in.valeur_fin)));
+    PyTuple_SET_ITEM(tuple, 5, (cxx_to_python<PyObject*, position>(in.pos_debut)));
+    PyTuple_SET_ITEM(tuple, 6, (cxx_to_python<PyObject*, position>(in.pos_fin)));
     PyObject* name = PyUnicode_FromString("action_hist");
     PyObject* cstr = PyObject_GetAttr(py_module, name);
     Py_DECREF(name);
@@ -586,154 +767,101 @@ action_hist python_to_cxx<PyObject*, action_hist>(PyObject* in)
     i = PyObject_GetItem(in, i);
     if (i == nullptr)
         throw 42;
-    out.atype = python_to_cxx<PyObject*, action_type>(i);
+    out.type_action = python_to_cxx<PyObject*, action_type>(i);
     Py_DECREF(i);
 
-    // Position de la plante baffante (si type d'action ``action_baffer``)
+    // Identifiant du panda concerné par l'action
     i = cxx_to_python<PyObject*, int>(1);
     i = PyObject_GetItem(in, i);
     if (i == nullptr)
         throw 42;
-    out.position_baffante = python_to_cxx<PyObject*, position>(i);
+    out.id_panda = python_to_cxx<PyObject*, int>(i);
     Py_DECREF(i);
 
-    // Position de la plante baffée (si type d'action ``action_baffer``)
+    // Direction visée par le panda durant le déplacement
     i = cxx_to_python<PyObject*, int>(2);
     i = PyObject_GetItem(in, i);
     if (i == nullptr)
         throw 42;
-    out.position_baffee = python_to_cxx<PyObject*, position>(i);
+    out.dir = python_to_cxx<PyObject*, direction>(i);
     Py_DECREF(i);
 
-    // Position de la plante à déplacer (si type d'action ``action_depoter``)
+    // Valeur au début du pont posé (de 1 à 6 inclus)
     i = cxx_to_python<PyObject*, int>(3);
     i = PyObject_GetItem(in, i);
     if (i == nullptr)
         throw 42;
-    out.position_depart = python_to_cxx<PyObject*, position>(i);
+    out.valeur_debut = python_to_cxx<PyObject*, int>(i);
     Py_DECREF(i);
 
-    // Position où déplacer la plante (si type d'action ``action_depoter``)
+    // Valeur à la fin du pont posé (de 1 à 6 inclus)
     i = cxx_to_python<PyObject*, int>(4);
     i = PyObject_GetItem(in, i);
     if (i == nullptr)
         throw 42;
-    out.position_arrivee = python_to_cxx<PyObject*, position>(i);
+    out.valeur_fin = python_to_cxx<PyObject*, int>(i);
     Py_DECREF(i);
 
-    // Position de la plante  (si type d'action ``action_arroser``)
+    // Position du début du pont posé
     i = cxx_to_python<PyObject*, int>(5);
     i = PyObject_GetItem(in, i);
     if (i == nullptr)
         throw 42;
-    out.position_plante = python_to_cxx<PyObject*, position>(i);
+    out.pos_debut = python_to_cxx<PyObject*, position>(i);
     Py_DECREF(i);
 
-    // Caractéristique à améliorer (si type d'action ``action_arroser``)
+    // Position de la fin du pont posé
     i = cxx_to_python<PyObject*, int>(6);
     i = PyObject_GetItem(in, i);
     if (i == nullptr)
         throw 42;
-    out.amelioration = python_to_cxx<PyObject*, caracteristique>(i);
+    out.pos_fin = python_to_cxx<PyObject*, position>(i);
     Py_DECREF(i);
 
     return out;
 }
 
 
-// Python native wrapper for function depoter.
-// La plante creuse vers une destination donnée
-static PyObject* p_depoter(PyObject* /* self */, PyObject* args)
+// Python native wrapper for function deplacer.
+// Déplace le panda ``id_panda`` sur le pont choisi.
+static PyObject* p_deplacer(PyObject* /* self */, PyObject* args)
 {
-    PyObject* arg_position_depart;
-    PyObject* arg_position_arrivee;
-    if (!PyArg_ParseTuple(args, "OO", &arg_position_depart, &arg_position_arrivee))
+    PyObject* arg_dir;
+    if (!PyArg_ParseTuple(args, "O", &arg_dir))
     {
         return nullptr;
     }
 
     try {
-        return cxx_to_python<PyObject*, erreur>(api_depoter(python_to_cxx<PyObject*, position>(arg_position_depart), python_to_cxx<PyObject*, position>(arg_position_arrivee)));
+        return cxx_to_python<PyObject*, erreur>(api_deplacer(python_to_cxx<PyObject*, direction>(arg_dir)));
     } catch (...) {
         return nullptr;
     }
 }
 
-// Python native wrapper for function arroser.
-// Arrose une plante
-static PyObject* p_arroser(PyObject* /* self */, PyObject* args)
+// Python native wrapper for function poser.
+// Pose un pont dans la direction choisie à partir du panda ``id_panda``.
+static PyObject* p_poser(PyObject* /* self */, PyObject* args)
 {
-    PyObject* arg_position_plante;
-    PyObject* arg_amelioration;
-    if (!PyArg_ParseTuple(args, "OO", &arg_position_plante, &arg_amelioration))
+    PyObject* arg_position_debut;
+    PyObject* arg_dir;
+    PyObject* arg_pont_debut;
+    PyObject* arg_pont_fin;
+    if (!PyArg_ParseTuple(args, "OOOO", &arg_position_debut, &arg_dir, &arg_pont_debut, &arg_pont_fin))
     {
         return nullptr;
     }
 
     try {
-        return cxx_to_python<PyObject*, erreur>(api_arroser(python_to_cxx<PyObject*, position>(arg_position_plante), python_to_cxx<PyObject*, caracteristique>(arg_amelioration)));
+        return cxx_to_python<PyObject*, erreur>(api_poser(python_to_cxx<PyObject*, position>(arg_position_debut), python_to_cxx<PyObject*, direction>(arg_dir), python_to_cxx<PyObject*, int>(arg_pont_debut), python_to_cxx<PyObject*, int>(arg_pont_fin)));
     } catch (...) {
         return nullptr;
     }
 }
 
-// Python native wrapper for function baffer.
-// Une plante en gifle une autre
-static PyObject* p_baffer(PyObject* /* self */, PyObject* args)
-{
-    PyObject* arg_position_baffante;
-    PyObject* arg_position_baffee;
-    if (!PyArg_ParseTuple(args, "OO", &arg_position_baffante, &arg_position_baffee))
-    {
-        return nullptr;
-    }
-
-    try {
-        return cxx_to_python<PyObject*, erreur>(api_baffer(python_to_cxx<PyObject*, position>(arg_position_baffante), python_to_cxx<PyObject*, position>(arg_position_baffee)));
-    } catch (...) {
-        return nullptr;
-    }
-}
-
-// Python native wrapper for function debug_afficher_chien.
-// Affiche le chien spécifié sur la case indiquée
-static PyObject* p_debug_afficher_chien(PyObject* /* self */, PyObject* args)
-{
-    PyObject* arg_pos;
-    PyObject* arg_chien;
-    if (!PyArg_ParseTuple(args, "OO", &arg_pos, &arg_chien))
-    {
-        return nullptr;
-    }
-
-    try {
-        return cxx_to_python<PyObject*, erreur>(api_debug_afficher_chien(python_to_cxx<PyObject*, position>(arg_pos), python_to_cxx<PyObject*, debug_chien>(arg_chien)));
-    } catch (...) {
-        return nullptr;
-    }
-}
-
-// Python native wrapper for function plantes_jardinier.
-// Renvoie la liste des plantes du jardinier
-static PyObject* p_plantes_jardinier(PyObject* /* self */, PyObject* args)
-{
-    PyObject* arg_jardinier;
-    if (!PyArg_ParseTuple(args, "O", &arg_jardinier))
-    {
-        return nullptr;
-    }
-
-    try {
-        return cxx_to_python_array(api_plantes_jardinier(python_to_cxx<PyObject*, int>(arg_jardinier)));
-    } catch (...) {
-        return nullptr;
-    }
-}
-
-// Python native wrapper for function plante_sur_case.
-// Renvoie la plante sur la position donnée, s'il n'y en a pas tous les champs
-// sont initialisés à -1
-static PyObject* p_plante_sur_case(PyObject* /* self */, PyObject* args)
+// Python native wrapper for function type_case.
+// Renvoie le type d'une case donnée.
+static PyObject* p_type_case(PyObject* /* self */, PyObject* args)
 {
     PyObject* arg_pos;
     if (!PyArg_ParseTuple(args, "O", &arg_pos))
@@ -742,66 +870,16 @@ static PyObject* p_plante_sur_case(PyObject* /* self */, PyObject* args)
     }
 
     try {
-        return cxx_to_python<PyObject*, plante>(api_plante_sur_case(python_to_cxx<PyObject*, position>(arg_pos)));
+        return cxx_to_python<PyObject*, case_type>(api_type_case(python_to_cxx<PyObject*, position>(arg_pos)));
     } catch (...) {
         return nullptr;
     }
 }
 
-// Python native wrapper for function plantes_arrosables.
-// Renvoie la liste des plantes du jardinier qui peuvent être arrosées
-static PyObject* p_plantes_arrosables(PyObject* /* self */, PyObject* args)
-{
-    PyObject* arg_jardinier;
-    if (!PyArg_ParseTuple(args, "O", &arg_jardinier))
-    {
-        return nullptr;
-    }
-
-    try {
-        return cxx_to_python_array(api_plantes_arrosables(python_to_cxx<PyObject*, int>(arg_jardinier)));
-    } catch (...) {
-        return nullptr;
-    }
-}
-
-// Python native wrapper for function plantes_adultes.
-// Renvoie la liste des plantes du jardinier qui sont adultes
-static PyObject* p_plantes_adultes(PyObject* /* self */, PyObject* args)
-{
-    PyObject* arg_jardinier;
-    if (!PyArg_ParseTuple(args, "O", &arg_jardinier))
-    {
-        return nullptr;
-    }
-
-    try {
-        return cxx_to_python_array(api_plantes_adultes(python_to_cxx<PyObject*, int>(arg_jardinier)));
-    } catch (...) {
-        return nullptr;
-    }
-}
-
-// Python native wrapper for function plantes_depotables.
-// Renvoie la liste des plantes du jardinier qui peuvent être dépotées
-static PyObject* p_plantes_depotables(PyObject* /* self */, PyObject* args)
-{
-    PyObject* arg_jardinier;
-    if (!PyArg_ParseTuple(args, "O", &arg_jardinier))
-    {
-        return nullptr;
-    }
-
-    try {
-        return cxx_to_python_array(api_plantes_depotables(python_to_cxx<PyObject*, int>(arg_jardinier)));
-    } catch (...) {
-        return nullptr;
-    }
-}
-
-// Python native wrapper for function ressources_sur_case.
-// Renvoie les ressources disponibles sur une case donnée
-static PyObject* p_ressources_sur_case(PyObject* /* self */, PyObject* args)
+// Python native wrapper for function panda_sur_case.
+// Renvoie le numéro du joueur à qui appartient panda sur la case indiquée.
+// Renvoie -1 s'il n'y a pas de panda ou si la position est invalide.
+static PyObject* p_panda_sur_case(PyObject* /* self */, PyObject* args)
 {
     PyObject* arg_pos;
     if (!PyArg_ParseTuple(args, "O", &arg_pos))
@@ -810,37 +888,17 @@ static PyObject* p_ressources_sur_case(PyObject* /* self */, PyObject* args)
     }
 
     try {
-        return cxx_to_python_array(api_ressources_sur_case(python_to_cxx<PyObject*, position>(arg_pos)));
+        return cxx_to_python<PyObject*, int>(api_panda_sur_case(python_to_cxx<PyObject*, position>(arg_pos)));
     } catch (...) {
         return nullptr;
     }
 }
 
-// Python native wrapper for function reproduction_possible.
-// Vérifie si une plante à la position donnée aura suffisamment de ressources
-// pour se reproduire. S'il y a déjà une plante à cette position, le calcul
-// suposera qu'elle a été remplacée
-static PyObject* p_reproduction_possible(PyObject* /* self */, PyObject* args)
-{
-    PyObject* arg_pos;
-    PyObject* arg_rayon_collecte;
-    PyObject* arg_consommation;
-    if (!PyArg_ParseTuple(args, "OOO", &arg_pos, &arg_rayon_collecte, &arg_consommation))
-    {
-        return nullptr;
-    }
-
-    try {
-        return cxx_to_python<PyObject*, bool>(api_reproduction_possible(python_to_cxx<PyObject*, position>(arg_pos), python_to_cxx<PyObject*, int>(arg_rayon_collecte), python_to_cxx_array<int>(arg_consommation)));
-    } catch (...) {
-        return nullptr;
-    }
-}
-
-// Python native wrapper for function plante_reproductible.
-// Vérifie si une plante à la position donnée peut se reproduire, retourne faux
-// s'il n'y pas de plante à la position donnée
-static PyObject* p_plante_reproductible(PyObject* /* self */, PyObject* args)
+// Python native wrapper for function bebe_panda_sur_case.
+// Renvoie le numéro du joueur à qui appartient le bébé panda sur la case
+// indiquée. Renvoie -1 s'il n'y a pas de bébé panda ou si la position est
+// invalide.
+static PyObject* p_bebe_panda_sur_case(PyObject* /* self */, PyObject* args)
 {
     PyObject* arg_pos;
     if (!PyArg_ParseTuple(args, "O", &arg_pos))
@@ -849,26 +907,155 @@ static PyObject* p_plante_reproductible(PyObject* /* self */, PyObject* args)
     }
 
     try {
-        return cxx_to_python<PyObject*, bool>(api_plante_reproductible(python_to_cxx<PyObject*, position>(arg_pos)));
+        return cxx_to_python<PyObject*, int>(api_bebe_panda_sur_case(python_to_cxx<PyObject*, position>(arg_pos)));
     } catch (...) {
         return nullptr;
     }
 }
 
-// Python native wrapper for function croisement.
-// Caractéristiques d'une plante résultant du croisement de plusieurs parents
-// donnés. Les champs sont initialisés à -1 si aucune plante n'est donnée en
-// paramètre
-static PyObject* p_croisement(PyObject* /* self */, PyObject* args)
+// Python native wrapper for function position_panda.
+// Indique la position du panda sur la rivière désigné par le numéro
+// ``id_panda`` appartenant au joueur ``id_joueur``. Si la description du panda
+// est incorrecte, la position (-1, -1) est renvoyée.
+static PyObject* p_position_panda(PyObject* /* self */, PyObject* args)
 {
-    PyObject* arg_parents;
-    if (!PyArg_ParseTuple(args, "O", &arg_parents))
+    PyObject* arg_id_joueur;
+    PyObject* arg_id_panda;
+    if (!PyArg_ParseTuple(args, "OO", &arg_id_joueur, &arg_id_panda))
     {
         return nullptr;
     }
 
     try {
-        return cxx_to_python<PyObject*, plante>(api_croisement(python_to_cxx_array<plante>(arg_parents)));
+        return cxx_to_python<PyObject*, position>(api_position_panda(python_to_cxx<PyObject*, int>(arg_id_joueur), python_to_cxx<PyObject*, int>(arg_id_panda)));
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+// Python native wrapper for function info_pont.
+// Renvoie les informations relatives au pont situé à cette position. Le pont
+// est constitué de deux cases. Si aucun pont n'est placé à cette position ou
+// si la position est invalide, les membres debut_val et fin_val de la
+// structure ``pont_type`` renvoyée sont initialisés à -1.
+static PyObject* p_info_pont(PyObject* /* self */, PyObject* args)
+{
+    PyObject* arg_pos;
+    if (!PyArg_ParseTuple(args, "O", &arg_pos))
+    {
+        return nullptr;
+    }
+
+    try {
+        return cxx_to_python<PyObject*, pont_type>(api_info_pont(python_to_cxx<PyObject*, position>(arg_pos)));
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+// Python native wrapper for function info_panda.
+// Renvoie la description d'un panda en fonction d'une position donnée. Si le
+// panda n'est pas présent sur la carte, ou si la position est invalide, tous
+// les membres de la structure ``panda_info`` renvoyée sont initialisés à -1.
+static PyObject* p_info_panda(PyObject* /* self */, PyObject* args)
+{
+    PyObject* arg_pos;
+    if (!PyArg_ParseTuple(args, "O", &arg_pos))
+    {
+        return nullptr;
+    }
+
+    try {
+        return cxx_to_python<PyObject*, panda_info>(api_info_panda(python_to_cxx<PyObject*, position>(arg_pos)));
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+// Python native wrapper for function liste_pandas.
+// Renvoie la liste de tous les pandas présents durant la partie.
+static PyObject* p_liste_pandas(PyObject* /* self */, PyObject* args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+    {
+        return nullptr;
+    }
+
+    try {
+        return cxx_to_python_array(api_liste_pandas());
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+// Python native wrapper for function liste_bebes.
+// Renvoie la liste de tous les bébés présents sur la carte, et et pas encore
+// sauvés.
+static PyObject* p_liste_bebes(PyObject* /* self */, PyObject* args)
+{
+    if (!PyArg_ParseTuple(args, ""))
+    {
+        return nullptr;
+    }
+
+    try {
+        return cxx_to_python_array(api_liste_bebes());
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+// Python native wrapper for function positions_adjacentes.
+// Renvoie la liste de toutes les positions adjacentes à la position donnée.
+static PyObject* p_positions_adjacentes(PyObject* /* self */, PyObject* args)
+{
+    PyObject* arg_pos;
+    if (!PyArg_ParseTuple(args, "O", &arg_pos))
+    {
+        return nullptr;
+    }
+
+    try {
+        return cxx_to_python_array(api_positions_adjacentes(python_to_cxx<PyObject*, position>(arg_pos)));
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+// Python native wrapper for function position_dans_direction.
+// Renvoie la position relative à la direction donnée par rapport à une
+// position d'origine. Si une telle position serait invalide, la position {-1,
+// -1} est renvoyée.
+static PyObject* p_position_dans_direction(PyObject* /* self */, PyObject* args)
+{
+    PyObject* arg_pos;
+    PyObject* arg_dir;
+    if (!PyArg_ParseTuple(args, "OO", &arg_pos, &arg_dir))
+    {
+        return nullptr;
+    }
+
+    try {
+        return cxx_to_python<PyObject*, position>(api_position_dans_direction(python_to_cxx<PyObject*, position>(arg_pos), python_to_cxx<PyObject*, direction>(arg_dir)));
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+// Python native wrapper for function direction_entre_positions.
+// Renvoie la direction telle que position_dans_direction(origine, cible) ==
+// direction. Si aucune telle direction n'existe, -1 est renvoyée.
+static PyObject* p_direction_entre_positions(PyObject* /* self */, PyObject* args)
+{
+    PyObject* arg_origine;
+    PyObject* arg_cible;
+    if (!PyArg_ParseTuple(args, "OO", &arg_origine, &arg_cible))
+    {
+        return nullptr;
+    }
+
+    try {
+        return cxx_to_python<PyObject*, int>(api_direction_entre_positions(python_to_cxx<PyObject*, position>(arg_origine), python_to_cxx<PyObject*, position>(arg_cible)));
     } catch (...) {
         return nullptr;
     }
@@ -893,25 +1080,25 @@ static PyObject* p_historique(PyObject* /* self */, PyObject* args)
 }
 
 // Python native wrapper for function score.
-// Renvoie le score du jardinier ``id_jardinier``. Renvoie -1 si le jardinier
-// est invalide.
+// Renvoie le score du joueur ``id_joueur``. Renvoie -1 si le joueur est
+// invalide.
 static PyObject* p_score(PyObject* /* self */, PyObject* args)
 {
-    PyObject* arg_id_jardinier;
-    if (!PyArg_ParseTuple(args, "O", &arg_id_jardinier))
+    PyObject* arg_id_joueur;
+    if (!PyArg_ParseTuple(args, "O", &arg_id_joueur))
     {
         return nullptr;
     }
 
     try {
-        return cxx_to_python<PyObject*, int>(api_score(python_to_cxx<PyObject*, int>(arg_id_jardinier)));
+        return cxx_to_python<PyObject*, int>(api_score(python_to_cxx<PyObject*, int>(arg_id_joueur)));
     } catch (...) {
         return nullptr;
     }
 }
 
 // Python native wrapper for function moi.
-// Renvoie votre numéro de jardinier.
+// Renvoie votre numéro de joueur.
 static PyObject* p_moi(PyObject* /* self */, PyObject* args)
 {
     if (!PyArg_ParseTuple(args, ""))
@@ -927,7 +1114,7 @@ static PyObject* p_moi(PyObject* /* self */, PyObject* args)
 }
 
 // Python native wrapper for function adversaire.
-// Renvoie le numéro du jardinier adverse.
+// Renvoie le numéro de joueur de votre adversaire.
 static PyObject* p_adversaire(PyObject* /* self */, PyObject* args)
 {
     if (!PyArg_ParseTuple(args, ""))
@@ -942,10 +1129,9 @@ static PyObject* p_adversaire(PyObject* /* self */, PyObject* args)
     }
 }
 
-// Python native wrapper for function annuler.
-// Annule la dernière action. Renvoie faux quand il n'y a pas d'action à
-// annuler ce tour ci.
-static PyObject* p_annuler(PyObject* /* self */, PyObject* args)
+// Python native wrapper for function info_tour.
+// Renvoie le tour actuel.
+static PyObject* p_info_tour(PyObject* /* self */, PyObject* args)
 {
     if (!PyArg_ParseTuple(args, ""))
     {
@@ -953,15 +1139,15 @@ static PyObject* p_annuler(PyObject* /* self */, PyObject* args)
     }
 
     try {
-        return cxx_to_python<PyObject*, bool>(api_annuler());
+        return cxx_to_python<PyObject*, tour_info>(api_info_tour());
     } catch (...) {
         return nullptr;
     }
 }
 
-// Python native wrapper for function tour_actuel.
-// Retourne le numéro du tour actuel.
-static PyObject* p_tour_actuel(PyObject* /* self */, PyObject* args)
+// Python native wrapper for function info_carte.
+// Renvoie la carte pour la partie en cours.
+static PyObject* p_info_carte(PyObject* /* self */, PyObject* args)
 {
     if (!PyArg_ParseTuple(args, ""))
     {
@@ -969,7 +1155,43 @@ static PyObject* p_tour_actuel(PyObject* /* self */, PyObject* args)
     }
 
     try {
-        return cxx_to_python<PyObject*, int>(api_tour_actuel());
+        return cxx_to_python<PyObject*, carte_info>(api_info_carte());
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+// Python native wrapper for function afficher_case_type.
+// Affiche le contenu d'une valeur de type case_type
+static PyObject* p_afficher_case_type(PyObject* /* self */, PyObject* args)
+{
+    PyObject* arg_v;
+    if (!PyArg_ParseTuple(args, "O", &arg_v))
+    {
+        return nullptr;
+    }
+
+    try {
+        (api_afficher_case_type(python_to_cxx<PyObject*, case_type>(arg_v)));
+        Py_RETURN_NONE;
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+// Python native wrapper for function afficher_direction.
+// Affiche le contenu d'une valeur de type direction
+static PyObject* p_afficher_direction(PyObject* /* self */, PyObject* args)
+{
+    PyObject* arg_v;
+    if (!PyArg_ParseTuple(args, "O", &arg_v))
+    {
+        return nullptr;
+    }
+
+    try {
+        (api_afficher_direction(python_to_cxx<PyObject*, direction>(arg_v)));
+        Py_RETURN_NONE;
     } catch (...) {
         return nullptr;
     }
@@ -1011,42 +1233,6 @@ static PyObject* p_afficher_action_type(PyObject* /* self */, PyObject* args)
     }
 }
 
-// Python native wrapper for function afficher_caracteristique.
-// Affiche le contenu d'une valeur de type caracteristique
-static PyObject* p_afficher_caracteristique(PyObject* /* self */, PyObject* args)
-{
-    PyObject* arg_v;
-    if (!PyArg_ParseTuple(args, "O", &arg_v))
-    {
-        return nullptr;
-    }
-
-    try {
-        (api_afficher_caracteristique(python_to_cxx<PyObject*, caracteristique>(arg_v)));
-        Py_RETURN_NONE;
-    } catch (...) {
-        return nullptr;
-    }
-}
-
-// Python native wrapper for function afficher_debug_chien.
-// Affiche le contenu d'une valeur de type debug_chien
-static PyObject* p_afficher_debug_chien(PyObject* /* self */, PyObject* args)
-{
-    PyObject* arg_v;
-    if (!PyArg_ParseTuple(args, "O", &arg_v))
-    {
-        return nullptr;
-    }
-
-    try {
-        (api_afficher_debug_chien(python_to_cxx<PyObject*, debug_chien>(arg_v)));
-        Py_RETURN_NONE;
-    } catch (...) {
-        return nullptr;
-    }
-}
-
 // Python native wrapper for function afficher_position.
 // Affiche le contenu d'une valeur de type position
 static PyObject* p_afficher_position(PyObject* /* self */, PyObject* args)
@@ -1065,9 +1251,9 @@ static PyObject* p_afficher_position(PyObject* /* self */, PyObject* args)
     }
 }
 
-// Python native wrapper for function afficher_plante.
-// Affiche le contenu d'une valeur de type plante
-static PyObject* p_afficher_plante(PyObject* /* self */, PyObject* args)
+// Python native wrapper for function afficher_pont_type.
+// Affiche le contenu d'une valeur de type pont_type
+static PyObject* p_afficher_pont_type(PyObject* /* self */, PyObject* args)
 {
     PyObject* arg_v;
     if (!PyArg_ParseTuple(args, "O", &arg_v))
@@ -1076,7 +1262,79 @@ static PyObject* p_afficher_plante(PyObject* /* self */, PyObject* args)
     }
 
     try {
-        (api_afficher_plante(python_to_cxx<PyObject*, plante>(arg_v)));
+        (api_afficher_pont_type(python_to_cxx<PyObject*, pont_type>(arg_v)));
+        Py_RETURN_NONE;
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+// Python native wrapper for function afficher_panda_info.
+// Affiche le contenu d'une valeur de type panda_info
+static PyObject* p_afficher_panda_info(PyObject* /* self */, PyObject* args)
+{
+    PyObject* arg_v;
+    if (!PyArg_ParseTuple(args, "O", &arg_v))
+    {
+        return nullptr;
+    }
+
+    try {
+        (api_afficher_panda_info(python_to_cxx<PyObject*, panda_info>(arg_v)));
+        Py_RETURN_NONE;
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+// Python native wrapper for function afficher_bebe_info.
+// Affiche le contenu d'une valeur de type bebe_info
+static PyObject* p_afficher_bebe_info(PyObject* /* self */, PyObject* args)
+{
+    PyObject* arg_v;
+    if (!PyArg_ParseTuple(args, "O", &arg_v))
+    {
+        return nullptr;
+    }
+
+    try {
+        (api_afficher_bebe_info(python_to_cxx<PyObject*, bebe_info>(arg_v)));
+        Py_RETURN_NONE;
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+// Python native wrapper for function afficher_tour_info.
+// Affiche le contenu d'une valeur de type tour_info
+static PyObject* p_afficher_tour_info(PyObject* /* self */, PyObject* args)
+{
+    PyObject* arg_v;
+    if (!PyArg_ParseTuple(args, "O", &arg_v))
+    {
+        return nullptr;
+    }
+
+    try {
+        (api_afficher_tour_info(python_to_cxx<PyObject*, tour_info>(arg_v)));
+        Py_RETURN_NONE;
+    } catch (...) {
+        return nullptr;
+    }
+}
+
+// Python native wrapper for function afficher_carte_info.
+// Affiche le contenu d'une valeur de type carte_info
+static PyObject* p_afficher_carte_info(PyObject* /* self */, PyObject* args)
+{
+    PyObject* arg_v;
+    if (!PyArg_ParseTuple(args, "O", &arg_v))
+    {
+        return nullptr;
+    }
+
+    try {
+        (api_afficher_carte_info(python_to_cxx<PyObject*, carte_info>(arg_v)));
         Py_RETURN_NONE;
     } catch (...) {
         return nullptr;
@@ -1103,31 +1361,35 @@ static PyObject* p_afficher_action_hist(PyObject* /* self */, PyObject* args)
 
 // API function to register.
 static PyMethodDef api_callback[] = {
-    {"depoter", p_depoter, METH_VARARGS, "depoter"},
-    {"arroser", p_arroser, METH_VARARGS, "arroser"},
-    {"baffer", p_baffer, METH_VARARGS, "baffer"},
-    {"debug_afficher_chien", p_debug_afficher_chien, METH_VARARGS, "debug_afficher_chien"},
-    {"plantes_jardinier", p_plantes_jardinier, METH_VARARGS, "plantes_jardinier"},
-    {"plante_sur_case", p_plante_sur_case, METH_VARARGS, "plante_sur_case"},
-    {"plantes_arrosables", p_plantes_arrosables, METH_VARARGS, "plantes_arrosables"},
-    {"plantes_adultes", p_plantes_adultes, METH_VARARGS, "plantes_adultes"},
-    {"plantes_depotables", p_plantes_depotables, METH_VARARGS, "plantes_depotables"},
-    {"ressources_sur_case", p_ressources_sur_case, METH_VARARGS, "ressources_sur_case"},
-    {"reproduction_possible", p_reproduction_possible, METH_VARARGS, "reproduction_possible"},
-    {"plante_reproductible", p_plante_reproductible, METH_VARARGS, "plante_reproductible"},
-    {"croisement", p_croisement, METH_VARARGS, "croisement"},
+    {"deplacer", p_deplacer, METH_VARARGS, "deplacer"},
+    {"poser", p_poser, METH_VARARGS, "poser"},
+    {"type_case", p_type_case, METH_VARARGS, "type_case"},
+    {"panda_sur_case", p_panda_sur_case, METH_VARARGS, "panda_sur_case"},
+    {"bebe_panda_sur_case", p_bebe_panda_sur_case, METH_VARARGS, "bebe_panda_sur_case"},
+    {"position_panda", p_position_panda, METH_VARARGS, "position_panda"},
+    {"info_pont", p_info_pont, METH_VARARGS, "info_pont"},
+    {"info_panda", p_info_panda, METH_VARARGS, "info_panda"},
+    {"liste_pandas", p_liste_pandas, METH_VARARGS, "liste_pandas"},
+    {"liste_bebes", p_liste_bebes, METH_VARARGS, "liste_bebes"},
+    {"positions_adjacentes", p_positions_adjacentes, METH_VARARGS, "positions_adjacentes"},
+    {"position_dans_direction", p_position_dans_direction, METH_VARARGS, "position_dans_direction"},
+    {"direction_entre_positions", p_direction_entre_positions, METH_VARARGS, "direction_entre_positions"},
     {"historique", p_historique, METH_VARARGS, "historique"},
     {"score", p_score, METH_VARARGS, "score"},
     {"moi", p_moi, METH_VARARGS, "moi"},
     {"adversaire", p_adversaire, METH_VARARGS, "adversaire"},
-    {"annuler", p_annuler, METH_VARARGS, "annuler"},
-    {"tour_actuel", p_tour_actuel, METH_VARARGS, "tour_actuel"},
+    {"info_tour", p_info_tour, METH_VARARGS, "info_tour"},
+    {"info_carte", p_info_carte, METH_VARARGS, "info_carte"},
+    {"afficher_case_type", p_afficher_case_type, METH_VARARGS, "afficher_case_type"},
+    {"afficher_direction", p_afficher_direction, METH_VARARGS, "afficher_direction"},
     {"afficher_erreur", p_afficher_erreur, METH_VARARGS, "afficher_erreur"},
     {"afficher_action_type", p_afficher_action_type, METH_VARARGS, "afficher_action_type"},
-    {"afficher_caracteristique", p_afficher_caracteristique, METH_VARARGS, "afficher_caracteristique"},
-    {"afficher_debug_chien", p_afficher_debug_chien, METH_VARARGS, "afficher_debug_chien"},
     {"afficher_position", p_afficher_position, METH_VARARGS, "afficher_position"},
-    {"afficher_plante", p_afficher_plante, METH_VARARGS, "afficher_plante"},
+    {"afficher_pont_type", p_afficher_pont_type, METH_VARARGS, "afficher_pont_type"},
+    {"afficher_panda_info", p_afficher_panda_info, METH_VARARGS, "afficher_panda_info"},
+    {"afficher_bebe_info", p_afficher_bebe_info, METH_VARARGS, "afficher_bebe_info"},
+    {"afficher_tour_info", p_afficher_tour_info, METH_VARARGS, "afficher_tour_info"},
+    {"afficher_carte_info", p_afficher_carte_info, METH_VARARGS, "afficher_carte_info"},
     {"afficher_action_hist", p_afficher_action_hist, METH_VARARGS, "afficher_action_hist"},
     {nullptr, nullptr, 0, nullptr}
 };

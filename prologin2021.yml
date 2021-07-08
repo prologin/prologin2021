@@ -73,6 +73,14 @@ enum:
     enum_field:  # TODO: à voir ? (action pousser)
       - [action_deplacer, "Action ``deplacer``."]
       - [action_poser, "Action ``poser``."]
+  -
+    enum_name: debug_drapeau
+    enum_summary: "Types de drapeau de débug"
+    enum_field:
+      - [aucun_drapeau, "Aucun drapeau, enlève le drapeau présent"]
+      - [drapeau_bleu, "Drapeau bleu"]
+      - [drapeau_vert, "Drapeau vert"]
+      - [drapeau_rouge, "Drapeau rouge"]
 
 struct:
   -
@@ -158,6 +166,17 @@ function:
       - [dir, direction, "Direction visée"]
       - [pont_debut, int, "Début du pont placé"]
       - [pont_fin, int, "Fin du pont"]
+
+# Actions de débug
+
+  -
+    fct_name: debug_afficher_drapeau
+    fct_summary: Affiche le drapeau spécifié sur la case indiquée
+    fct_ret_type: erreur
+    fct_action: yes
+    fct_arg:
+      - [pos, position, "Case ciblée"]
+      - [drapeau, debug_drapeau, "Drapeau à afficher sur la case"]
 
 # Fonctions de requête de l'état du jeu
   -
