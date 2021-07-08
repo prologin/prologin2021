@@ -87,7 +87,8 @@ def _addtilebuffer(buffer : str, x : int, y : int) -> tuple[bool, dict]:
         'panda': None,
         'baby panda': None,
         'bridge': None,
-        'id': None
+        'id': None,
+        'obstacle': False,
     }
 
     # water tile easy check
@@ -98,6 +99,14 @@ def _addtilebuffer(buffer : str, x : int, y : int) -> tuple[bool, dict]:
         else:
             tile_dict['water'] = True
             return True, tile_dict
+    if '#' in buffer:
+        if buffer != '###':
+            print(f'Cannot have "#" in tile and it not being "###": {buffer}')
+            return False, None
+        else:
+            tile_dict['obstacle'] = True
+            return True, tile_dict
+
 
     # panda/bridge
     if buffer[0] in _PANDA_CHARS:
@@ -172,7 +181,7 @@ def _checkmap(map_ : list[list[dict]], width : int, height : int) -> int:
         for x in range(width):
             tile = map_[y][x]
             # water
-            if tile['water']:
+            if tile['water'] or tile['obstacle']:
                 continue
             # panda/bridge
             elif tile['panda']:
