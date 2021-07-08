@@ -106,6 +106,7 @@ struct:
     str_tuple: no
     str_field:
       - [bebe_pos, position, "Position du bébé panda"]
+      - [id_bebe_joueur, int, "Identifiant du joueur qui peut saver le bébé"]
       - [points_capture, int, "Nombre de points obtenus pour la capture de ce panda"]
   -
     str_name: tour_info
@@ -215,6 +216,12 @@ function:
     fct_name: liste_pandas
     fct_summary: Renvoie la liste de tous les pandas présents durant la partie.
     fct_ret_type: panda_info array
+    fct_arg: []
+  -
+    fct_name: liste_bebes
+    fct_summary: Renvoie la liste de tous les bébés présents sur la carte, et
+                 et pas encore sauvés.
+    fct_ret_type: bebe_info array
     fct_arg: []
   -
     fct_name: positions_adjacentes

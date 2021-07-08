@@ -11,6 +11,8 @@ int ActionDeplacer::check(const GameState& st) const
     // Ensure moving in the given direction won't bring us out of bounds.
     const position target_position =
         st.map().get_relative_position(panda.pos(), dir_);
+    if (!st.map().is_valid(target_position))
+        return DEPLACEMENT_HORS_LIMITES;
     const Cell target_cell = st.map().get(target_position);
 
     if (target_cell.is_invalid())

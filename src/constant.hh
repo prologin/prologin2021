@@ -95,6 +95,7 @@ typedef struct panda_info
 typedef struct bebe_info
 {
     position bebe_pos;  ///< Position du bébé panda
+    int id_bebe_joueur; ///< Identifiant du joueur qui peut saver le bébé
     int points_capture; ///< Nombre de points obtenus pour la capture de ce
                         ///< panda
 } bebe_info;

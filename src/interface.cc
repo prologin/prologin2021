@@ -71,6 +71,11 @@ extern "C" std::vector<panda_info> api_liste_pandas()
     return api->liste_pandas();
 }
 
+extern "C" std::vector<bebe_info> api_liste_bebes()
+{
+    return api->liste_bebes();
+}
+
 extern "C" std::vector<position> api_positions_adjacentes(position pos)
 {
     return api->positions_adjacentes(pos);
