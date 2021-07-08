@@ -38,7 +38,7 @@ int ActionPoser::check(const GameState& st) const
     // currently standing.
     int current_value;
 
-    assert(st.map().get(panda.pos()).is_pont(&current_value, nullptr, nullptr));
+    assert(st.map().get(panda.pos()).is_pont(&current_value, nullptr));
 
     if (current_value != pont_debut_)
         return POSE_INVALIDE;
@@ -57,9 +57,8 @@ void ActionPoser::apply_on(GameState* st) const
     const direction end_dir =
         (direction)map.get_relative_direction(end_pos, start_pos);
 
-    map.set(start_pos,
-            Cell::pont(pont_debut_, start_dir, /* is_start= */ true));
-    map.set(end_pos, Cell::pont(pont_fin_, end_dir, /* is_start= */ false));
+    map.set(start_pos, Cell::pont(pont_debut_, start_dir, PontPolarity::Start));
+    map.set(end_pos, Cell::pont(pont_fin_, end_dir, PontPolarity::End));
 
     // Log action.
     action_hist action;
