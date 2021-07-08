@@ -11,12 +11,12 @@ let isWww = false;
 
 // Directions
 const DIRECTIONS = [
-    'n',
     'ne',
-    'no',
-    's',
     'se',
+    's',
     'so',
+    'no',
+    'n',
 ];
 
 // Texture names
