@@ -9,46 +9,6 @@
     <script src="front/js/prologin.js"></script>
     <script src="front/js/graphics.js"></script>
     <script src="front/js/gamestate.js"></script>
-
-    <style>
-        @keyframes anim-img {
-          0% {
-            transform: translate(0, 20px) rotate(0deg) rotateY(0deg) scale(.8);
-          }
-          25% {
-            transform: translate(0, 0px) rotate(10deg) rotateY(360deg);
-          }
-          50% {
-            transform: translate(0, 20px) rotate(0deg) rotateY(360deg) scale(.8);
-          }
-          75% {
-            transform: translate(0, 0px) rotate(-10deg) rotateY(0deg);
-          }
-          100% {
-            transform: translate(0, 20px) rotate(0deg) scale(.8) rotateY(0deg);
-          }
-        }
-
-        .winner-img {
-          animation-name: anim-img;
-          animation-duration: 3s;
-          animation-iteration-count: infinite;
-        }
-
-        @keyframes anim-title {
-          0% {
-            transform: translate(0, 20px);
-          }
-          100% {
-            transform: translate(0, 0px);
-          }
-        }
-
-        .winner-title {
-          animation-name: anim-title;
-          animation-duration: 1s;
-        }
-    </style>
 </head>
 
 <body onkeypress="onKey(event)">
