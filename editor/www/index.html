@@ -12,7 +12,7 @@
     <script src="front/js/parser.js"></script>
 </head>
 
-<body>
+<body class="not-www">
     <!-- new, dump, dumper -->
     <input type="button" value="NOUVEAU" id="new" onclick="onNewClick()"></input>
     <input type="button" value="EXPORTER" id="dump" onclick="onDumpClick()" /></input>
@@ -27,6 +27,8 @@
     <p id="select2-info" style="display: inline;"></p>
     <select id="select2">
     </select>
+    <p id="isinc-info" style="display: inline;"></p>
+    <input type="checkbox" id="isinc"></input>
 
     <br />
     <div id="canvas"></div>

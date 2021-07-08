@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
-// Copyright (c) 2012-2020 Association Prologin <association@prologin.org>
+// Copyright (c) 2012-2021 Association Prologin <association@prologin.org>
 
 //! Types and conversions for the C interface
 //!
