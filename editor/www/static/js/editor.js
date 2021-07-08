@@ -55,7 +55,6 @@ let uiSelect1Info = document.getElementById("select1-info");
 let uiSelect2Info = document.getElementById("select2-info");
 let uiIsIncInfo = document.getElementById("isinc-info");
 
-uiIsIncInfo.hidden = true;
 onBrushChange();
 
 function onNewClick() {
@@ -99,7 +98,7 @@ function onBrushChange() {
         uiSelect1.hidden = true;
         uiSelect2.hidden = true;
         uiIsInc.hidden = true;
-        uiIsIncInfo.hidden = true;
+        uiIsIncInfo.textContent = "";
         uiSelect1Info.textContent = "";
         uiSelect2Info.textContent = "";
         break;
@@ -108,7 +107,7 @@ function onBrushChange() {
         uiSelect1.hidden = false;
         uiSelect2.hidden = false;
         uiIsInc.hidden = true;
-        uiIsIncInfo.hidden = true;
+        uiIsIncInfo.textContent = "";
         uiSelect1Info.textContent = "Type";
         uiSelect2Info.textContent = "Identifiant";
 
@@ -120,7 +119,7 @@ function onBrushChange() {
         uiSelect2.hidden = false;
         uiIsInc.hidden = false;
         uiIsInc.checked = true;
-        uiIsIncInfo.hidden = false;
+        uiIsIncInfo.textContent = "Début de pont :";
         uiSelect1Info.textContent = "Valeur";
         uiSelect2Info.textContent = "Direction";
 
