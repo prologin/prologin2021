@@ -323,7 +323,7 @@ static std::ostream& operator<<(std::ostream& ss, const Map& map)
 
             int value, player;
             direction dir;
-            PontPolarity polarity;
+            PontPolarity polarity = cell.get_polarity();
 
             if (cell.is_empty())
             {
