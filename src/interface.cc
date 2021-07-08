@@ -36,6 +36,11 @@ extern "C" erreur api_poser(position position_debut, direction dir,
     return api->poser(position_debut, dir, pont_debut, pont_fin);
 }
 
+extern "C" void api_afficher_debug_drapeau(debug_drapeau v)
+{
+    api->afficher_debug_drapeau(v);
+}
+
 extern "C" erreur api_debug_afficher_drapeau(position pos, debug_drapeau drapeau)
 {
     return api->debug_afficher_drapeau(pos, drapeau);
@@ -225,6 +230,26 @@ std::ostream& operator<<(std::ostream& os, action_type v)
         break;
     case ACTION_POSER:
         os << "ACTION_POSER";
+        break;
+    }
+    return os;
+}
+
+std::ostream& operator<<(std::ostream& os, debug_drapeau v)
+{
+    switch (v)
+    {
+    case AUCUN_DRAPEAU:
+        os << "AUCUN_DRAPEAU";
+        break;
+    case DRAPEAU_BLEU:
+        os << "DRAPEAU_BLEU";
+        break;
+    case DRAPEAU_VERT:
+        os << "DRAPEAU_VERT";
+        break;
+    case DRAPEAU_ROUGE:
+        os << "DRAPEAU_ROUGE";
         break;
     }
     return os;
