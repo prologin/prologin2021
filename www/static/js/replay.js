@@ -17,6 +17,8 @@ $(function () {
         $dump_content = $('#dump');
 
     $replay.html(`
+    <link rel="stylesheet" href="static/css/theme.css">
+
     <input type="button" value="AVANT" id="prev" onclick="onPrevClick()"></input>
     <input type="button" value="APRES" id="next" onclick="onNextClick()"></input>
     <span>
@@ -32,6 +34,11 @@ $(function () {
         <li id="p1-babies"></li>
         <li id="p2-babies"></li>
     </ul>
+
+    <div id="winner">
+        <p id="winner-title">Joueur 1</p>
+        <img id="winner-img" />
+    </div>
 
     <br />
     <div id="canvas"></div>

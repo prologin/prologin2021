@@ -21,7 +21,7 @@ cp -r assets/images front/www
 echo '> Front end initialisé'
 
 # www
-# TODO : CSS theme
+cp front/www/css/* www/static/css
 cp front/www/js/* front/www/lib/* www/static/js
 cp front/www/images/* www/static/img
 echo '> WWW initialisé'

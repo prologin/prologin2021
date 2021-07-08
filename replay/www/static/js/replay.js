@@ -6,7 +6,6 @@
 // Not used by the replay but by the spectator
 function fetchNextState() {}
 
-// Not used by the replay but by the spectator
 function hasGameEnded() { return currentGameStateIndex >= gameStates.length - 1; }
 
 // --- Main ---
