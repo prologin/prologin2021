@@ -38,7 +38,7 @@ body {
 body {
     background-color: #016b5b;
     color: #ffffff;
-    background: url("/static/img/background/drawing.svg") #016b5b;
+    background: url("/static/img/background.svg") #016b5b;
     background-size: cover;
     background-position: 0 0;
     background-repeat: no-repeat;
@@ -403,4 +403,17 @@ h1 {
 .winner-title {
     animation-name: anim-winner-title;
     animation-duration: 500ms;
+}
+
+#canvas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.not-www canvas {
+    width: unset;
 }

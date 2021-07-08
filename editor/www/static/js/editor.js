@@ -55,6 +55,7 @@ let uiSelect1Info = document.getElementById("select1-info");
 let uiSelect2Info = document.getElementById("select2-info");
 let uiIsIncInfo = document.getElementById("isinc-info");
 
+uiIsIncInfo.hidden = true;
 onBrushChange();
 
 function onNewClick() {

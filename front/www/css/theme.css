@@ -38,7 +38,7 @@ body {
 body {
     background-color: #016b5b;
     color: #ffffff;
-    background: url("/static/img/background/drawing.svg") #016b5b;
+    background: url("/static/img/background.svg") #016b5b;
     background-size: cover;
     background-position: 0 0;
     background-repeat: no-repeat;

@@ -22,6 +22,10 @@ class RequestHandler(server.SimpleHTTPRequestHandler):
     def do_GET(self):
         print("GET", self.path)
 
+        # Redirect /static/img to /front/images
+        if self.path.startswith('/static/img'):
+            self.path = '/front/images' + self.path[len('/static/img'):]
+
         is_action = self.path.startswith("/action/")
 
         if is_action:
