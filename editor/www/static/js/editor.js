@@ -50,8 +50,10 @@ let uiCanvas = document.getElementById("canvas");
 let uiBrush = document.getElementById("brush");
 let uiSelect1 = document.getElementById("select1");
 let uiSelect2 = document.getElementById("select2");
+let uiIsInc = document.getElementById("isinc");
 let uiSelect1Info = document.getElementById("select1-info");
 let uiSelect2Info = document.getElementById("select2-info");
+let uiIsIncInfo = document.getElementById("isinc-info");
 
 onBrushChange();
 
@@ -95,6 +97,8 @@ function onBrushChange() {
         brush = null;
         uiSelect1.hidden = true;
         uiSelect2.hidden = true;
+        uiIsInc.hidden = true;
+        uiIsIncInfo.hidden = true;
         uiSelect1Info.textContent = "";
         uiSelect2Info.textContent = "";
         break;
@@ -102,6 +106,8 @@ function onBrushChange() {
         brush = null;
         uiSelect1.hidden = false;
         uiSelect2.hidden = false;
+        uiIsInc.hidden = true;
+        uiIsIncInfo.hidden = true;
         uiSelect1Info.textContent = "Type";
         uiSelect2Info.textContent = "Identifiant";
 
@@ -111,6 +117,9 @@ function onBrushChange() {
         brush = null;
         uiSelect1.hidden = false;
         uiSelect2.hidden = false;
+        uiIsInc.hidden = false;
+        uiIsInc.checked = true;
+        uiIsIncInfo.hidden = false;
         uiSelect1Info.textContent = "Valeur";
         uiSelect2Info.textContent = "Direction";
 
@@ -209,8 +218,7 @@ function updateBrush() {
     case 'pont':
         let value = parseInt(uiSelect1.value);
         let directionId = allDirections.indexOf(uiSelect2.value) + 1;
-        // TODO : Sign
-        brush = new BridgeTile(directionId, value, true, null);
+        brush = new BridgeTile(value, directionId, uiBrush.checked, null);
         break;
     case 'panda':
         let firstId = uiSelect2.value === "Premier";
@@ -282,6 +290,7 @@ function onClick(x, y) {
             gameState.panda_map[i][j].baby_panda = brush;
         } else if (brush instanceof BridgeTile) {
             gameState.map[i][j].bridge = brush;
+            onBridge();
         } else {
             console.warn('Invalid brush');
             console.warn(brush);
@@ -289,6 +298,14 @@ function onClick(x, y) {
 
         updateView();
     }
+}
+
+function onBridge() {
+    uiSelect2.selectedIndex = (uiSelect2.selectedIndex + 3) % 6;
+
+    // Invert sign
+    uiIsInc.checked = !uiIsInc.checked;
+    brush.sign = uiIsInc.checked;
 }
 
 // --- Main ---

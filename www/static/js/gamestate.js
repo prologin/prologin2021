@@ -116,8 +116,14 @@ class GameState {
     if (debug_flag_map == null) {
       initDebugFlagMap(this);
     }
+    this.actions = [];
   }
   // methods
+  execute_actions() {
+    for (let action of this.actions) {
+      handle_action(action);
+    }
+  }
   initMap() {
     let map = Array.from(Array(this.height), () => new Array(this.width));
     for (let i = 0; i < this.height; i++) {
@@ -358,12 +364,22 @@ function loadGameStateFromMapStr(str) {
 }
 
 
-
-function draw_debug_flag(x, y) {
+function draw_debug_flag(x, y, enum_value) {
+  let color;
+  if (enum_value == 1) {
+    color = 0x0000ff;
+  } else if (enum_value == 2) {
+    color = 0x00ff00;
+  } else if (enum_value == 3) {
+    color = 0xff0000;
+  } else {
+    console.warn('Unknown debug flag enum', enum_value);
+    color = 0xbbbbbb;
+  }
   let [fx, fy] = getCoords(x, y);
   let text = new PIXI.Text(
         'FLAG',
-        {fontFamily : 'Arial', fontSize : 18, fill : 0, align : 'center', fill: 0xff5050});
+        {fontFamily : 'Arial', fontSize : 18, fill : 0, align : 'center', fill: color});
     text.anchor.set(
         0.5,
         0.5); // sets the anchor to the center, I think. Looks crap without it
@@ -372,11 +388,8 @@ function draw_debug_flag(x, y) {
     app.stage.addChild(text);
 }
 
-function add_debug_flag(x, y) {
-  debug_flag_map[y][x] = 1;
-}
-
-function delete_debug_flag(x, y) {
-  debug_flag_map[y][x] = 0;
+function change_debug_flag(debug_drapeau, pos) {
+  let [x, y] = pos;
+  debug_flag_map[y][x] = debug_drapeau;
 }
 
