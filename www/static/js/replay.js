@@ -16,8 +16,7 @@ $(function () {
     let $replay = $('#replay'),
         $dump_content = $('#dump');
 
-    // TODO : Update
-    let width = 400;
+    let width = 1920;
 
     $replay.html(`
     <link rel="stylesheet" href="static/css/theme.css">

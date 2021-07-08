@@ -404,3 +404,16 @@ h1 {
     animation-name: anim-winner-title;
     animation-duration: 500ms;
 }
+
+#canvas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.not-www canvas {
+    width: unset;
+}

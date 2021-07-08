@@ -15,8 +15,7 @@ function loadScripts(scripts, onLoaded) {
 $(function() {
     let $preview = $('#map-preview'), $map_content = $('#map-contents');
 
-    // TODO : Update
-    let width = 400;
+    let width = 1920;
 
     $preview.hide();
 
