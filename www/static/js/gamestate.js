@@ -216,7 +216,7 @@ class GameState {
             }
           }
         }
-        this.map[y][x].bridge = new BridgeTile(direction, value, sign_value, pos);
+        this.map[y][x].bridge = new BridgeTile(value, direction, sign_value, pos);
       }
     }
   }
@@ -320,12 +320,3 @@ function loadGameStateFromMapStr(str) {
 
   return gs;
 }
-
-var test_str = '4 3\n\
-A11 ___ ___ Z01\n\
-C99 ___ Z00 ___\n\
-B23 X45 Y61 ___';
-
-// let gs = loadGameStateFromMapStr(test_str);
-
-//
