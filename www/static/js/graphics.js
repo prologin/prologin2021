@@ -133,7 +133,7 @@ function getWaterTileIndex(i, j) {
 
 // Draws a layer of the map
 // The map has two layers
-function drawMapLayer(layer, isForeground) {
+function drawMapLayer(layer, mode) {
     // i is the vertical index
     for (let i = 0; i < gameState.height; ++i) {
         // j is the horizontal index
@@ -141,11 +141,18 @@ function drawMapLayer(layer, isForeground) {
             let [x, y] = getCoords(i, j);
 
             let tile = layer[i][j];
+
+            if (mode == 2) {
+                if (tile != 0)
+                    draw_debug_flag(i, j);
+                continue;
+            }
+
             let tileName;
 
             // Both MapTile's and PandaMapTile's have this method (derived from
             // Tile class)
-            if (isForeground && tile.isEmpty())
+            if (mode == 1 && tile.isEmpty())
                 continue;
 
             if (tile instanceof PandaMapTile) {
@@ -164,7 +171,7 @@ function drawMapLayer(layer, isForeground) {
                 }
             } else {
                 console.warn('Invalid tile at position ' + i + ' ' + j + ' ' +
-                             (isForeground ? '(foreground)' : '(background)'));
+                             (mode == 1 ? '(foreground)' : '(background)'));
                 console.warn(tile);
             }
 
@@ -198,8 +205,9 @@ function updateView() {
     clearTiles();
 
     // Draw layers in order (background then foreground)
-    drawMapLayer(gameState.map, false);
-    drawMapLayer(gameState.panda_map, true);
+    drawMapLayer(gameState.map, 0);
+    drawMapLayer(gameState.panda_map, 1);
+    drawMapLayer(debug_flag_map, 2);
 }
 
 function getTileWidth() {

@@ -31,6 +31,9 @@ public:
     /// Pose un pont dans la direction choisie à partir du panda ``id_panda``.
     ApiActionFunc<ActionPoser> poser{this};
 
+    /// Affiche le drapeau spécifié sur la case indiquée
+    ApiActionFunc<ActionDebugAfficherDrapeau> debug_afficher_drapeau{this};
+
     /// Renvoie le type d'une case donnée.
     case_type type_case(position pos);
 
@@ -113,6 +116,10 @@ public:
 
     /// Affiche le contenu d'une valeur de type action_type
     void afficher_action_type(action_type v);
+
+    /// Affiche le contenu d'une valeur de type debug_drapeau
+    void afficher_debug_drapeau(debug_drapeau v);
+
 
     /// Affiche le contenu d'une valeur de type position
     void afficher_position(position v);

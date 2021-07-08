@@ -37,6 +37,8 @@ void Rules::register_actions()
         ID_ACTION_DEPLACER, [] { return std::make_unique<ActionDeplacer>(); });
     api_->actions()->register_action(
         ID_ACTION_POSER, [] { return std::make_unique<ActionPoser>(); });
+    api_->actions()->register_action(
+        ID_ACTION_DEBUG_AFFICHER_DRAPEAU, [] { return std::make_unique<ActionDebugAfficherDrapeau>(); });
 }
 
 rules::Actions* Rules::get_actions()
