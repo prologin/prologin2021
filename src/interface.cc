@@ -204,9 +204,6 @@ std::ostream& operator<<(std::ostream& os, erreur v)
     case ACTION_DEJA_EFFECTUEE:
         os << "ACTION_DEJA_EFFECTUEE";
         break;
-    case RIEN_A_POUSSER:
-        os << "RIEN_A_POUSSER";
-        break;
     case DRAPEAU_INVALIDE:
         os << "DRAPEAU_INVALIDE";
         break;
@@ -260,6 +257,26 @@ extern "C" void api_afficher_action_type(action_type v)
     std::cerr << v << std::endl;
 }
 
+std::ostream& operator<<(std::ostream& os, debug_drapeau v)
+{
+    switch (v)
+    {
+    case AUCUN_DRAPEAU:
+        os << "AUCUN_DRAPEAU";
+        break;
+    case DRAPEAU_BLEU:
+        os << "DRAPEAU_BLEU";
+        break;
+    case DRAPEAU_VERT:
+        os << "DRAPEAU_VERT";
+        break;
+    case DRAPEAU_ROUGE:
+        os << "DRAPEAU_ROUGE";
+        break;
+    }
+    return os;
+}
+
 std::ostream& operator<<(std::ostream& os, position v)
 {
     os << "{ ";
@@ -307,6 +324,9 @@ std::ostream& operator<<(std::ostream& os, panda_info v)
     os << "id_joueur"
        << "=" << v.id_joueur;
     os << ", ";
+    os << "id_panda"
+       << "=" << v.id_panda;
+    os << ", ";
     os << "num_bebes"
        << "=" << v.num_bebes;
     os << " }";
@@ -323,8 +343,8 @@ std::ostream& operator<<(std::ostream& os, bebe_info v)
     os << "bebe_pos"
        << "=" << v.bebe_pos;
     os << ", ";
-    os << "points_capture"
-       << "=" << v.points_capture;
+    os << "id_bebe_joueur"
+       << "=" << v.id_bebe_joueur;
     os << " }";
     return os;
 }
@@ -336,9 +356,6 @@ extern "C" void api_afficher_bebe_info(bebe_info v)
 std::ostream& operator<<(std::ostream& os, tour_info v)
 {
     os << "{ ";
-    os << "id_joueur_joue"
-       << "=" << v.id_joueur_joue;
-    os << ", ";
     os << "id_panda_joue"
        << "=" << v.id_panda_joue;
     os << ", ";
@@ -374,8 +391,8 @@ std::ostream& operator<<(std::ostream& os, action_hist v)
     os << "type_action"
        << "=" << v.type_action;
     os << ", ";
-    os << "id_panda"
-       << "=" << v.id_panda;
+    os << "action_id_panda"
+       << "=" << v.action_id_panda;
     os << ", ";
     os << "dir"
        << "=" << v.dir;

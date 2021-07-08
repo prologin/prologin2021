@@ -65,7 +65,6 @@ enum:
       - [pose_invalide, "Le pont ne peut pas être placé a cette position et dans cette direction."]
       - [id_panda_invalide, "Le panda spécifié n'existe pas."]
       - [action_deja_effectuee, "Une action a déjà été effectuée ce tour."]
-      - [rien_a_pousser, "Aucun panda à pousser dans la direction indiquée."]
       - [drapeau_invalide, "Le drapeau spécifié n'existe pas."]
       - [deplacement_en_arriere, "La panda c'est déjà déplacé sur cette case."]
   -
@@ -108,6 +107,7 @@ struct:
     str_field:
       - [panda_pos, position, "Position du panda"]
       - [id_joueur, int, "Identifiant du joueur qui contrôle le panda"]
+      - [id_panda, int, "Identifiant du panda relatif au joueur"]
       - [num_bebes, int, "Nombre de bébés qui sont portés par le panda parent"]
   -
     str_name: bebe_info
@@ -116,13 +116,11 @@ struct:
     str_field:
       - [bebe_pos, position, "Position du bébé panda"]
       - [id_bebe_joueur, int, "Identifiant du joueur qui peut saver le bébé"]
-      - [points_capture, int, "Nombre de points obtenus pour la capture de ce panda"]
   -
     str_name: tour_info
     str_summary: Information sur un tour particulier.
     str_tuple: no
     str_field:
-      - [id_joueur_joue, int, "Identifiant du joueur qui joue"]
       - [id_panda_joue, int, "Identifiant du panda qui joue"]
       - [id_tour, int, "Identifiant unique du tour (compteur)"]
   -
@@ -138,7 +136,7 @@ struct:
     str_tuple: no
     str_field:
       - [type_action, action_type, "Type de l'action"]
-      - [id_panda, int, "Identifiant du panda concerné par l'action"]
+      - [action_id_panda, int, "Identifiant du panda concerné par l'action"]
       - [dir, direction, "Direction visée par le panda durant le déplacement"]
       - [valeur_debut, int, "Valeur au début du pont posé (de 1 à 6 inclus)"]
       - [valeur_fin, int, "Valeur à la fin du pont posé (de 1 à 6 inclus)"]

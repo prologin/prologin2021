@@ -55,7 +55,6 @@ typedef enum erreur
                    ///< cette direction.
     ID_PANDA_INVALIDE,     ///< Le panda spécifié n'existe pas.
     ACTION_DEJA_EFFECTUEE, ///< Une action a déjà été effectuée ce tour.
-    RIEN_A_POUSSER,   ///< Aucun panda à pousser dans la direction indiquée.
     DRAPEAU_INVALIDE, ///< Le drapeau spécifié n'existe pas.
     DEPLACEMENT_EN_ARRIERE, ///< La panda c'est déjà déplacé sur cette case.
 } erreur;
@@ -98,6 +97,7 @@ typedef struct panda_info
 {
     position panda_pos; ///< Position du panda
     int id_joueur;      ///< Identifiant du joueur qui contrôle le panda
+    int id_panda;  ///< Identifiant du panda relatif au joueur
     int num_bebes; ///< Nombre de bébés qui sont portés par le panda parent
 } panda_info;
 
@@ -106,14 +106,11 @@ typedef struct bebe_info
 {
     position bebe_pos;  ///< Position du bébé panda
     int id_bebe_joueur; ///< Identifiant du joueur qui peut saver le bébé
-    int points_capture; ///< Nombre de points obtenus pour la capture de ce
-                        ///< panda
 } bebe_info;
 
 /// Information sur un tour particulier.
 typedef struct tour_info
 {
-    int id_joueur_joue; ///< Identifiant du joueur qui joue
     int id_panda_joue;  ///< Identifiant du panda qui joue
     int id_tour;        ///< Identifiant unique du tour (compteur)
 } tour_info;
@@ -131,7 +128,7 @@ typedef struct carte_info
 typedef struct action_hist
 {
     action_type type_action; ///< Type de l'action
-    int id_panda;            ///< Identifiant du panda concerné par l'action
+    int action_id_panda;     ///< Identifiant du panda concerné par l'action
     direction dir;    ///< Direction visée par le panda durant le déplacement
     int valeur_debut; ///< Valeur au début du pont posé (de 1 à 6 inclus)
     int valeur_fin;   ///< Valeur à la fin du pont posé (de 1 à 6 inclus)

@@ -112,11 +112,11 @@ panda_info Api::info_panda(position pos)
     {
         const Player& player = game_state_->players().at(player_id);
 
-        return {pos, player_id,
+        return {pos, player_id, id,
                 (int)player.pandas().at(id).saved_bebes().size()};
     }
 
-    return {{-1, -1}, -1, -1};
+    return {{-1, -1}, -1, -1, -1};
 }
 
 std::vector<panda_info> Api::liste_pandas()
@@ -129,7 +129,8 @@ std::vector<panda_info> Api::liste_pandas()
         for (const Panda& panda : player.pandas())
         {
             result.push_back(
-                {panda.pos(), player.id(), (int)panda.saved_bebes().size()});
+                {panda.pos(), player.id(), panda.id(),
+                 (int)panda.saved_bebes().size()});
         }
 
     return result;
@@ -145,8 +146,7 @@ std::vector<bebe_info> Api::liste_bebes()
         for (const Bebe& bebe : player.bebes())
         {
             if (!bebe.is_saved())
-                result.push_back(
-                    {bebe.pos(), player.id(), NB_POINTS_CAPTURE_BEBE});
+                result.push_back({bebe.pos(), player.id()});
         }
 
     return result;
@@ -213,7 +213,6 @@ tour_info Api::info_tour()
 {
     tour_info info;
     info.id_tour = game_state_->round_id();
-    info.id_joueur_joue = game_state_->round_player_id();
     info.id_panda_joue = game_state_->round_panda_id();
     return info;
 }

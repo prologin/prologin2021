@@ -65,7 +65,7 @@ void ActionPoser::apply_on(GameState* st) const
     internal_action action;
     action.type = standard_action;
     action.action.type_action = ACTION_POSER;
-    action.action.id_panda = st->round_panda_id();
+    action.action.action_id_panda = st->round_panda_id();
     action.action.dir = dir_;
     action.action.valeur_debut = pont_debut_;
     action.action.valeur_fin = pont_fin_;
