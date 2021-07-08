@@ -6,105 +6,107 @@ from typing import NamedTuple, List, Tuple  # noqa: F401
 from _api import *
 
 
-# Nombre de jardiniers
-NB_JARDINIERS = 2
+# Nombre de tours à jouer avant la fin de la partie.
+NB_TOURS = 200
 
-# Largeur et hauteur de la grille
-TAILLE_GRILLE = 20
+# Nombre de pandas par joueur.
+NB_PANDAS = 2
 
-# Nombre de tours à jouer avant la fin de la partie
-NB_TOURS = 100
+# Nombre de tours nécessaires pour faire tomber un bébé panda.
+NB_TOURS_PERTE_BEBE = 3
 
-# Durée de vie maximale d'une plante
-AGE_MAX = 10
+# Valeur max d'un pont (les valeurs sont comprises entre 1 et cette constante
+# inclus).
+VALEUR_MAX_PONT = 6
 
-# Âge auquel la plante atteint la maturité et peut donc être arrosée
-AGE_DE_POUSSE = 3
+# Nombre de points obtenus à la capture d'un bébé pandas.
+NB_POINTS_CAPTURE_BEBE = 10
 
-# Portée maximale d'une baffe
-PORTEE_BAFFE = 6
 
-# Types de ressources existantes
-NB_TYPES_RESSOURCES = 3
+# Types de cases
+class case_type(IntEnum):
+    LIBRE = 0  # <- Case libre
+    OBSTACLE = 1  # <- Obstacle
+    PONT = 2  # <- Pont
+    BEBE = 3  # <- Bébé panda
 
-# Apport pour une caractéristique lors de l'arrosage
-APPORT_CARACTERISTIQUE = 10
 
-# Nombre de points de caractéristiques nécessaires pour pouvoir dépoter une
-# cases plus loins.
-COUT_PAR_CASE_COLLECTE = 15
-
-# Nombre de points de caractéristiques nécessaires pour pouvoir dépoter une
-# case plus loin.
-COUT_PAR_CASE_DEPOTAGE = 15
+# Directions cardinales
+class direction(IntEnum):
+    NORD_EST = 0  # <- Direction : nord-est
+    SUD_EST = 1  # <- Direction : sud-est
+    SUD = 2  # <- Direction : sud
+    SUD_OUEST = 3  # <- Direction : sud-ouest
+    NORD_OUEST = 4  # <- Direction : nord-ouest
+    NORD = 5  # <- Direction : nord
 
 
 # Erreurs possibles
 class erreur(IntEnum):
-    OK = 0  # <- L'action s'est effectuée avec succès
-    HORS_TOUR = 1  # <- Il est interdit de faire des actions hors de jouer_tour
-    HORS_POTAGER = 2  # <- La case désignée n'est pas dans le potager
-    CASE_OCCUPEE = 3  # <- Il y a déjà une plante sur la case ciblée
-    PAS_DE_PLANTE = 4  # <- Il n'y a pas de plante sur la case ciblée
-    MAUVAIS_JARDINIER = 5  # <- La plante n'appartient pas au bon jardinier
-    SANS_POT = 6  # <- La plante est déjà dépotée
-    DEJA_ARROSEE = 7  # <- La plante a déjà été arrosée
-    DEJA_BAFFEE = 8  # <- La plante a déjà baffé ce tour ci
-    PAS_ENCORE_ARROSEE = 9  # <- La plante n'a pas encore été arrosée
-    PAS_ENCORE_ADULTE = 10  # <- La plante ne peut pas encore être arrosée
-    PLANTE_INVALIDE = 11  # <- Les caractéristiques de la plante sont invalides
-    TROP_LOIN = 12  # <- La plante n'a pas un assez grand rayon de dépotage
-    CARACTERISTIQUE_INVALIDE = 13  # <- Valeur de `Caracteristique` inconnue
-    CHIEN_INVALIDE = 14  # <- Valeur de `Chien` inconnue
+    OK = 0  # <- L'action s'est effectuée avec succès.
+    POSITION_INVALIDE = 1  # <- La position spécifiée n'est pas sur la rivière.
+    POSITION_OBSTACLE = 2  # <- La position spécifiée est un obstacle.
+    MAUVAIS_NOMBRE = 3  # <- La hauteur de la position spécifiée ne correspond pas.
+    DEPLACEMENT_HORS_LIMITES = 4  # <- Ce déplacement fait sortir un panda des limites de la rivière.
+    DIRECTION_INVALIDE = 5  # <- La direction spécifiée n'existe pas.
+    MOUVEMENT_INVALIDE = 6  # <- Le panda ne peut pas se déplacer dans cette direction.
+    POSE_INVALIDE = 7  # <- Le pont ne peut pas être placé a cette position et dans cette direction.
+    ID_PANDA_INVALIDE = 8  # <- Le panda spécifié n'existe pas.
+    ACTION_DEJA_EFFECTUEE = 9  # <- Une action a déjà été effectuée ce tour.
+    RIEN_A_POUSSER = 10  # <- Aucun panda à pousser dans la direction indiquée.
+    DRAPEAU_INVALIDE = 11  # <- Le drapeau spécifié n'existe pas.
 
 
 # Types d'actions
 class action_type(IntEnum):
-    ACTION_DEPOTER = 0  # <- Action ``depoter``
-    ACTION_BAFFER = 1  # <- Action ``baffer``
-    ACTION_ARROSER = 2  # <- Action ``arroser``
+    ACTION_DEPLACER = 0  # <- Action ``deplacer``.
+    ACTION_POSER = 1  # <- Action ``poser``.
 
 
-# Caractéristiques améliorables d'une plante
-class caracteristique(IntEnum):
-    CARACTERISTIQUE_FORCE = 0  # <- Force
-    CARACTERISTIQUE_VIE = 1  # <- Vie 
-    CARACTERISTIQUE_ELEGANCE = 2  # <- Élégance
-    CARACTERISTIQUE_RAYON_DEPOTAGE = 3  # <- Portée de dépotage
+# Case type pont, contient la case de début et de fin. La case de début a une
+# valeur se décrémentant, celle de fin s'incrémente.
+class pont_type(NamedTuple):
+    debut_pos: Tuple[int, int]  # Position de la case de début
+    fin_pos: Tuple[int, int]  # Position de la case de fin
+    debut_val: int  # Valeur de la case de début
+    fin_val: int  # Valeur de la case de début
 
 
-# Types de chien de débug
-class debug_chien(IntEnum):
-    AUCUN_CHIEN = 0  # <- Aucun chien, enlève le chien présent
-    CHIEN_BLEU = 1  # <- Chien bleu
-    CHIEN_VERT = 2  # <- Chien vert
-    CHIEN_ROUGE = 3  # <- Chien rouge
+# Panda et son joueur
+class panda_info(NamedTuple):
+    panda_pos: Tuple[int, int]  # Position du panda
+    id_joueur: int  # Identifiant du joueur qui contrôle le panda
+    num_bebes: int  # Nombre de bébés qui sont portés par le panda parent
 
 
-# Une plante
-class plante(NamedTuple):
-    pos: Tuple[int, int]  # Position de la plante
-    jardinier: int  # Jardinier ayant planté la plante
-    adulte: bool  # La plante est adulte
-    enracinee: bool  # La plante a déjà été dépotée
-    vie: int  # Point(s) de vie restant(s) de la plante
-    vie_max: int  # Point(s) de vie maximum de la plante
-    force: int  # Force de la baffe de la plante
-    elegance: int  # Élégance de la plante
-    rayon_deplacement: int  # Distance maximale parcourable par la plante en creusant
-    rayon_collecte: int  # Rayon de collecte des ressources pour la plante
-    consommation: List[int]  # Quantité de ressources consommées par la plante
-    age: int  # Âge de la plante
+# Bébé panda à ramener.
+class bebe_info(NamedTuple):
+    bebe_pos: Tuple[int, int]  # Position du bébé panda
+    id_bebe_joueur: int  # Identifiant du joueur qui peut saver le bébé
+    points_capture: int  # Nombre de points obtenus pour la capture de ce panda
 
 
-# Représentation d'une action dans l'historique
+# Information sur un tour particulier.
+class tour_info(NamedTuple):
+    id_joueur_joue: int  # Identifiant du joueur qui joue
+    id_panda_joue: int  # Identifiant du panda qui joue
+    id_tour: int  # Identifiant unique du tour (compteur)
+
+
+# Information sur la carte de la partie en cours.
+class carte_info(NamedTuple):
+    taille_x: int  # La taille de la carte pour les coordonnées x [0; taille_x[
+    taille_y: int  # La taille de la carte pour les coordonnées y [0; taille_y[
+
+
+# Action représentée dans l'historique.
 class action_hist(NamedTuple):
-    atype: action_type  # Type de l'action
-    position_baffante: Tuple[int, int]  # Position de la plante baffante (si type d'action ``action_baffer``)
-    position_baffee: Tuple[int, int]  # Position de la plante baffée (si type d'action ``action_baffer``)
-    position_depart: Tuple[int, int]  # Position de la plante à déplacer (si type d'action ``action_depoter``)
-    position_arrivee: Tuple[int, int]  # Position où déplacer la plante (si type d'action ``action_depoter``)
-    position_plante: Tuple[int, int]  # Position de la plante  (si type d'action ``action_arroser``)
-    amelioration: caracteristique  # Caractéristique à améliorer (si type d'action ``action_arroser``)
+    type_action: action_type  # Type de l'action
+    id_panda: int  # Identifiant du panda concerné par l'action
+    dir: direction  # Direction visée par le panda durant le déplacement
+    valeur_debut: int  # Valeur au début du pont posé (de 1 à 6 inclus)
+    valeur_fin: int  # Valeur à la fin du pont posé (de 1 à 6 inclus)
+    pos_debut: Tuple[int, int]  # Position du début du pont posé
+    pos_fin: Tuple[int, int]  # Position de la fin du pont posé
 
 

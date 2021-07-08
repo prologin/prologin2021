@@ -29,22 +29,22 @@ function onNextStateFetched(nextStateJson) {
         document.getElementById("spectator-start").hidden = true;
     }
 
-    // TODO : Update state
-    console.log(`Got next state ${nextStateJson}`);
-
-    // TODO : The nextStateJson will contain a field end of game
-    if (gameStates.length >= 10) {
-        endGame();
-        return;
-    }
-
-    // TODO : Remove (test)
-    let gs = newGameState(10, 10);
-    gs.panda_map[(currentGameStateIndex + 1) % 10][0].panda = new Panda(1, 1);
-    gameStates.push(gs);
+    // Parse and push new state
+    gameStates.push(parseJSON(nextStateJson));
 
     // Update render
     onNextClick();
+
+    if (gameStates.length === 1) {
+        // Init
+        mapWidth = gameStates[0].width;
+        mapHeight = gameStates[0].height;
+
+        updateViewSize();
+        app.renderer.resize(mapWidth, mapHeight);
+        updateReplay();
+        startReplay();
+    }
 }
 
 function endGame() {

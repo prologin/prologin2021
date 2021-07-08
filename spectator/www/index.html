@@ -20,6 +20,11 @@
         <input type="checkbox" value="Replay automatique" id="autoreplay" onchange="onAutoReplayChange()"></input>
     </span>
 
+    <div id="winner">
+        <p id="winner-title">Joueur 1</p>
+        <img id="winner-img" />
+    </div>
+
     <ul id="game-info">
         <li id="state-indicator"></li>
         <li id="p1-points"></li>
@@ -40,6 +45,7 @@
         <li>Espace : Replay automatique</li>
     </ul>
 
+    <script src="front/js/parser.js"></script>
     <script src="front/js/replay_utils.js"></script>
     <script src="static/js/spectator.js"></script>
 </body>
