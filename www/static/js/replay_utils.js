@@ -188,7 +188,9 @@ function loadDump(data) {
 
     // Parse
     for (let line of lines) {
-        gameStates.push(parseJSON(line));
+        let gs = parseJSON(line);
+        if (gs == null) continue;
+        gameStates.push(gs);
     }
 
     // Render

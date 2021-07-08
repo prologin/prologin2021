@@ -306,4 +306,3 @@ if __name__ == '__main__':
         print(f'Invalid exit code type "{type(exit_code)}" with value "{exit_code}"')
         sys.exit(1)
     sys.exit(exit_code)
-
