@@ -58,12 +58,13 @@ $(function () {
 
     let scripts = [
         'static/js/pixi.min.js',
-        'static/js/prologin.js',
+        'static/js/replay-one-file.js'
+        /*'static/js/prologin.js',
         'static/js/graphics.js',
         'static/js/gamestate.js',
         'static/js/parser.js',
         'static/js/replay_viewer.js',
-        'static/js/replay_utils.js',
+        'static/js/replay_utils.js',*/
     ];
 
     loadScripts(scripts, function() {
