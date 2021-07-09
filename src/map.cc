@@ -29,7 +29,8 @@ Cell::Cell()
     , panda_data_(0)
 {
 }
-Cell::Cell(CellKind kind, PontPolarity polarity, uint32_t data, uint32_t panda_data = kNoPanda)
+Cell::Cell(CellKind kind, PontPolarity polarity, uint32_t data,
+           uint32_t panda_data = kNoPanda)
     : kind_(kind)
     , polarity_(polarity)
     , data_(data)
@@ -149,7 +150,6 @@ Cell Cell::set_polarity(PontPolarity polarity) const
     return Cell(kind_, polarity, data_, panda_data_);
 }
 
-
 bool Cell::operator==(Cell other) const
 {
     return kind_ == other.kind_ && data_ == other.data_ &&
@@ -167,10 +167,11 @@ Map::Map(int width, int height)
 
 Cell match_polarity(const Cell& cell_a, const Cell& cell_b)
 {
-    if (cell_a.get_polarity() == PontPolarity::Undefined
-        && cell_b.get_polarity() != PontPolarity::Undefined)
+    if (cell_a.get_polarity() == PontPolarity::Undefined &&
+        cell_b.get_polarity() != PontPolarity::Undefined)
         return cell_a.set_polarity(cell_b.get_polarity() == PontPolarity::Start
-                                   ? PontPolarity::End : PontPolarity::Start);
+                                       ? PontPolarity::End
+                                       : PontPolarity::Start);
     return cell_a;
 }
 
@@ -330,8 +331,10 @@ Map::Map(std::istream& input, int num_players)
                 set(other_pos, match_polarity(other_cell, cell));
 
                 assert(get(pos).get_polarity() != PontPolarity::Undefined);
-                assert(get(other_pos).get_polarity() != PontPolarity::Undefined);
-                assert(get(pos).get_polarity() != get(other_pos).get_polarity());
+                assert(get(other_pos).get_polarity() !=
+                       PontPolarity::Undefined);
+                assert(get(pos).get_polarity() !=
+                       get(other_pos).get_polarity());
             }
         }
 }
@@ -361,6 +364,8 @@ bool Map::is_lower(position pos) const
 
 Cell Map::get(position pos) const
 {
+    if (!is_valid(pos))
+        return Cell::invalid();
     return cells_[pos.y][pos.x];
 }
 
