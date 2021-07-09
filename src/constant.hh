@@ -83,7 +83,7 @@ typedef struct position
 } position;
 
 /// Case type pont, contient la case de début et de fin. La case de début a une
-/// valeur se décrémentant, celle de fin s'incrémente.
+/// valeur qui s'incrémente, et celle de fin se decrémente.
 typedef struct pont_type
 {
     position debut_pos; ///< Position de la case de début

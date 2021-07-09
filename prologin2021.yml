@@ -93,7 +93,7 @@ struct:
   -
     str_name: pont_type
     str_summary: Case type pont, contient la case de début et de fin.
-                 La case de début a une valeur se décrémentant, celle de fin s'incrémente.
+                 La case de début a une valeur qui s'incrémente, et celle de fin se decrémente.
     str_tuple: no
     str_field:
       - [debut_pos, position, "Position de la case de début"]
