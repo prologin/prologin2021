@@ -1,4 +1,5 @@
 #include <cassert>
+#include <iostream>
 #include <stdexcept>
 
 #include "map.hh"
@@ -192,6 +193,11 @@ Map::Map(std::istream& input, int num_players)
             // Every cell is represented by three characters followed by either
             // a line break or a single space character.
             input.read(data, 4);
+
+            // TODO(71): remove debug logging
+            std::cerr << "input cell: data = \"" << data << "\" = {0x"
+                      << std::hex << int(data[0]) << ", 0x" << int(data[1]) << ", 0x" << int(data[2]) << ", 0x" << int(data[3])
+                      << "}" << std::endl;
 
             if (x == width - 1)
             {
