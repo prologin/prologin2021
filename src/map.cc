@@ -287,7 +287,7 @@ Map::Map(std::istream& input, int num_players)
     for (size_t y = 0; y < height; y++)
         for (size_t x = 0; x < width; x++)
         {
-            const position pos = {x, y};
+            const position pos = {(int)x, (int)y};
             const Cell& cell = get(pos);
 
             int value;
