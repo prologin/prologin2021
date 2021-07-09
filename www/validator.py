@@ -196,9 +196,6 @@ def _checkmap(map_ : list[list[dict]], width : int, height : int) -> int:
             elif tile['baby panda']:
                 baby_panda_owner_plyer = tile['player']
                 for direction_str in _DIRECTION_CHARS:
-                    # le test des bébés pandas à proximité d'un panda est désactivé manuellement ici
-                    break
-
                     # one of the surrounding positions
                     neighbour_pos = _new_pos_by_direction((x,y), direction_str)
                     # next iteration if invalid position
