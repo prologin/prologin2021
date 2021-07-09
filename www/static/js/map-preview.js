@@ -22,10 +22,11 @@ $(function() {
 
     let scripts = [
         '/static/js/pixi.min.js',
-        '/static/js/prologin.js',
+        /*'/static/js/prologin.js',
         '/static/js/graphics.js',
         '/static/js/gamestate.js',
-        '/static/js/viewer.js',
+        '/static/js/viewer.js',*/
+        '/static/js/map-viewer-one-file.js',
     ];
 
     // Link css

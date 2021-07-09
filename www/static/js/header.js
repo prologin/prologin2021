@@ -6,11 +6,11 @@ document.body.appendChild(jqueryImport);
 
 let scriptsUrl = [
     '/static/js/jquery-3.6.0.min.js',
-    '/static/js/pixi.min.js',
+    /*'/static/js/pixi.min.js',
     '/static/js/prologin.js',
     '/static/js/graphics.js',
     '/static/js/gamestate.js',
-    '/static/js/viewer.js',
+    '/static/js/viewer.js',*/
 ];
 
 for (let script of scriptsUrl)
