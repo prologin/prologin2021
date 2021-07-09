@@ -307,6 +307,7 @@ class GameState {
   }
   //
   exportToMapStr() {
+    let id_child_1 = 1, id_child_2 = 1;
     let s = this.width + ' ' + this.height + '\n';
     for (let i = 0; i < this.height; i++) {
       for (let j = 0; j < this.width; j++) {
@@ -317,6 +318,12 @@ class GameState {
           buffer1 = this.map[i][j].bridge.value.toString();
           buffer2 = this.map[i][j].bridge.direction.toString();
         }
+        // obstacle
+        else if (this.map[i][j].isObstacle()) {
+          buffer0 = '#';
+          buffer1 = '#';
+          buffer2 = '#';
+        }
         // panda
         if (this.panda_map[i][j].isPanda()) {
           buffer0 = this.panda_map[i][j].panda.id;
@@ -324,13 +331,13 @@ class GameState {
         // baby panda
         else if (this.panda_map[i][j].isBabyPanda()) {
           buffer0 = this.panda_map[i][j].baby_panda.player == '1' ? 'C' : 'Z';
-          let tmp = this.panda_map[i][j].baby_panda.id.toString();
+          let tmp = this.panda_map[i][j].baby_panda.player == '1' ? id_child_1++ : id_child_2++;
           buffer1 = (~~(tmp / 10)).toString(); // (~~(tmp / 10)) is integer division of tmp by 10
           buffer2 = (tmp % 10).toString();
         }
         // water
         else {
-          // start off by being water, so ...
+          // started as water, so ...
         }
         // append buffer
         s += buffer0 + buffer1 + buffer2;
@@ -343,6 +350,9 @@ class GameState {
       s += '\n';
     }
 
+    if (id_child_1 != id_child_2) {
+      return 'invalid map: not same number of baby pandas';
+    }
     return s;
   }
 }
