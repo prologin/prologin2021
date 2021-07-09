@@ -232,7 +232,7 @@ std::ostream& operator<<(std::ostream& os, action_type v)
     return os;
 }
 
-std::ostream& operator<<(std::ostream& os, debug_drapeau v)
+/*std::ostream& operator<<(std::ostream& os, debug_drapeau v)
 {
     switch (v)
     {
@@ -250,7 +250,7 @@ std::ostream& operator<<(std::ostream& os, debug_drapeau v)
         break;
     }
     return os;
-}
+}*/
 
 extern "C" void api_afficher_action_type(action_type v)
 {
