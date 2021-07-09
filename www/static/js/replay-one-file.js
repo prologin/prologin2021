@@ -43,6 +43,9 @@ const TILES = [
     'eau3',
     'eau4',
     'obstacle',
+    'flag_blue',
+    'flag_green',
+    'flag_red',
 ].concat(bridgeTiles);
 
 const N_WATER_TEXTURES = 4;
