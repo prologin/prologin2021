@@ -69,9 +69,6 @@ $(function () {
 
     loadScripts(scripts, function() {
         let url = window.location.href;
-        if (url.endsWith('test.html')) {
-            url = url.substring(0, url.length - 'test.html'.length);
-        }
         if (!url.endsWith('/')) url += '/';
         url += 'dump';
         /*fetch(url)
