@@ -43,9 +43,9 @@ const TILES = [
     'eau3',
     'eau4',
     'obstacle',
-    'flag_blue',
-    'flag_green',
-    'flag_red',
+    'big_flag_blue',
+    'big_flag_green',
+    'big_flag_red',
 ].concat(bridgeTiles);
 
 const N_WATER_TEXTURES = 4;
@@ -648,11 +648,11 @@ function loadGameStateFromMapStr(str) {
 
 function draw_debug_flag(x, y, enum_value) {
   if (enum_value == 1) {
-    addTile('flag_blue', x, y);
+    addTile('big_flag_blue', x, y);
   } else if (enum_value == 2) {
-    addTile('flag_green', x, y);
+    addTile('big_flag_green', x, y);
   } else if (enum_value == 3) {
-    addTile('flag_red', x, y);
+    addTile('big_flag_red', x, y);
   } else {
     console.warn('Unknown debug flag enum', enum_value);
     color = 0xbbbbbb;
