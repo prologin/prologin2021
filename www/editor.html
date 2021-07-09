@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Editeur de carte Prologin 2021</title>
+    <link rel="stylesheet" href="front/css/theme.css">
+    <script src="/static/js/pixi.min.js"></script>
+    <script src="/static/js/prologin.js"></script>
+    <script src="/static/js/graphics.js"></script>
+    <script src="/static/js/gamestate.js"></script>
+</head>
+
+<body class="not-www">
+    <!-- new, dump, dumper -->
+    <input type="button" value="NOUVEAU" id="new" onclick="onNewClick()"></input>
+    <input type="button" value="EXPORTER" id="dump" onclick="onDumpClick()" /></input>
+    <select id="brush" onchange="onBrushChange()">
+        <option value="eau">Eau</option>
+        <option value="pont">Pont</option>
+        <option value="panda">Panda</option>
+        <option value="obstacle">Obstacle</option>
+    </select>
+    <p id="select1-info" style="display: inline;"></p>
+    <select id="select1">
+    </select>
+    <p id="select2-info" style="display: inline;"></p>
+    <select id="select2">
+    </select>
+    <p id="isinc-info" style="display: inline;"></p>
+    <input type="checkbox" id="isinc"></input>
+
+    <br />
+    <div id="canvas"></div>
+    <br />
+
+    <form>
+        <style>
+        .dumper {
+            width: 50%;
+            height: 10%;
+        }
+        </style>
+        <textarea name="dumper" id="dumper" readonly="true" class="dumper"></textarea>
+    </form>
+    <input type="button" value="COPIER" id="copy" onclick="onCopyClick()" /></input>
+
+    <script src="static/js/editor.js"></script>
+</body>
+
+</html>

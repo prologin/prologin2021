@@ -44,7 +44,7 @@ function initGraphics(viewParent, width, height,
 
 // Called in initGraphics, loads all textures
 function loadTextures() {
-    let prefix = isWww ? '/static/img' : '/front/images';
+    let prefix = '/static/img'; // editor,front,replay,etc. folders should be removed
 
     for (let tile in TILES) {
         textures[TILES[tile]] =
