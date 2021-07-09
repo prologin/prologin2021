@@ -723,6 +723,9 @@ function parseJSON(raw)
                     [x, y]
                 )
                 break;
+            case 'OBSTACLE':
+              gameState.map[y][x].obstacle = new Obstacle(x, y);
+              break;
             default:
                 console.warn('Unknown cell type: ', cell['type']);
                 break;
