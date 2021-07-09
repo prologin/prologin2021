@@ -184,6 +184,9 @@ Map::Map(std::istream& input, int num_players)
     input >> width;
     input >> height;
 
+    if (input.peek() == '\r')
+        input.get();
+
     assert(width > 0 && height > 0);
     assert(input.get() == '\n');
 
@@ -201,15 +204,18 @@ Map::Map(std::istream& input, int num_players)
         {
             // Every cell is represented by three characters followed by either
             // a line break or a single space character.
-            input.read(data, 4);
+            int read = input.read(data, 4).gcount();
 
             if (x == width - 1)
             {
-                assert(input.gcount() == 3 || (input.gcount() == 4 && data[3] == '\n'));
+                if (read == 4 && data[3] == '\r')
+                    data[3] = input.get();
+
+                assert(read == 3 || (read == 4 && data[3] == '\n'));
             }
             else
             {
-                assert(input.gcount() == 4 && data[3] == ' ');
+                assert(read == 4 && data[3] == ' ');
             }
 
             int panda = -1, player = -1;
