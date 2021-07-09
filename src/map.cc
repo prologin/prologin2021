@@ -1,5 +1,4 @@
 #include <cassert>
-#include <iostream>
 #include <stdexcept>
 
 #include "map.hh"
@@ -194,24 +193,13 @@ Map::Map(std::istream& input, int num_players)
             // a line break or a single space character.
             input.read(data, 4);
 
-            // TODO(71): remove debug logging
-            std::cerr << "input cell: data = \"" << data << "\" = {0x"
-                      << std::hex << int(data[0]) << ", 0x" << int(data[1]) << ", 0x" << int(data[2]) << ", 0x" << int(data[3])
-                      << "}" << std::endl;
-
             if (x == width - 1)
             {
-                if (data[3] == '\r')
-                {
-                    // Handle CRLF.
-                    input.read(data + 3, 1);
-                }
-
-                assert(data[3] == '\n' || data[3] == 0);
+                assert(input.gcount() == 3 || (input.gcount() == 4 && data[3] == '\n'));
             }
             else
             {
-                assert(data[3] == ' ');
+                assert(input.gcount() == 4 && data[3] == ' ');
             }
 
             int panda = -1, player = -1;

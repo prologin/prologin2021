@@ -18,11 +18,11 @@ TEST(MapTest, EmptyInitialization)
 
 // Reminder: even columns are "lower" than odd columns.
 constexpr std::string_view kValidMap = "4 5\n"
-                                       "A11 -34 ___ Y23\r\n"
+                                       "A11 -34 ___ Y23\n"
                                        "-42 C01 ___ -66\n"
-                                       "___ B55 ___ ___\r\n"
+                                       "___ B55 ___ ___\n"
                                        "+62 ___ X13 Z01\n"
-                                       "___ -25 -46 ___\n";
+                                       "___ -25 -46 ___";
 constexpr PontPolarity kIsStart = PontPolarity::Start;
 constexpr PontPolarity kIsEnd = PontPolarity::End;
 constexpr int kPlayer1 = 0;
