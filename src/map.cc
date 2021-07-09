@@ -49,6 +49,11 @@ Cell Cell::empty()
     return Cell(CellKind::Empty, PontPolarity::Undefined, 0);
 }
 
+Cell Cell::wall()
+{
+    return Cell(CellKind::Wall, PontPolarity::Undefined, 0);
+}
+
 // static
 Cell Cell::pont(int valeur, direction direction, PontPolarity polarity)
 {
@@ -237,6 +242,12 @@ Map::Map(std::istream& input, int num_players)
                 line.push_back(Cell::bebe(player, n - 1));
             }
             break;
+
+            case '#': // Wall
+                assert(data[1] == '#' && data[2] == '#');
+
+                line.push_back(Cell::wall());
+                break;
 
             case '_': // Empty cell.
                 assert(data[1] == '_' && data[2] == '_');

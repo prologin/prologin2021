@@ -15,6 +15,7 @@ bool operator<(position a, position b);
 enum class CellKind
 {
     Invalid,
+    Wall,
     Empty,
     Bebe,
     Pont,
@@ -44,6 +45,7 @@ public:
 
     static Cell invalid();
     static Cell empty();
+    static Cell wall();
     static Cell bebe(int joueur, int num);
     static Cell pont(int valeur, direction direction, PontPolarity polarity);
 

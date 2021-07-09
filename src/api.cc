@@ -23,6 +23,7 @@ case_type Api::type_case(position pos)
     switch (cell.kind())
     {
     case CellKind::Invalid:
+    case CellKind::Wall:
         return OBSTACLE;
     case CellKind::Pont:
         return PONT;
