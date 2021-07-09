@@ -68,7 +68,25 @@ $(function () {
     ];
 
     loadScripts(scripts, function() {
-        start_replay($dump_content.text(), width);
+        let url = window.location.href;
+        if (url.endsWith('test.html')) {
+            url = url.substring(0, url.length - 'test.html'.length);
+        }
+        if (!url.endsWith('/')) url += '/';
+        url += 'dump';
+        /*fetch(url)
+        .then(response => console.log(response))
+        .then(data => [console.log(data), start_replay(data, width)]);*/
+
+        // Load dump named dump.json if necessary
+        fetch(url).then(res => {
+            if (res.status === 200)
+                res.text().then(data => start_replay(data, width));
+            else
+                console.error('No dump.json found. res:', res);
+        });
+
+        //start_replay($dump_content.text(), width);
 
         // reveal the UI
         $replay.fadeIn('fast');
