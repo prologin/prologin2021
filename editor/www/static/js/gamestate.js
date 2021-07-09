@@ -317,6 +317,12 @@ class GameState {
           buffer1 = this.map[i][j].bridge.value.toString();
           buffer2 = this.map[i][j].bridge.direction.toString();
         }
+        // obstacle
+        else if (this.map[i][j].isObstacle()) {
+          buffer0 = '#';
+          buffer1 = '#';
+          buffer2 = '#';
+        }
         // panda
         if (this.panda_map[i][j].isPanda()) {
           buffer0 = this.panda_map[i][j].panda.id;
