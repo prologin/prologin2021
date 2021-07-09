@@ -98,10 +98,22 @@ pont_type Api::info_pont(position pos)
     assert(map.get(other_pos).is_pont(&other_value, &other_dir));
 
     pont_type info;
-    info.debut_pos = pos;
-    info.debut_val = value;
-    info.fin_pos = other_pos;
-    info.fin_val = other_value;
+
+    if (map.get(pos).get_polarity() == PontPolarity::Start)
+    {
+        info.debut_pos = pos;
+        info.debut_val = value;
+        info.fin_pos = other_pos;
+        info.fin_val = other_value;
+    }
+    else
+    {
+        info.debut_pos = other_pos;
+        info.debut_val = other_value;
+        info.fin_pos = pos;
+        info.fin_val = value;
+    }
+
     return info;
 }
 
