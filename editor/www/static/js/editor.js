@@ -125,6 +125,15 @@ function onBrushChange() {
 
         onPontBrush();
         break;
+    case "obstacle":
+        brush = new Obstacle(-1, -1);
+        uiSelect1.hidden = true;
+        uiSelect2.hidden = true;
+        uiIsInc.hidden = true;
+        uiIsIncInfo.textContent = "";
+        uiSelect1Info.textContent = "";
+        uiSelect2Info.textContent = "";
+        break;
     }
 }
 
@@ -242,6 +251,9 @@ function updateBrush() {
             break;
         }
         break;
+    case 'obstacle':
+        brush = new Obstacle(-1, -1);
+        break;
     }
 }
 
@@ -274,6 +286,7 @@ function onClick(x, y) {
         // Delete
         if (brush === null) {
             gameState.map[i][j].bridge = null;
+            gameState.map[i][j].obstacle = null;
             gameState.panda_map[i][j].baby_panda = null;
         } else if (brush instanceof Panda) {
             if (!gameState.panda_map[i][j].isEmpty())
@@ -291,6 +304,10 @@ function onClick(x, y) {
         } else if (brush instanceof BridgeTile) {
             gameState.map[i][j].bridge = brush;
             onBridge();
+        } else if (brush instanceof Obstacle) {
+            gameState.map[i][j].bridge = null;
+            gameState.panda_map[i][j].baby_panda = null;
+            gameState.map[i][j].obstacle = new Obstacle(i, j);
         } else {
             console.warn('Invalid brush');
             console.warn(brush);
