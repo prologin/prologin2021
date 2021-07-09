@@ -1,3 +1,284 @@
+/*      -       PROLOGIN.JS         - */
+
+// Some definitions / constants
+
+// Dimensions (px)
+const VIEW_WIDTH = 512;
+const VIEW_HEIGHT = 512;
+const TILE_SIZE = 64;
+
+// Directions
+const DIRECTIONS = [
+    'ne',
+    'se',
+    's',
+    'so',
+    'no',
+    'n',
+];
+
+// Texture names
+let bridgeTiles =
+    Array.from({length : 36},
+               (_, i) => `pont_${i % 6 + 1}_${DIRECTIONS[Math.floor(i / 6)]}`);
+
+// result :
+// 1 0
+// 2 0
+// .
+// .
+// .
+// 1 1
+// 2 1
+// .
+// .
+// .
+
+const TILES = [
+    'panda1',
+    'panda1_bebe',
+    'panda2',
+    'panda2_bebe',
+    'eau1',
+    'eau2',
+    'eau3',
+    'eau4',
+    'obstacle',
+].concat(bridgeTiles);
+
+const N_WATER_TEXTURES = 4;
+
+// Graphics
+const BG_COLOR = 0x5689E5;
+
+
+/*      -       GRAPHICS.JS         - */
+// Contains functions to display the game state
+
+// PIXI's application object
+let app = null;
+
+// All textures
+// textures[textureName] = PIXI's texture object
+let textures = {};
+
+// All sprite tiles to be able to remove and redraw them
+let tiles = [];
+
+// Map size (in tiles)
+let mapWidth = 0;
+let mapHeight = 0;
+
+// Inits canvas, textures...
+// - viewParent : An html element (usually a div) where the view is added
+// - onClick : If not null, function(x: int, y: int) called when the
+// mouse is pressed
+function initGraphics(viewParent, width, height,
+                      onClick = null) {
+    // Load application
+    app = new PIXI.Application({
+        width : width,
+        height : height,
+        antialias : true,
+        backgroundColor : BG_COLOR,
+    });
+
+    // Load resources
+    loadTextures();
+
+    // Set up events
+    if (onClick !== null) {
+        app.view.addEventListener(
+            "click",
+            function(event) { onClick(event.offsetX, event.offsetY); });
+    }
+
+    // Update UI (display canvas)
+    viewParent.appendChild(app.view);
+}
+
+// Called in initGraphics, loads all textures
+function loadTextures() {
+    let prefix = '/static/img';
+
+    for (let tile in TILES) {
+        textures[TILES[tile]] =
+            PIXI.Texture.from(`${prefix}/${TILES[tile]}.png`);
+    }
+}
+
+// Creates a new tile sprite
+// * Use getCoords for the coordinates
+function newTile(id, x = 0, y = 0) {
+    if (!(id in textures)) {
+        throw `Texture "${id}" not found`;
+    }
+
+    let sprite = new PIXI.Sprite(textures[id]);
+
+    sprite.position.x = x;
+    sprite.position.y = y;
+    sprite.width = getTileWidth();
+    sprite.height = getTileHeight();
+
+    return sprite;
+}
+
+// Get coordinates of a tile from its 2d indices
+// - i : Vertical index (0 = top)
+// - j : Horizontal index (0 = left)
+// Returns [x, y]
+// * Use let [x, y] = getCoords(...);
+function getCoords(i, j) { // hexa -> pixel
+    let yOffset = j % 2 == 0 ? getTileHeight() / 2 : 0;
+
+    return [ j * getTileWidth() * 3 / 4, yOffset + i * getTileHeight() ];
+}
+
+// Get 2d indices of a tile from its coordinates
+// - Returns [i, j] (may be negative / invalid if click outside of grid)
+// * Use let [i, j] = getCoords(...);
+function getPos(x, y) { // pixel -> hexa
+    let j = Math.floor(x / (getTileWidth() * 3 / 4));
+    let yOffset = j % 2 == 0 ? getTileHeight() / 2 : 0;
+    let i = Math.floor((y - yOffset) / getTileHeight());
+
+    return [ i, j ];
+}
+
+// Computes the view size and update it
+function updateViewSize() {
+    mapWidth = getTileWidth() * (mapWidth * 3 / 4 + 1 / 4);
+    mapHeight = getTileHeight() * (mapHeight + 1 / 2);
+}
+
+// Adds and registers a new tile sprite to the view
+function addTile(tileName, x, y) {
+    let sprite = newTile(tileName, x, y);
+
+    tiles.push(sprite);
+    app.stage.addChild(sprite);
+}
+
+// Removes all sprites of the view
+function clearTiles() {
+    /*
+    for (let tile of tiles)
+        app.stage.removeChild(tile);
+    */
+
+    // delete all children
+    while (app.stage.children[0]) {
+        app.stage.removeChild(app.stage.children[0])
+    }
+
+    tiles = [];
+}
+
+// Returns pseudo randomly the index of
+// the water tile for the position (i, j)
+// Pseudo random because we want to have
+// the same texture for the same position
+// at different moment (game step)
+function getWaterTileIndex(i, j) {
+    let h = (2 + i + (j + 1) * 3) % N_WATER_TEXTURES;
+
+    return h;
+}
+
+// Draws a layer of the map
+// The map has two layers
+function drawMapLayer(layer, mode) {
+    // i is the vertical index
+    for (let i = 0; i < gameState.height; ++i) {
+        // j is the horizontal index
+        for (let j = 0; j < gameState.width; ++j) {
+            let [x, y] = getCoords(i, j);
+
+            let tile = layer[i][j];
+
+            if (mode == 2) {
+                if (tile != 0)
+                    draw_debug_flag(i, j, tile);
+                continue;
+            }
+
+            let tileName;
+
+            // Both MapTile's and PandaMapTile's have this method (derived from
+            // Tile class)
+            if (mode == 1 && tile.isEmpty())
+                continue;
+
+            if (tile instanceof PandaMapTile) {
+                if (tile.isBabyPanda()) {
+                    tileName = `panda${tile.baby_panda.player}_bebe`;
+                } else if (tile.isPanda()) {
+                    tileName = `panda${tile.panda.player}`;
+                }
+            } else if (tile instanceof Tile) {
+                if (tile.isBridge()) {
+                    let direction = DIRECTIONS[tile.bridge.direction - 1];
+                    tileName = `pont_${tile.bridge.value}_${direction}`;
+                } else if (tile.isObstacle()) {
+                    tileName = 'obstacle';
+                } else {
+                    let index = getWaterTileIndex(i, j) + 1;
+                    tileName = `eau${index}`;
+                }
+            } else {
+                console.warn('Invalid tile at position ' + i + ' ' + j + ' ' +
+                             (mode == 1 ? '(foreground)' : '(background)'));
+                console.warn(tile);
+            }
+
+            if (tileName !== undefined) {
+                addTile(tileName, x, y);
+                // if it is a bridge, draw the + or -
+                if (tileName.startsWith('pont_')) {
+                    drawBridgeSign(tile.bridge, [ x, y ]);
+                }
+            }
+        }
+    }
+}
+
+function drawBridgeSign(bridge, pos) {
+    let x = pos[0], y = pos[1];
+    let text = new PIXI.Text(
+        bridge.sign == 1 ? '+' : '-',
+        {fontFamily : 'Arial', fontSize : 14, fill : 0, align : 'center'});
+    text.anchor.set(
+        0.5,
+        0.5); // sets the anchor to the center, I think. Looks crap without it
+    text.position.x = x + getTileWidth() / 2 + 9;
+    text.position.y = y + getTileHeight() - 9;
+    app.stage.addChild(text);
+}
+
+// Redraws the game state
+function updateView() {
+    // Remove old sprites
+    clearTiles();
+
+    // Draw layers in order (background then foreground)
+    gameState.execute_actions();
+    drawMapLayer(gameState.map, 0);
+    drawMapLayer(gameState.panda_map, 1);
+    drawMapLayer(debug_flag_map, 2);
+}
+
+function getTileWidth() {
+    return wwwTileWidth;
+}
+
+function getTileHeight() {
+    return wwwTileWidth;
+}
+
+
+/*      -       GAMESTATE.JS         - */
+
 // The main game state
 let gameState = null;
 let debug_flag_map = null;
@@ -317,12 +598,6 @@ class GameState {
           buffer1 = this.map[i][j].bridge.value.toString();
           buffer2 = this.map[i][j].bridge.direction.toString();
         }
-        // obstacle
-        else if (this.map[i][j].isObstacle()) {
-          buffer0 = '#';
-          buffer1 = '#';
-          buffer2 = '#';
-        }
         // panda
         if (this.panda_map[i][j].isPanda()) {
           buffer0 = this.panda_map[i][j].panda.id;
@@ -397,5 +672,112 @@ function draw_debug_flag(x, y, enum_value) {
 function change_debug_flag(debug_drapeau, pos) {
   let [x, y] = pos;
   debug_flag_map[y][x] = debug_drapeau;
+}
+
+
+
+
+/*      -       VIEWER.JS            - */
+
+//"use strict";
+
+const wwwWidth = 420;
+let wwwTileWidth = 0;
+
+// Loads the preview
+function start_preview(container, map, width) {
+    let mapData = map.text().replace(/\n +/g, '\n').trim();
+    container = container[0];
+
+    updateViewSize();
+
+    // Init
+    initGraphics(container, mapWidth, mapHeight, null);
+
+    // Load map
+    onMapOpen(mapData);
+}
+
+// --- Globals ---
+let allDirections = [
+    "Nord",
+    "Nord-Est",
+    "Nord-Ouest",
+    "Sud",
+    "Sud-Est",
+    "Sud-Ouest",
+];
+
+function newGameState(width, height) {
+    if (width * height < 2) {
+        width = 2;
+        height = 2;
+
+        alert("Les dimensions de la cartes sont trop petites, " +
+              "les dimensions sont changées à 2x2");
+    }
+
+    // Update dimension values
+    mapWidth = width;
+    mapHeight = height;
+    updateViewSize();
+
+    // Update view dimensions
+    app.renderer.resize(mapWidth, mapHeight);
+
+    // Create new game state
+    gameState = new GameState(width, height);
+
+    // Set pandas start position
+    gameState.panda_map[0][0].panda = new Panda(1, 1);
+    gameState.panda_map[0][1].panda = new Panda(1, 2);
+    gameState.panda_map[1][0].panda = new Panda(2, 1);
+    gameState.panda_map[1][1].panda = new Panda(2, 2);
+
+    updateView();
+}
+
+// --- UI ---
+let uiDumper = document.getElementById("dumper");
+let uiCanvas = document.getElementById("canvas");
+
+function onNewClick() {
+    let dimension =
+        window.prompt("Taille de la carte (LARGEURxHAUTEUR)", "10x10");
+
+    let dimensionFormat = /([\d]+)x([\d]+)/;
+
+    // [wholeMatch, widthMatch, heightMatch] (or null)
+    let match = dimension.match(dimensionFormat);
+
+    if (match === null || match[0] !== dimension) {
+        window.alert(
+            "Taille de carte invalide (doit être de format LARGEURxHAUTEUR)");
+
+        return;
+    }
+
+    // Parse dimensions
+    let width = parseInt(match[1]);
+    let height = parseInt(match[2]);
+
+    newGameState(width, height);
+}
+
+// --- Main ---
+// Called when there is a map to open at start
+function onMapOpen(data) {
+    gameState = loadGameStateFromMapStr(data);
+    // change width + height
+    mapWidth = gameState.width;
+    mapHeight = gameState.height;
+
+    wwwTileWidth = wwwWidth / mapWidth;
+
+    updateViewSize();
+    // Update view dimensions
+    app.renderer.resize(mapWidth, mapHeight);
+    // Update the view
+    updateView();
 }
 

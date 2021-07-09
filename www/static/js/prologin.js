@@ -5,6 +5,9 @@ const VIEW_WIDTH = 512;
 const VIEW_HEIGHT = 512;
 const TILE_SIZE = 64;
 
+// Whether we are in the www website
+let isWww = false;
+
 // Directions
 const DIRECTIONS = [
     'ne',

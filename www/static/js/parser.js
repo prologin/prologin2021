@@ -46,6 +46,9 @@ function parseJSON(raw)
                     [x, y]
                 )
                 break;
+            case 'OBSTACLE':
+                gameState.map[y][x].obstacle = new Obstacle(x, y);
+                break;
             default:
                 console.warn('Unknown cell type: ', cell['type']);
                 break;
@@ -67,6 +70,8 @@ function parseJSON(raw)
     for (let action of obj['players'][1]['last_actions']) {
         gameState.actions.push(action);
     }
+
+    console.log('gameState:', gameState);
 
     return gameState;
 }

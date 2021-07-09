@@ -74,6 +74,9 @@ $(function () {
         }
         if (!url.endsWith('/')) url += '/';
         url += 'dump';
+        /*fetch(url)
+        .then(response => console.log(response))
+        .then(data => [console.log(data), start_replay(data, width)]);*/
 
         // Load dump named dump.json if necessary
         fetch(url).then(res => {
