@@ -205,6 +205,7 @@ def _addtilebuffer(buffer: str, x: int, y: int) -> tuple[bool, dict]:
 
 
 def _checkmap(map_: list[list[dict]], width: int, height: int) -> int:
+    children_p1, children_p2 = [], []
     # check that all the tiles are dicts
     if not all([type(d) == dict for line in map_ for d in line]):
         print(f"Certains éléments ne sont pas des dicionnaires: {map_}")
@@ -228,7 +229,9 @@ def _checkmap(map_: list[list[dict]], width: int, height: int) -> int:
                 if return_code != 0:
                     return return_code
             elif tile["baby panda"]:
-                baby_panda_owner_plyer = tile["player"]
+                baby_panda_owner_player = tile["player"]
+                id_ = tile["id"]
+                (children_p1 if baby_panda_owner_player == "1" else children_p2).append(id_)
                 for direction_str in _DIRECTION_CHARS:
                     # one of the surrounding positions
                     neighbour_pos = _new_pos_by_direction((x, y), direction_str)
@@ -240,7 +243,7 @@ def _checkmap(map_: list[list[dict]], width: int, height: int) -> int:
                     if (
                         map_[neighbour_pos[1]][neighbour_pos[0]]["panda"]
                         and map_[neighbour_pos[1]][neighbour_pos[0]]["player"]
-                        == baby_panda_owner_plyer
+                        == baby_panda_owner_player
                     ):
                         print(
                             f"Il y a un panda ({neighbour_pos}) de la même race/équipe que le bébé panda ({(x,y)}) sur une case adjacente.\nLes bébés pandas environnants auraient dû être ramassés"
@@ -251,6 +254,23 @@ def _checkmap(map_: list[list[dict]], width: int, height: int) -> int:
                 print(f"Type de case inconnu à {(x,y)}: {tile}")
                 return 1
 
+    # check all baby-panda id's
+    num_children_p1, num_children_p2 = len(children_p1), len(children_p2)
+    if num_children_p1 != num_children_p2:
+        print(f"Il n\'y a pas le même nombre de bébé pandas dans les deux équipes: {len(children_p1)} != {len(children_p2)}")
+        return 1
+    # sort the children id's
+    children_p1 = list(sorted(children_p1))
+    children_p2 = list(sorted(children_p2))
+    # check if present as wanted
+    if children_p1 != list(range(1, num_children_p1 + 1)):
+        print(f"Les id des bébés pandas du joueur 1 ne sont pas strictement croissants par pas de 1 (partant de 1): {children_p1}")
+        return 1
+    if children_p1 != children_p2:
+        print(f"Les id des bébés pandas du joueur 2 ne sont pas strictement croissants par pas de 1 (partant de 1): {children_p2}")
+        return 1
+
+    # check all bridge connections
     if not all(
         [
             tile["bridge"]["connected"]
