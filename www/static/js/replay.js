@@ -57,8 +57,8 @@ $(function () {
     $replay.hide();
 
     let scripts = [
-        'static/js/pixi.min.js',
-        'static/js/replay-one-file.js'
+        '/static/js/pixi.min.js',
+        '/static/js/replay-one-file.js'
         /*'static/js/prologin.js',
         'static/js/graphics.js',
         'static/js/gamestate.js',
@@ -69,6 +69,9 @@ $(function () {
 
     loadScripts(scripts, function() {
         let url = window.location.href;
+        if (url.endsWith('test.html')) {
+            url = url.substring(0, url.length - 'test.html'.length);
+        }
         if (!url.endsWith('/')) url += '/';
         url += 'dump';
         /*fetch(url)
