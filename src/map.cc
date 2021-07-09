@@ -195,6 +195,12 @@ Map::Map(std::istream& input, int num_players)
 
             if (x == width - 1)
             {
+                if (data[3] == '\r')
+                {
+                    // Handle CRLF.
+                    input.read(data + 3, 1);
+                }
+
                 assert(data[3] == '\n' || data[3] == 0);
             }
             else
