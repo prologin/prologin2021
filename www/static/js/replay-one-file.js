@@ -647,27 +647,16 @@ function loadGameStateFromMapStr(str) {
 
 
 function draw_debug_flag(x, y, enum_value) {
-  let color;
   if (enum_value == 1) {
-    color = 0x0000ff;
+    addTile('flag_blue', x, y);
   } else if (enum_value == 2) {
-    color = 0x00ff00;
+    addTile('flag_green', x, y);
   } else if (enum_value == 3) {
-    color = 0xff0000;
+    addTile('flag_red', x, y);
   } else {
     console.warn('Unknown debug flag enum', enum_value);
     color = 0xbbbbbb;
   }
-  let [fx, fy] = getCoords(x, y);
-  let text = new PIXI.Text(
-        'FLAG',
-        {fontFamily : 'Arial', fontSize : 18, fill : 0, align : 'center', fill: color});
-    text.anchor.set(
-        0.5,
-        0.5); // sets the anchor to the center, I think. Looks crap without it
-    text.position.x = fx + TILE_SIZE / 2;
-    text.position.y = fy + TILE_SIZE / 2;
-    app.stage.addChild(text);
 }
 
 function change_debug_flag(debug_drapeau, pos) {
@@ -760,6 +749,10 @@ function handle_action(action) {
             let debug_drapeau = action['debug_drapeau'];
             let pos = [action['pos'].x, action['pos'].y];
             change_debug_flag(debug_drapeau, pos);
+            break;
+        case 'ACTION_POSER':
+            break;
+        case 'ACTION_DEPLACER':
             break;
         default:
             console.warn('Unknown action type:', action['action_type']);
