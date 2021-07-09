@@ -107,7 +107,7 @@ void ActionDeplacer::apply_on(GameState* st) const
 
             if (std::find_if(player.bebes().begin(), player.bebes().end(),
                              [&](const Bebe& bebe) {
-                                 return bebe.is_saved();
+                                return !bebe.is_saved();
                              }) != player.bebes().end())
                 player.rules_player().score += 10000;
         }
