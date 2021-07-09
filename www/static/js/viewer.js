@@ -1,4 +1,4 @@
-"use strict";
+//"use strict";
 
 const wwwWidth = 420;
 let wwwTileWidth = 0;

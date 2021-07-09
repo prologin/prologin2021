@@ -13,7 +13,7 @@ let scriptsUrl = [
     '/static/js/viewer.js',
 ];
 
-for (let script in scriptsUrl)
+for (let script of scriptsUrl)
 {
     let jqueryImport = document.createElement("script");
     jqueryImport.src = script;
