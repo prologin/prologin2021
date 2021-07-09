@@ -201,7 +201,7 @@ function drawMapLayer(layer, mode) {
 
             if (mode == 2) {
                 if (tile != 0)
-                    draw_debug_flag(i, j, tile);
+                    draw_debug_flag(x, y, tile);
                 continue;
             }
 
