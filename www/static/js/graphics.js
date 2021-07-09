@@ -214,9 +214,9 @@ function updateView() {
 }
 
 function getTileWidth() {
-    return TILE_SIZE;
+    return wwwTileWidth;
 }
 
 function getTileHeight() {
-    return TILE_SIZE;
+    return wwwTileWidth;
 }
