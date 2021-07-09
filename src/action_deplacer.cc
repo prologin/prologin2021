@@ -37,9 +37,10 @@ int ActionDeplacer::check(const GameState& st) const
 
     if (!is_same_brige && target_value != source_value)
         return MOUVEMENT_INVALIDE;
-    
+
     auto visited = st.player_at(player_id_)->get_visited_position();
-    if (visited.find(std::make_pair(panda.id(), target_position)) != visited.end())
+    if (visited.find(std::make_pair(panda.id(), target_position)) !=
+        visited.end())
         return DEPLACEMENT_EN_ARRIERE;
 
     return OK;
@@ -60,7 +61,8 @@ void ActionDeplacer::apply_on(GameState* st) const
     PontPolarity previous_cell_polarity = previous_cell.get_polarity();
     direction previous_cell_direction;
 
-    assert(previous_cell.is_pont(&previous_cell_value, &previous_cell_direction));
+    assert(
+        previous_cell.is_pont(&previous_cell_value, &previous_cell_direction));
     assert(previous_cell_polarity != PontPolarity::Undefined);
 
     if (previous_cell_polarity == PontPolarity::Start)
@@ -102,6 +104,12 @@ void ActionDeplacer::apply_on(GameState* st) const
 
             // Also update player score.
             player.rules_player().score += NB_POINTS_CAPTURE_BEBE;
+
+            if (std::find_if(player.bebes().begin(), player.bebes().end(),
+                             [&](const Bebe& bebe) {
+                                 return bebe.is_saved();
+                             }) != player.bebes().end())
+                player.rules_player().score += 10000;
         }
     }
 
