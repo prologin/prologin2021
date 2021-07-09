@@ -56,7 +56,7 @@ extern "C" int api_panda_sur_case(position pos)
     return api->panda_sur_case(pos);
 }
 
-extern "C" bool api_bebe_panda_sur_case(position pos)
+extern "C" int api_bebe_panda_sur_case(position pos)
 {
     return api->bebe_panda_sur_case(pos);
 }
