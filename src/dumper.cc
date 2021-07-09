@@ -322,6 +322,10 @@ static std::ostream& operator<<(std::ostream& ss, const Map& map)
             {
                 ss << KV{"type", LIBRE};
             }
+            else if (cell.is_wall())
+            {
+                ss << KV{"type", OBSTACLE};
+            }
             else if (cell.is_bebe(&player, &value))
             {
                 ss << KV{"type", BEBE} << ", " << KV{"player", player} << ", "

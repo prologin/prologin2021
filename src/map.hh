@@ -38,6 +38,7 @@ public:
 
     bool is_invalid() const;
     bool is_empty() const;
+    bool is_wall() const;
     bool is_bebe(int* joueur, int* num) const;
     bool is_pont(int* valeur, direction* direction) const;
     bool has_panda(int* joueur, int* num) const;

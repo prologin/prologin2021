@@ -83,6 +83,11 @@ bool Cell::is_empty() const
     return kind_ == CellKind::Empty;
 }
 
+bool Cell::is_wall() const
+{
+    return kind_ == CellKind::Wall;
+}
+
 PontPolarity Cell::get_polarity() const
 {
     return polarity_;
