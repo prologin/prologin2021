@@ -3,7 +3,7 @@
 SPDX-License-Identifier: GPL-2.0-or-later
 
 Copyright 2018 Alexandre Macabies
-Copyright 2019-2020 Kilian Guillaume
+Copyright 2019-2021 Kilian Guillaume
 Copyright 2020 Paul Guénézan
 
 */
@@ -14,8 +14,8 @@ Copyright 2020 Paul Guénézan
 
 body {
     --accent-color: #222;
-    --button: #cb6526;
-    --button-hover: #c4c50a;
+    --button: #0dae93;
+    --button-hover: #86cdd5;
     --background-color: #1d1d1b;
     --background-color-2: #151515;
     --background-darker: rgba(0,0,0,0.02);
@@ -284,14 +284,13 @@ fieldset[disabled] .form-control {
     color: var(--button);
     font-weight: 700;
     border: var(--outline-size) solid var(--button);
-    border-radius: 0;
 }
 
 .btn-primary:hover, .btn-primary:active, .btn-primary:focus {
-    background: transparent;
-    color: var(--button-hover);
+    background: var(--button-hover);
+    color: var(--background-color);
     border-color: var(--button-hover);
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 /* default */
