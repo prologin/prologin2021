@@ -382,6 +382,9 @@ function draw_debug_flag(x, y, enum_value) {
     color = 0x00ff00;
   } else if (enum_value == 3) {
     color = 0xff0000;
+  } else if (enum_value == undefined) {
+    console.warn('Undefined debug flag enum', enum_value);
+    return;
   } else {
     console.warn('Unknown debug flag enum', enum_value);
     color = 0xbbbbbb;
