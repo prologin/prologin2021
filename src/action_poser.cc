@@ -35,15 +35,6 @@ int ActionPoser::check(const GameState& st) const
     if (!st.map().get(end_pos).is_empty())
         return POSE_INVALIDE;
 
-    // Ensure the given value is the same as the one where the panda is
-    // currently standing.
-    int current_value;
-
-    assert(st.map().get(panda.pos()).is_pont(&current_value, nullptr));
-
-    if (current_value != pont_debut_)
-        return POSE_INVALIDE;
-
     return 0;
 }
 
