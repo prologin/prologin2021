@@ -75,8 +75,16 @@ class MapTests(unittest.TestCase):
 	def test_success_simple_with_walls(self, map_path, success):
 		return validate_map(map_path, success)
 
-	@validate_map_decorator('success/simple.map')
-	def test_fail_test(self, map_path, success):
+	@validate_map_decorator('success/carte_tres_difficile.map')
+	def test_success_carte_tres_difficile(self, map_path, success):
+		return validate_map(map_path, success)
+
+	@validate_map_decorator('success/carte_cooperations.map')
+	def test_success_carte_cooperations(self, map_path, success):
+		return validate_map(map_path, success)
+
+	@validate_map_decorator('success/carte_grande_ligne_obstacles.map')
+	def test_success_carte_grande_ligne_obstacles(self, map_path, success):
 		return validate_map(map_path, success)
 
 
@@ -98,6 +106,18 @@ class MapTests(unittest.TestCase):
 
 	@validate_map_decorator('fail/dims_are_literals.map')
 	def test_fail_dims_are_literals(self, map_path, success):
+		return validate_map(map_path, success)
+
+	@validate_map_decorator('fail/baby_pandas_count_differ.map')
+	def test_fail_baby_pandas_count_differ(self, map_path, success):
+		return validate_map(map_path, success)
+
+	@validate_map_decorator('fail/baby_pandas_duplicate.map')
+	def test_fail_baby_pandas_duplicate(self, map_path, success):
+		return validate_map(map_path, success)
+
+	@validate_map_decorator('fail/missing_panda.map')
+	def test_fail_missing_panda(self, map_path, success):
 		return validate_map(map_path, success)
 
 
