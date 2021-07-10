@@ -56,4 +56,5 @@ private:
     // sake we use a slightly different name here.
     std::vector<Player> own_players_;
     int round_ = 0;
+    bool is_finished_ = false;
 };

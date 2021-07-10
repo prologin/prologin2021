@@ -137,16 +137,7 @@ Player* GameState::player_at(int id)
 
 bool GameState::is_finished() const
 {
-    for (const auto& player : players())
-    {
-        int count = 0;
-        for (const auto& bebe : player.bebes())
-            if (bebe.is_saved())
-                count++;
-        if (count == player.bebes().size())
-            return true;
-    }
-    return round_ >= NB_TOURS;
+    return is_finished_;
 }
 
 int GameState::round_id() const
@@ -183,6 +174,31 @@ void GameState::next_round()
             {
                 player_score +=
                     panda.saved_bebes().size() * points_per_saved_bebe;
+            }
+        }
+
+        // Check whether the game is finished.
+        if (round_ >= NB_TOURS)
+        {
+            is_finished_ = true;
+        }
+        else
+        {
+            for (const Player& player : players())
+            {
+                int count = 0;
+
+                for (const Bebe& bebe : player.bebes())
+                {
+                    if (bebe.is_saved())
+                        count++;
+                }
+
+                if (count == player.bebes().size())
+                {
+                    is_finished_ = true;
+                    break;
+                }
             }
         }
     }
