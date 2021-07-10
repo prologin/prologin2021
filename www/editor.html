@@ -13,38 +13,47 @@
 
 <body class="not-www">
     <!-- new, dump, dumper -->
-    <input type="button" value="NOUVEAU" id="new" onclick="onNewClick()"></input>
-    <input type="button" value="EXPORTER" id="dump" onclick="onDumpClick()" /></input>
-    <input type="button" value="IMPORTER" id="import" onclick="onImportClick()" /></input>
-    <select id="brush" onchange="onBrushChange()">
-        <option value="eau">Eau</option>
-        <option value="pont">Pont</option>
-        <option value="panda">Panda</option>
-        <option value="obstacle">Obstacle</option>
-    </select>
-    <p id="select1-info" style="display: inline;"></p>
-    <select id="select1">
-    </select>
-    <p id="select2-info" style="display: inline;"></p>
-    <select id="select2">
-    </select>
-    <p id="isinc-info" style="display: inline;"></p>
-    <input type="checkbox" id="isinc"></input>
+    <div class="editor-contents">
+        <div class="editor-controls">
+            <input type="button" value="NOUVEAU" id="new" onclick="onNewClick()"></input>
+            <input type="button" value="EXPORTER" id="dump" onclick="onDumpClick()" /></input>
+            <input type="button" value="IMPORTER" id="import" onclick="onImportClick()" /></input>
+        </div>
 
-    <br />
-    <div id="canvas"></div>
-    <br />
+        <div id="editor-options">
+            <select id="brush" onchange="onBrushChange()">
+                <option value="eau">Eau</option>
+                <option value="pont">Pont</option>
+                <option value="panda">Panda</option>
+                <option value="obstacle">Obstacle</option>
+            </select>
 
-    <form>
-        <style>
-        .dumper {
-            width: 50%;
-            height: 10%;
-        }
-        </style>
-        <textarea name="dumper" id="dumper" class="dumper"></textarea>
-    </form>
-    <input type="button" value="COPIER" id="copy" onclick="onCopyClick()" /></input>
+            <p id="select1-info" style="display: inline;"></p>
+            <select id="select1">
+            </select>
+            <p id="select2-info" style="display: inline;"></p>
+            <select id="select2">
+            </select>
+            <p id="isinc-info" style="display: inline;"></p>
+            <input type="checkbox" id="isinc"></input>
+        </div>
+
+        <br />
+        <div id="canvas" class="editor-canvas"></div>
+        <br />
+
+        <form>
+            <style>
+            .dumper {
+                width: 50%;
+                height: 10%;
+            }
+            </style>
+            <textarea name="dumper" id="dumper" class="dumper"></textarea>
+        </form>
+
+        <input class="editor-copy" type="button" value="COPIER" id="copy" onclick="onCopyClick()" /></input>
+    </div>
 
     <script src="/static/js/editor.js"></script>
 </body>

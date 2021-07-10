@@ -417,3 +417,35 @@ h1 {
     width: unset;
     max-width: 100vw;
 }
+
+/**********/
+/* Editor */
+/**********/
+.editor-contents {
+    width: 50%;
+    margin: auto;
+}
+
+.editor-controls {
+    display: flex;
+    justify-items: center;
+}
+
+.editor-controls > input {
+    margin: 8px;
+    flex: 1;
+}
+
+.editor-contents textarea {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 8px;
+}
+
+.editor-canvas > canvas {
+    max-height: 95vh;
+}
+
+.editor-copy {
+    width: 100%;
+}
