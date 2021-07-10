@@ -1,6 +1,6 @@
 //"use strict";
 
-const wwwWidth = 420;
+const wwwWidth = 1080;
 let wwwTileWidth = 0;
 
 // Loads the preview
