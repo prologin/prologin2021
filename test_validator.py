@@ -1,44 +1,52 @@
 #!/usr/bin/env python
-import unittest, os
+import unittest, os, sys
 import timeout_decorator
-import subprocess
+from functools import wraps
 
 # globals
 ROOT_DIR = os.getcwd()
-CMD_FORMAT_STR = './www/validator.py < {}'
+CMD_FORMAT_STR = './www/validator.py < "{}" > /dev/null 2>&1'
 VERIFICATION_TIMEOUT_SEC = 1
-fail_maps_paths = list()
-current_map_path = ''
 # lambdas
 get_path = lambda path: os.path.join(ROOT_DIR, path)
 
+# Functions
 @timeout_decorator.timeout(VERIFICATION_TIMEOUT_SEC)
 def run_map_validator(map_path):
 	exit_code = os.system(CMD_FORMAT_STR.format(map_path))
 	return exit_code
 
-@validate_map_decorator
-def validate_map(map_path):
-	global current_map_path
+def validate_map(map_path, success):
 	current_map_path = map_path
-	return run_map_validator(map_path) == 0
+	value = run_map_validator(map_path) == 0
+	return value if success else not value
 
-def validate_map_decorator(func):
-	global fail_maps_paths, current_map_path
-	def wrapper(*args, **kwargs):
-		try:
-			value = func(*args, **kwargs)
-		except Exception as e:
-			fail_maps_paths.append({'path': current_map_path, 'error': e})
-		return value
-	return wrapper
 
+# Decorator
+def validate_map_decorator(part_map_path):
+	def validate_map_decorator_factory(func):
+		success = part_map_path.startswith('success')
+		map_path = os.path.join(ROOT_DIR, 'maps/tests/', part_map_path)
+		def wrapper(*args, **kwargs):
+			try:
+				value = func(*args, map_path, success, **kwargs)
+				args[0].assertTrue(value)
+			except AssertionError as assert_error:
+				args[0].fail(f'Failed test for {part_map_path} and success: {success}')
+			except TimeoutError as timeout_error:
+				args[0].fail(f'Test {part_map_path} timed out. Success: {success}')
+			return value
+		return wrapper
+	return validate_map_decorator_factory
+
+
+# Sanity Checks
 class UnittestSanityCheck(unittest.TestCase):
 	''' The UnittestSanityCheck class's only purpose is to check the unittest module sanity
 	'''
 
 	def test_equals(self):
-		self.assertEquals(1, 2)
+		self.assertEqual(1, 1)
 
 	def test_true(self):
 		self.assertTrue(0 == 0, True)
@@ -50,29 +58,50 @@ class UnittestSanityCheck(unittest.TestCase):
 		with self.assertRaises(ValueError):
 			int('a')
 
-class TestBasicCases(unittest.TestCase):
-	''' The TestBasicCases class tests game maps stored in maps/tests/
+# Map Tests
+class MapTests(unittest.TestCase):
+	''' The MapTests class tests game maps stored in maps/tests/
 	'''
 
-	def basic_map(self):
-		pass
+	@validate_map_decorator('success/simple.map')
+	def test_success_simple(self, map_path, success):
+		return validate_map(map_path, success)
 
-	def test_all_maps(self):
-		# get abs paths to maps
-		success_maps_dir_path = get_path('maps/tests/success')
-		fail_maps_dir_path = get_path('maps/tests/fail')
-		# path join lambda
-		get_success_path = lambda path: os.path.join(ROOT_DIR, 'maps/tests/success', path)
-		get_fail_path = lambda path: os.path.join(ROOT_DIR, 'maps/tests/fail', path)
-		# list dirs with abs paths
-		success_maps = map(get_success_path, os.listdir(success_maps_dir_path))
-		fail_maps = map(get_fail_path, os.listdir(fail_maps_dir_path))
-		# test
-		for success_map in success_maps:
-			self.assertTrue(validate_map(success_map))
-		for fail_map in fail_maps:
-			self.assertFalse(validate_map(fail_maps))
+	@validate_map_decorator('success/20x20_tournoi.map')
+	def test_success_20x20_tournoi(self, map_path, success):
+		return validate_map(map_path, success)
 
+	@validate_map_decorator('success/simple_with_wall.map')
+	def test_success_simple_with_walls(self, map_path, success):
+		return validate_map(map_path, success)
+
+	@validate_map_decorator('success/simple.map')
+	def test_fail_test(self, map_path, success):
+		return validate_map(map_path, success)
+
+
+	@validate_map_decorator('fail/empty_map.map')
+	def test_fail_empty(self, map_path, success):
+		return validate_map(map_path, success)
+
+	@validate_map_decorator('fail/case_4_.map')
+	def test_fail_case_4_(self, map_path, success):
+		return validate_map(map_path, success)
+
+	@validate_map_decorator('fail/invalid_dimensions.map')
+	def test_fail_invalid_dimensions(self, map_path, success):
+		return validate_map(map_path, success)
+
+	@validate_map_decorator('fail/dim_and_map_not_matching.map')
+	def test_fail_dim_and_map_not_matching(self, map_path, success):
+		return validate_map(map_path, success)
+
+	@validate_map_decorator('fail/dims_are_literals.map')
+	def test_fail_dims_are_literals(self, map_path, success):
+		return validate_map(map_path, success)
+
+
+#
 
 if __name__ == '__main__':
 	# test
