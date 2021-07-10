@@ -2,3 +2,4 @@ images
 open.map
 next_state
 dump.json
+__pycache__
