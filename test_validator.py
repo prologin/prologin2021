@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import unittest, os, sys
 import timeout_decorator
-from functools import wraps
 
 # globals
 ROOT_DIR = os.getcwd()
