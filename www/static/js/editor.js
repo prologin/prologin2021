@@ -82,6 +82,10 @@ function onNewClick() {
 
 function onDumpClick() { uiDumper.value = gameState.exportToMapStr(); }
 
+function onImportClick() {
+    onMapOpen(uiDumper.value);
+}
+
 function onCopyClick() {
     // Copy uiDumper's text
     uiDumper.select();

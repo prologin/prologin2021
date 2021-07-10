@@ -15,6 +15,7 @@
     <!-- new, dump, dumper -->
     <input type="button" value="NOUVEAU" id="new" onclick="onNewClick()"></input>
     <input type="button" value="EXPORTER" id="dump" onclick="onDumpClick()" /></input>
+    <input type="button" value="IMPORTER" id="import" onclick="onImportClick()" /></input>
     <select id="brush" onchange="onBrushChange()">
         <option value="eau">Eau</option>
         <option value="pont">Pont</option>
@@ -41,7 +42,7 @@
             height: 10%;
         }
         </style>
-        <textarea name="dumper" id="dumper" readonly="true" class="dumper"></textarea>
+        <textarea name="dumper" id="dumper" class="dumper"></textarea>
     </form>
     <input type="button" value="COPIER" id="copy" onclick="onCopyClick()" /></input>
 
