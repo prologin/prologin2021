@@ -4,5 +4,6 @@ https://finale.prologin.dev/maps/28/ coopération
 https://finale.prologin.dev/maps/27/ grande ligne des obstacle
 https://finale.prologin.dev/maps/26/ Large river
 https://finale.prologin.dev/maps/1/ simple
+./course.map
 # choisit
 
